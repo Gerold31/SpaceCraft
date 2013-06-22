@@ -1,0 +1,10 @@
+#include "Hardware.hpp"
+
+Hardware::Hardware(int ID, int MF, int VER, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, Ogre::String type, ENGINE *engine)
+    :Entity(pos, ori, parent, name, type, engine),
+    mID(ID),
+    mMF(MF),
+    mVER(VER),
+    mCPU(NULL)
+{
+}
