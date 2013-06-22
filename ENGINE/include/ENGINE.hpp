@@ -12,6 +12,7 @@ namespace Ogre
 
 class Map;
 
+#include <stdlib.h>
 #include <vector>
 
 class ENGINE

@@ -174,9 +174,7 @@ void CPUDisplay::initFont()
                 mDefaultFont[x/4 + 32*y/8] = letter;
             }
         }
-	}
-
-
+    }
 }
 
 void CPUDisplay::draw()
@@ -187,7 +185,7 @@ void CPUDisplay::draw()
 
     //pixelBuffer->lock(pixelBox,Ogre::HardwareBuffer::HBL_NORMAL);
 
-    void *data = (void *)new Ogre::uint8[128*96*4]();
+    Ogre::uint8 *data = new Ogre::uint8[128*96*4]();
         
     const Ogre::PixelBox &pixBox = Ogre::PixelBox(128,96,0,Ogre::PF_R8G8B8, data);// pixelBuffer->getCurrentLock();
 
