@@ -42,8 +42,9 @@ ENGINE::~ENGINE()
 bool ENGINE::init(Map *map)
 {
     try{
-        mRoot = new Ogre::Root("", "", "Ogre.log");
+        mRoot = new Ogre::Root("plugins.cfg", "", "Ogre.log");
 
+        /*
         std::vector<Ogre::String> plugins;
 
         plugins.push_back("RenderSystem_GL");
@@ -58,6 +59,7 @@ bool ENGINE::init(Map *map)
             mRoot->loadPlugin(plugins.back().append(OGRE_DEBUG_MODE ? "_d" : ""));
             plugins.pop_back();
         }
+        */
 
     
         const Ogre::RenderSystemList& renderSystemList = mRoot->getAvailableRenderers();
