@@ -14,5 +14,10 @@
 
 Debug/
 Release/
+*.vcxproj*
+*sdf
+*.sln
+*.suo
 
 *.log
+plugins.cfg
