@@ -50,9 +50,6 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
 
     mRaySceneQuery = engine->getSceneMgr()->createRayQuery(Ogre::Ray());
 
-    mActiveKeyListener = NULL;
-    mActiveMouseListener = NULL;
-
     mMode = MODE_DEFAULT;
 
     mTranslation = Ogre::Vector3::ZERO;
@@ -70,7 +67,7 @@ bool Player::update(float elapsedTime)
 	}
 
     //movement
-    if(mTranslation != Ogre::Vector3::ZERO && !mActiveKeyListener)
+    if(mTranslation != Ogre::Vector3::ZERO && mMode == MODE_DEFAULT)
 	{
         float speed = 5.0f * elapsedTime;
         Ogre::Vector3 translation = mTranslation;
@@ -188,18 +185,9 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
             mMode = MODE_DESIGN;
             mEngine->getWindow()->removeViewport(100);
             mSpaceShipDesigner->enterEditMode(mShip);
-            if(mActiveKeyListener)
-            {
-                mInput->removeKeyListener(mActiveKeyListener);
-            }
-            mActiveKeyListener = mSpaceShipDesigner;
-            mInput->addKeyListener(mActiveKeyListener, "SpaceShipDesigner");
-            if(mActiveMouseListener)
-            {
-                mInput->removeMouseListener(mActiveMouseListener);
-            }
-            mActiveMouseListener = mSpaceShipDesigner;
-            mInput->addMouseListener(mActiveMouseListener, "SpaceShipDesigner");
+
+            mInput->addKeyListener(mSpaceShipDesigner, "SpaceShipDesigner");
+            mInput->addMouseListener(mSpaceShipDesigner, "SpaceShipDesigner");
         }else if(mMode == MODE_DESIGN)
         {
             mMode = MODE_DEFAULT;
@@ -207,16 +195,13 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
             mViewport = mEngine->getWindow()->addViewport(mCamera, 100, 0, 0, 1, 1);
             mViewport->setAutoUpdated(true);
             mViewport->setBackgroundColour(Ogre::ColourValue(1,.5,.8));
-            mInput->removeKeyListener(mActiveKeyListener);
-            mActiveKeyListener = NULL;
-            mInput->removeMouseListener(mActiveMouseListener);
-            mActiveMouseListener = NULL;
+            mInput->removeKeyListener("SpaceShipDesigner");
+            mInput->removeMouseListener("SpaceShipDesigner");
         }
         return false;
     case OIS::KC_E:
-        if(mMode == MODE_DEFAULT)
+        if(mMode == MODE_DEFAULT || mMode == MODE_KINOCONTROL)
         {
-            
             Ogre::Ray ray(mNode->getParentSceneNode()->getPosition() + mNode->getPosition(), mCameraYawNode->getOrientation() * mCameraPitchNode->getOrientation() * Ogre::Vector3(0,0,-1));
             mRaySceneQuery->setRay(ray);
             mRaySceneQuery->setSortByDistance(true);
@@ -239,27 +224,18 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
                         {                
                             if(obj->getType() == "SC_KinoControl")
                             {
-                                if(mActiveKeyListener)
+                                Kino *kino = ((KinoControl *)obj)->getKino();
+                                if(mMode == MODE_DEFAULT)
                                 {
-                                    ((Kino *)mActiveKeyListener)->stop();
-                                    mInput->removeKeyListener(mActiveKeyListener);
-                                    mActiveKeyListener = NULL;
-                                }else
+                                    mMode = MODE_KINOCONTROL;
+                                    mInput->addKeyListener(kino, kino->getName());
+                                    mInput->addMouseListener(kino, kino->getName());
+                                }else if(mMode == MODE_KINOCONTROL)
                                 {
-                                    KinoControl *control = (KinoControl *)obj;
-                                    mActiveKeyListener = control->getKino();
-                                    mInput->addKeyListener((Kino *)mActiveKeyListener, control->getName());
-                                }
-                                if(mActiveMouseListener)
-                                {
-                                    ((Kino *)mActiveMouseListener)->stop();
-                                    mInput->removeMouseListener(mActiveMouseListener);
-                                    mActiveMouseListener = NULL;
-                                }else
-                                {
-                                    KinoControl *control = (KinoControl *)obj;
-                                    mActiveMouseListener = control->getKino();
-                                    mInput->addMouseListener((Kino *)mActiveMouseListener, control->getName());
+                                    mMode = MODE_DEFAULT;
+                                    kino->stop();
+                                    mInput->removeKeyListener(kino->getName());
+                                    mInput->removeMouseListener(kino);
                                 }
                                 return false; // stop iterating the Input->mKeyListeners map since we changed it
                             }
@@ -292,7 +268,7 @@ bool Player::keyReleased(const OIS::KeyEvent &e)
  
 bool Player::mouseMoved(const OIS::MouseEvent &e)
 {
-    if(mActiveMouseListener)
+    if(mMode != MODE_DEFAULT)
         return true;
     //orientation
     float rotCoeff = -1.0f * 0.005;// elapsedTime;

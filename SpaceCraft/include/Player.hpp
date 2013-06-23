@@ -49,12 +49,10 @@ private:
     
 	Ogre::RaySceneQuery* mRaySceneQuery;
 
-    OIS::KeyListener *mActiveKeyListener;
-    OIS::MouseListener *mActiveMouseListener;
-
     enum MODE
     {
         MODE_DEFAULT,
+        MODE_KINOCONTROL,
         MODE_DESIGN
     };
     MODE mMode;
