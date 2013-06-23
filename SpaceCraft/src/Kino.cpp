@@ -14,7 +14,6 @@ Kino::Kino(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogr
     mNode->attachObject(mEntity);
 
     mCamera = engine->getSceneMgr()->createCamera(name + "Camera");
-    mCamera->lookAt(0,0,-10);
     mCameraYawNode   = mNode->createChildSceneNode();
     mCameraPitchNode = mCameraYawNode->createChildSceneNode();
     mCameraRollNode  = mCameraPitchNode->createChildSceneNode();

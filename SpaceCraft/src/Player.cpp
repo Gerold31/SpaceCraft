@@ -15,6 +15,7 @@
 #include "KinoControl.hpp"
 #include "Kino.hpp"
 #include "SpaceShip.hpp"
+#include "SpaceShipDesigner.hpp"
 #include "SpaceShipPart.hpp"
 
 #include <stdio.h>
@@ -49,12 +50,14 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
 
     mRaySceneQuery = engine->getSceneMgr()->createRayQuery(Ogre::Ray());
 
-    mActiveKeyListener = mActiveMouseListener = NULL;
+    mActiveKeyListener = NULL;
+    mActiveMouseListener = NULL;
 
     mMode = MODE_DEFAULT;
-    mNextPart = NULL;
-    mNextPartPos = 0;
+
     mTranslation = Ogre::Vector3::ZERO;
+
+    mSpaceShipDesigner = new SpaceShipDesigner(engine);
 }
 
 bool Player::update(float elapsedTime)
@@ -69,10 +72,11 @@ bool Player::update(float elapsedTime)
     //movement
     if(mTranslation != Ogre::Vector3::ZERO && !mActiveKeyListener)
 	{
-        Ogre::Vector3 translation = mTranslation;
-        translation.normalise();
-        translation = mCameraYawNode->getOrientation() * mCameraPitchNode->getOrientation() * translation;
         float speed = 5.0f * elapsedTime;
+        Ogre::Vector3 translation = mTranslation;
+        translation = mCameraYawNode->getOrientation() * mCameraPitchNode->getOrientation() * translation;
+        translation.y = 0;
+        translation.normalise();
         mNode->translate(translation * speed, Ogre::Node::TS_LOCAL);
     }
         
@@ -103,8 +107,9 @@ bool Player::update(float elapsedTime)
 	    }
     }
 
-    if(mMode == MODE_BUILD)
+    if(mMode == MODE_DESIGN)
     {
+        /*
         Ogre::Ray ray(mNode->getParentSceneNode()->getPosition() + mNode->getPosition(), mCameraYawNode->getOrientation() * mCameraPitchNode->getOrientation() * Ogre::Vector3(0,0,-1));
         mRaySceneQuery->setRay(ray);
         mRaySceneQuery->setSortByDistance(true);
@@ -156,6 +161,7 @@ bool Player::update(float elapsedTime)
             }
             ++i;
         }
+            */
     }
     return true;
 }
@@ -179,21 +185,34 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
     case OIS::KC_F1:
         if(mMode == MODE_DEFAULT)
         {
-            mMode = MODE_BUILD;
-            if(!mNextPart)
+            mMode = MODE_DESIGN;
+            mEngine->getWindow()->removeViewport(100);
+            mSpaceShipDesigner->enterEditMode(mShip);
+            if(mActiveKeyListener)
             {
-                char nextName[128];
-                snprintf(nextName, 128, "%sPart%d",  mShip->getName().c_str(), mShip->getNumberOfParts());
-                mNextPart = new SpaceShipPart(SpaceShipPart::PART_FLOOR, Ogre::Vector3(0, -2, 0), Ogre::Quaternion(), mShip->getSceneNode(), std::string(nextName), mEngine);
-                mNextPart->getSceneNode()->setVisible(false);
+                mInput->removeKeyListener(mActiveKeyListener);
             }
-        }else if(mMode == MODE_BUILD)
+            mActiveKeyListener = mSpaceShipDesigner;
+            mInput->addKeyListener(mActiveKeyListener, "SpaceShipDesigner");
+            if(mActiveMouseListener)
+            {
+                mInput->removeMouseListener(mActiveMouseListener);
+            }
+            mActiveMouseListener = mSpaceShipDesigner;
+            mInput->addMouseListener(mActiveMouseListener, "SpaceShipDesigner");
+        }else if(mMode == MODE_DESIGN)
         {
-            mNextPart->getSceneNode()->setVisible(false);
             mMode = MODE_DEFAULT;
-            mNode->setPosition(mNode->getPosition().x, 1.8, mNode->getPosition().z);
+            mSpaceShipDesigner->exitEditMode();
+            mViewport = mEngine->getWindow()->addViewport(mCamera, 100, 0, 0, 1, 1);
+            mViewport->setAutoUpdated(true);
+            mViewport->setBackgroundColour(Ogre::ColourValue(1,.5,.8));
+            mInput->removeKeyListener(mActiveKeyListener);
+            mActiveKeyListener = NULL;
+            mInput->removeMouseListener(mActiveMouseListener);
+            mActiveMouseListener = NULL;
         }
-        break;
+        return false;
     case OIS::KC_E:
         if(mMode == MODE_DEFAULT)
         {
@@ -223,24 +242,24 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
                                 if(mActiveKeyListener)
                                 {
                                     ((Kino *)mActiveKeyListener)->stop();
-                                    mInput->removeKeyListener(mActiveKeyListener->getName());
+                                    mInput->removeKeyListener(mActiveKeyListener);
                                     mActiveKeyListener = NULL;
                                 }else
                                 {
                                     KinoControl *control = (KinoControl *)obj;
                                     mActiveKeyListener = control->getKino();
-                                    mInput->addKeyListener((Kino *)mActiveKeyListener, mActiveKeyListener->getName());
+                                    mInput->addKeyListener((Kino *)mActiveKeyListener, control->getName());
                                 }
                                 if(mActiveMouseListener)
                                 {
                                     ((Kino *)mActiveMouseListener)->stop();
-                                    mInput->removeMouseListener(mActiveMouseListener->getName());
+                                    mInput->removeMouseListener(mActiveMouseListener);
                                     mActiveMouseListener = NULL;
                                 }else
                                 {
                                     KinoControl *control = (KinoControl *)obj;
                                     mActiveMouseListener = control->getKino();
-                                    mInput->addMouseListener((Kino *)mActiveMouseListener, mActiveMouseListener->getName());
+                                    mInput->addMouseListener((Kino *)mActiveMouseListener, control->getName());
                                 }
                                 return false; // stop iterating the Input->mKeyListeners map since we changed it
                             }
@@ -305,9 +324,11 @@ bool Player::mouseMoved(const OIS::MouseEvent &e)
     {
     case MODE_DEFAULT:
         break;
-    case MODE_BUILD:
+    case MODE_DESIGN:
+        /*
         mNextPartPos += e.state.Z.rel/120;
         mNextPartPos %= mNextPart->getNumberNeighbors();
+        */
         break;
     }
 
@@ -320,7 +341,8 @@ bool Player::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
     {
     case MODE_DEFAULT:
         break;
-    case MODE_BUILD:
+    case MODE_DESIGN:
+        /*
         if(id == OIS::MB_Left)
         {
             if(mNextPart->isVisible())
@@ -333,6 +355,7 @@ bool Player::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
                 mNextPart->getSceneNode()->setVisible(false);
             }
         }
+        */
         break;
     }
     return true;

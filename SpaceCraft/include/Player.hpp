@@ -3,6 +3,7 @@
 
 class Input;
 class SpaceShip;
+class SpaceShipDesigner;
 class SpaceShipPart;
 
 #include "OIS/OIS.h"
@@ -48,21 +49,18 @@ private:
     
 	Ogre::RaySceneQuery* mRaySceneQuery;
 
-    Entity *mActiveKeyListener;
-    Entity *mActiveMouseListener;
+    OIS::KeyListener *mActiveKeyListener;
+    OIS::MouseListener *mActiveMouseListener;
 
     enum MODE
     {
         MODE_DEFAULT,
-        MODE_BUILD
+        MODE_DESIGN
     };
     MODE mMode;
 
     SpaceShip *mShip;
-
-    // Build Mode:
-    SpaceShipPart *mNextPart;
-    unsigned int mNextPartPos;
+    SpaceShipDesigner *mSpaceShipDesigner;
 };
 
 #endif
