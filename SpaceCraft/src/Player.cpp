@@ -49,13 +49,12 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
 
     mRaySceneQuery = engine->getSceneMgr()->createRayQuery(Ogre::Ray());
 
-    mPitchFocus = mCameraPitchNode;
-    mYawFocus = mCameraYawNode;
-    mMovementFocus = mNode;
+    mActiveKeyListener = mActiveMouseListener = NULL;
 
     mMode = MODE_DEFAULT;
     mNextPart = NULL;
     mNextPartPos = 0;
+    mTranslation = Ogre::Vector3::ZERO;
 }
 
 bool Player::update(float elapsedTime)
@@ -68,32 +67,14 @@ bool Player::update(float elapsedTime)
 	}
 
     //movement
-    float speed = 5.0f * elapsedTime;
-	Ogre::Vector3 translation(Ogre::Vector3::ZERO);
-	if(mInput->getKeyboard()->isKeyDown(OIS::KC_W))
+    if(mTranslation != Ogre::Vector3::ZERO && !mActiveKeyListener)
 	{
-		translation.z -= 1;
-	}
-	if(mInput->getKeyboard()->isKeyDown(OIS::KC_S))
-	{
-		translation.z += 1;
-	}
-	if(mInput->getKeyboard()->isKeyDown(OIS::KC_A))
-	{
-		translation.x -= 1;
-	}
-	if(mInput->getKeyboard()->isKeyDown(OIS::KC_D))
-	{
-		translation.x += 1;
-	}
-	if(translation != Ogre::Vector3::ZERO)
-	{
-        translation = mYawFocus->getOrientation() * mPitchFocus->getOrientation() * translation;
-        if(mMode!=MODE_BUILD)
-            translation.y = 0;
+        Ogre::Vector3 translation = mTranslation;
         translation.normalise();
-        mMovementFocus->translate(translation * speed, Ogre::Node::TS_LOCAL);
-	}
+        translation = mCameraYawNode->getOrientation() * mCameraPitchNode->getOrientation() * translation;
+        float speed = 5.0f * elapsedTime;
+        mNode->translate(translation * speed, Ogre::Node::TS_LOCAL);
+    }
         
     // test: ship movement
     {
@@ -181,8 +162,21 @@ bool Player::update(float elapsedTime)
 
 bool Player::keyPressed(const OIS::KeyEvent &e)
 {
-    if(e.key == OIS::KC_F1)
+    switch(e.key)
     {
+    case OIS::KC_W:
+        mTranslation.z = -1;
+        break;
+    case OIS::KC_S:
+        mTranslation.z = 1;
+        break;
+    case OIS::KC_A:
+		mTranslation.x = -1;
+        break;
+    case OIS::KC_D:
+		mTranslation.x = 1;
+        break;
+    case OIS::KC_F1:
         if(mMode == MODE_DEFAULT)
         {
             mMode = MODE_BUILD;
@@ -199,103 +193,111 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
             mMode = MODE_DEFAULT;
             mNode->setPosition(mNode->getPosition().x, 1.8, mNode->getPosition().z);
         }
-        return true;
-    }
-
-    switch(mMode)
-    {
-    case MODE_DEFAULT:
+        break;
+    case OIS::KC_E:
+        if(mMode == MODE_DEFAULT)
         {
-            if(e.key == OIS::KC_E)
-            {
-                Ogre::Ray ray(mNode->getParentSceneNode()->getPosition() + mNode->getPosition(), mCameraYawNode->getOrientation() * mCameraPitchNode->getOrientation() * Ogre::Vector3(0,0,-1));
-                mRaySceneQuery->setRay(ray);
-                mRaySceneQuery->setSortByDistance(true);
-
-                Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
-                Ogre::RaySceneQueryResult::iterator i = result.begin();
-
-                while(i!=result.end())
-                {
-                    if(i->distance > 10)
-                        break;
             
-                    if(i->movable && i->movable->getMovableType() == "Entity")
+            Ogre::Ray ray(mNode->getParentSceneNode()->getPosition() + mNode->getPosition(), mCameraYawNode->getOrientation() * mCameraPitchNode->getOrientation() * Ogre::Vector3(0,0,-1));
+            mRaySceneQuery->setRay(ray);
+            mRaySceneQuery->setSortByDistance(true);
+
+            Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
+            Ogre::RaySceneQueryResult::iterator i = result.begin();
+
+            while(i!=result.end())
+            {
+                if(i->distance > 10)
+                    break;
+            
+                if(i->movable && i->movable->getMovableType() == "Entity")
+                {
+                    Ogre::SceneNode *node = i->movable->getParentSceneNode();
+                    if(node)
                     {
-                        Ogre::SceneNode *node = i->movable->getParentSceneNode();
-                        if(node)
-                        {
-                            Entity *obj = dynamic_cast<Entity *>(node->getAttachedObject(node->getName() + "Obj"));
-                            if(obj)
-                            {                
-                                if(obj->getType() == "SC_KinoControl")
+                        Entity *obj = dynamic_cast<Entity *>(node->getAttachedObject(node->getName() + "Obj"));
+                        if(obj)
+                        {                
+                            if(obj->getType() == "SC_KinoControl")
+                            {
+                                if(mActiveKeyListener)
                                 {
-                                    if(mMovementFocus == mNode)
-                                    {
-                                        KinoControl *control = (KinoControl *)obj;
-                                        printf("Activated %s\n", control->getName().c_str());
-                                        mMovementFocus = control->getKino()->getParentSceneNode();
-                                        mPitchFocus = control->getKino()->getPitchNode();
-                                        mYawFocus = control->getKino()->getYawNode();
-                                    }else
-                                    {
-                                        printf("Deactivated\n");
-                                        mMovementFocus = mNode;
-                                        mPitchFocus = mCameraPitchNode;
-                                        mYawFocus = mCameraYawNode;
-                                    }
-                                    break;
+                                    ((Kino *)mActiveKeyListener)->stop();
+                                    mInput->removeKeyListener(mActiveKeyListener->getName());
+                                    mActiveKeyListener = NULL;
+                                }else
+                                {
+                                    KinoControl *control = (KinoControl *)obj;
+                                    mActiveKeyListener = control->getKino();
+                                    mInput->addKeyListener((Kino *)mActiveKeyListener, mActiveKeyListener->getName());
                                 }
+                                if(mActiveMouseListener)
+                                {
+                                    ((Kino *)mActiveMouseListener)->stop();
+                                    mInput->removeMouseListener(mActiveMouseListener->getName());
+                                    mActiveMouseListener = NULL;
+                                }else
+                                {
+                                    KinoControl *control = (KinoControl *)obj;
+                                    mActiveMouseListener = control->getKino();
+                                    mInput->addMouseListener((Kino *)mActiveMouseListener, mActiveMouseListener->getName());
+                                }
+                                return false; // stop iterating the Input->mKeyListeners map since we changed it
                             }
                         }
                     }
-                    ++i;
                 }
+                ++i;
             }
         }
         break;
-    case MODE_BUILD:
-        {
-            if(e.key == OIS::KC_E)
-            {
-                break;
-            }
-        }
     }
-
     return true;
 }
 
 bool Player::keyReleased(const OIS::KeyEvent &e)
 {
+    switch(e.key)
+    {
+    case OIS::KC_W:
+    case OIS::KC_S:
+        mTranslation.z = 0;
+        break;
+    case OIS::KC_A:
+    case OIS::KC_D:
+		mTranslation.x = 0;
+        break;
+    }
     return true;
 }
  
 bool Player::mouseMoved(const OIS::MouseEvent &e)
 {
+    if(mActiveMouseListener)
+        return true;
     //orientation
     float rotCoeff = -1.0f * 0.005;// elapsedTime;
     Ogre::Radian lAngleX(e.state.X.rel * rotCoeff);
     Ogre::Radian lAngleY(e.state.Y.rel * rotCoeff);
 	// If the 'player' don't make loopings, 'yaw in world' + 'pitch in local' is often enough for a camera controler.
-    mYawFocus->yaw(lAngleX);
-    mPitchFocus->pitch(lAngleY);
+    mCameraYawNode->yaw(lAngleX);
+    mCameraPitchNode->pitch(lAngleY);
 
-    Ogre::Real pitchAngle = (2 * Ogre::Degree(Ogre::Math::ACos(mPitchFocus->getOrientation().w)).valueDegrees());
+    Ogre::Real pitchAngle = (2 * Ogre::Degree(Ogre::Math::ACos(mCameraPitchNode->getOrientation().w)).valueDegrees());
  
     // Just to determine the sign of the angle we pick up above, the
     // value itself does not interest us.
-    Ogre::Real pitchAngleSign = mPitchFocus->getOrientation().x;
+    Ogre::Real pitchAngleSign = mCameraPitchNode->getOrientation().x;
  
     // Limit the pitch between -90 degress and +90 degrees, Quake3-style.
     if (pitchAngle > 90.0f)
     {
         if (pitchAngleSign > 0)
             // Set orientation to 90 degrees on X-axis.
-             mPitchFocus->setOrientation(Ogre::Quaternion(Ogre::Math::Sqrt(0.5f), Ogre::Math::Sqrt(0.5f), 0, 0));
+             mCameraPitchNode->setOrientation(Ogre::Quaternion(Ogre::Math::Sqrt(0.5f), Ogre::Math::Sqrt(0.5f), 0, 0));
         else if (pitchAngleSign < 0)
             // Sets orientation to -90 degrees on X-axis.
-            mPitchFocus->setOrientation(Ogre::Quaternion(Ogre::Math::Sqrt(0.5f), -Ogre::Math::Sqrt(0.5f), 0, 0));
+            mCameraPitchNode->setOrientation(Ogre::Quaternion(Ogre::Math::Sqrt(0.5f), -Ogre::Math::Sqrt(0.5f), 0, 0));
     }
 
     

@@ -20,7 +20,7 @@ namespace Ogre
 
 #include "Entity.hpp"
 
-class Player : public Entity, OIS::KeyListener, OIS::MouseListener
+class Player : public Entity, public OIS::KeyListener, public OIS::MouseListener
 {
 public:
     Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::RenderWindow *window, Ogre::String name, ENGINE *engine);
@@ -38,10 +38,8 @@ public:
 
 private:
     Input *mInput;
-    Ogre::SceneNode *mYawFocus;
-    Ogre::SceneNode *mPitchFocus;
-    Ogre::SceneNode *mMovementFocus;
 
+    Ogre::Vector3    mTranslation;
     Ogre::SceneNode *mCameraYawNode;
     Ogre::SceneNode *mCameraPitchNode;
     Ogre::SceneNode *mCameraRollNode;
@@ -49,6 +47,9 @@ private:
     Ogre::Viewport  *mViewport;
     
 	Ogre::RaySceneQuery* mRaySceneQuery;
+
+    Entity *mActiveKeyListener;
+    Entity *mActiveMouseListener;
 
     enum MODE
     {
