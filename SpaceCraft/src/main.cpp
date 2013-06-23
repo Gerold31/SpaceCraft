@@ -37,22 +37,19 @@ int main(int argc, char **argv)
             return -1;
         }
 
-        new Star(Ogre::Vector3(0, 0, -5000), Ogre::Quaternion(), engine->getSceneMgr()->getRootSceneNode(), "Star", engine);
-        SpaceShip *ship = new SpaceShip(Ogre::Vector3(0,0,0), Ogre::Quaternion(), engine->getSceneMgr()->getRootSceneNode(), "Ship", engine);
+        SpaceShip *ship = new SpaceShip(455e3, Ogre::Vector3(0, 0, 0), Ogre::Vector3(0, 0, 0), Ogre::Quaternion(), engine->getSceneMgr()->getRootSceneNode(), "Ship", engine);
+        map->addGravityObject(ship);
 
         Player *player = new Player(Ogre::Vector3(0,1.8,0), Ogre::Quaternion(), ship->getSceneNode(), engine->getWindow(), "Player", engine);
         player->setSpaceShip(ship);
     
-        new KinoControl(Ogre::Vector3(0, 10, -10), Ogre::Quaternion(), ship->getSceneNode(), "KinoControl0", engine);
-        new KinoControl(Ogre::Vector3(0, 0, -10), Ogre::Quaternion(), ship->getSceneNode(), "KinoControl1", engine);
+        new KinoControl(Ogre::Vector3(0, 0, -10), Ogre::Quaternion(0,0,1,0), ship->getSceneNode(), "KinoControl0", engine);
 
-        Memory *mem = new Memory("program.a", Ogre::Vector3(10, 15, -10), Ogre::Quaternion(), ship->getSceneNode(), "program", engine);
-        CPU    *cpu = new CPU   (Ogre::Vector3(10, 10, -10), Ogre::Quaternion(), ship->getSceneNode(), "CPU", engine); 
+        Memory *mem = new Memory("program.a", Ogre::Vector3(10, 0, -10), Ogre::Quaternion(0,0,1,0), ship->getSceneNode(), "program", engine);
+        CPU    *cpu = new CPU   (Ogre::Vector3(10, 0, -10), Ogre::Quaternion(0,0,1,0), ship->getSceneNode(), "CPU", engine); 
     
-        CPUDisplay *display = new CPUDisplay(Ogre::Vector3(-10, 10, -10), Ogre::Quaternion(), ship->getSceneNode(), "Display", engine);
-
-        new CPUDisplay(Ogre::Vector3(-10, 0, -10), Ogre::Quaternion(), ship->getSceneNode(), "Display2", engine);
-
+        CPUDisplay *display = new CPUDisplay(Ogre::Vector3(-10, 0, -10), Ogre::Quaternion(0,0,1,0), ship->getSceneNode(), "Display", engine);
+        
         cpu->addDevice(display);
         display->connect(cpu);
 

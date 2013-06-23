@@ -3,6 +3,7 @@
 
 #include "Map.hpp"
 
+class GravityObject;
 
 class Universe : public Map
 {
@@ -12,7 +13,10 @@ public:
     void init();
     bool update(float elapsedTime);
 
+    void addGravityObject(GravityObject *obj) {mGravityObjects.push_back(obj);}
+
 private:
+    std::vector<GravityObject *> mGravityObjects;
 };
 
 #endif
