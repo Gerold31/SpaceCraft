@@ -134,6 +134,68 @@ void CPU::run()
         b  = (i >> 0x05) & 0x1F;
         pa = pb = NULL;
 
+        if(op != 0x00)
+        {
+            switch(b)
+            {
+            case 0x00:
+            case 0x01:
+            case 0x02:
+            case 0x03:
+            case 0x04:
+            case 0x05:
+            case 0x06:
+            case 0x07:
+                pb = &mRegister[b];
+                break;
+            case 0x08:
+            case 0x09:
+            case 0x0A:
+            case 0x0B:
+            case 0x0C:
+            case 0x0D:
+            case 0x0E:
+            case 0x0F:
+                pb = &mRam[mRegister[b-0x08]];
+                break;
+            case 0x10:
+            case 0x11:
+            case 0x12:
+            case 0x13:
+            case 0x14:
+            case 0x15:
+            case 0x16:
+            case 0x17:
+                pb = &mRam[mRegister[b-0x10] + mRam[mPC++]];
+                mCycles++;
+                break;
+            case 0x18:
+                pb = &mRam[--mSP];
+            case 0x19:
+                pb = &mRam[mSP];
+                break;
+            case 0x1A:
+                pb = &mRam[mSP + mRam[mPC++]];
+                mCycles++;
+                break;
+            case 0x1B:
+                pb = &mSP;
+                break;
+            case 0x1C:
+                pb = &mPC;
+                break;
+            case 0x1D:
+                pb = &mEX;
+                break;
+            case 0x1E:
+                pb = &mRam[mRam[mPC++]];
+                mCycles++;
+                break;
+            default:
+                ;
+            }
+        }
+
         switch(a)
         {
         case 0x00:
@@ -204,67 +266,6 @@ void CPU::run()
         if(pa)
             a = (*pa);
 
-        if(op != 0x00)
-        {
-            switch(b)
-            {
-            case 0x00:
-            case 0x01:
-            case 0x02:
-            case 0x03:
-            case 0x04:
-            case 0x05:
-            case 0x06:
-            case 0x07:
-                pb = &mRegister[b];
-                break;
-            case 0x08:
-            case 0x09:
-            case 0x0A:
-            case 0x0B:
-            case 0x0C:
-            case 0x0D:
-            case 0x0E:
-            case 0x0F:
-                pb = &mRam[mRegister[b-0x08]];
-                break;
-            case 0x10:
-            case 0x11:
-            case 0x12:
-            case 0x13:
-            case 0x14:
-            case 0x15:
-            case 0x16:
-            case 0x17:
-                pb = &mRam[mRegister[b-0x10] + mRam[mPC++]];
-                mCycles++;
-                break;
-            case 0x18:
-                pb = &mRam[--mSP];
-            case 0x19:
-                pb = &mRam[mSP];
-                break;
-            case 0x1A:
-                pb = &mRam[mSP + mRam[mPC++]];
-                mCycles++;
-                break;
-            case 0x1B:
-                pb = &mSP;
-                break;
-            case 0x1C:
-                pb = &mPC;
-                break;
-            case 0x1D:
-                pb = &mEX;
-                break;
-            case 0x1E:
-                pb = &mRam[mRam[mPC++]];
-                mCycles++;
-                break;
-            default:
-                ;
-            }
-        }
     
         if(mSkip)
         {
