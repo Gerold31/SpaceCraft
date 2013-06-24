@@ -28,7 +28,7 @@ bool CPU::update(float elapsedTime)
     return true;
 }
 
-void CPU::interrupt(WORD msg) // @todo use mutex
+void CPU::interrupt(WORD msg)
 {
     if(mIA != 0)
     {
@@ -42,10 +42,12 @@ void CPU::interrupt(WORD msg) // @todo use mutex
                 ; // @todo catch fire
         }else
         {
+            mMutex.lock();
             mRam[--mSP] = mPC;          // PUSH PC
             mRam[--mSP] = mRegister[0]; // PUSH A
             mPC = mIA;                  // mov PC, IA
             mRegister[0] = msg;         // mov A , a
+            mMutex.unlock();
         }
     }
 }
@@ -92,10 +94,12 @@ void CPU::run()
     WORD *pa;
     WORD *pb;
 
-    while(mRunning && cycle < 1000000000)
+    while(mRunning /*&& cycle < 1000000000*/)
     {
         instr++;
         cycle += mCycles;
+
+        mMutex.lock();
         
         // process interruptqueue
         if(mInterruptQueue.size() > 0 && !mInterrupQueuing && mInstructionsSinceInterrupt > 0)
@@ -117,6 +121,8 @@ void CPU::run()
             }
             mCycles=4;
             mInstructionsSinceInterrupt = 0;
+
+            mMutex.unlock();
             continue;
         }
         mInstructionsSinceInterrupt++; // or = 1?
@@ -266,6 +272,8 @@ void CPU::run()
                 mSkip = false;          // no more if's
             mCycles=1;
             //printf("skip: PC: %4x op: %4x %s\n", mPC, i, disas(i).c_str());
+
+            mMutex.unlock();
             continue;
         }
 
@@ -594,6 +602,8 @@ void CPU::run()
         default:
             break;
         }
+
+        mMutex.unlock();
     }
     boost::posix_time::ptime t1 = boost::posix_time::microsec_clock::local_time();
     boost::posix_time::time_duration diff = t1 - t0;

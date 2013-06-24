@@ -32,10 +32,11 @@ public:
     void run();
 
     void addDevice(Hardware *dev);
-    void setMemory(Memory *mem);
 
-    WORD getRegister(int i) {return mRegister[i];}
+    WORD getRegister(int r) {return mRegister[r];}
+    void setRegister(int r, WORD val) {mRegister[r] = val;}
     WORD *getMemory() {return mRam;}
+    void setMemory(Memory *mem);
 
 private:
     const double mFrequency;
@@ -55,6 +56,7 @@ private:
     bool mRunning;
 
     boost::thread mThread;
+    boost::mutex mMutex;
 
     std::string disas(WORD i);
 };

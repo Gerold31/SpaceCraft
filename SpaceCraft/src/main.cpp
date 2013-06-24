@@ -11,6 +11,7 @@
 #include "CPU.hpp"
 #include "Memory.hpp"
 #include "CPUDisplay.hpp"
+#include "CPUKeyboard.hpp"
 #include "Star.hpp"
 #include "SpaceShip.hpp"
 #include "Map.hpp"
@@ -43,15 +44,19 @@ int main(int argc, char **argv)
         Player *player = new Player(Ogre::Vector3(0,1.8,0), Ogre::Quaternion(), ship->getSceneNode(), engine->getWindow(), "Player", engine);
         player->setSpaceShip(ship);
     
-        new KinoControl(Ogre::Vector3(0, 0, -10), Ogre::Quaternion(0,0,1,0), ship->getSceneNode(), "KinoControl0", engine);
+        new KinoControl(Ogre::Vector3(10, 0, -10), Ogre::Quaternion(0,0,1,0), ship->getSceneNode(), "KinoControl0", engine);
 
         Memory *mem = new Memory("program.a", Ogre::Vector3(10, 0, -10), Ogre::Quaternion(0,0,1,0), ship->getSceneNode(), "program", engine);
         CPU    *cpu = new CPU   (Ogre::Vector3(10, 0, -10), Ogre::Quaternion(0,0,1,0), ship->getSceneNode(), "CPU", engine); 
     
         CPUDisplay *display = new CPUDisplay(Ogre::Vector3(-10, 0, -10), Ogre::Quaternion(0,0,1,0), ship->getSceneNode(), "Display", engine);
-        
+        CPUKeyboard *keyboard = new CPUKeyboard(Ogre::Vector3(0, 0, -10), Ogre::Quaternion(0,0,1,0), ship->getSceneNode(), "Keyboard", engine);
+
         cpu->addDevice(display);
         display->connect(cpu);
+
+        cpu->addDevice(keyboard);
+        keyboard->connect(cpu);
 
         cpu->setMemory(mem);
         cpu->start();

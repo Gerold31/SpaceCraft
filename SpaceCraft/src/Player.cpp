@@ -17,6 +17,7 @@
 #include "SpaceShip.hpp"
 #include "SpaceShipDesigner.hpp"
 #include "SpaceShipPart.hpp"
+#include "CPUKeyboard.hpp"
 
 #include <stdio.h>
 
@@ -200,7 +201,7 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
         }
         return false;
     case OIS::KC_E:
-        if(mMode == MODE_DEFAULT || mMode == MODE_KINOCONTROL)
+        if(mMode == MODE_DEFAULT || mMode == MODE_KINOCONTROL || mMode == MODE_KEYBOARD)
         {
             Ogre::Ray ray(mNode->getParentSceneNode()->getPosition() + mNode->getPosition(), mCameraYawNode->getOrientation() * mCameraPitchNode->getOrientation() * Ogre::Vector3(0,0,-1));
             mRaySceneQuery->setRay(ray);
@@ -235,7 +236,20 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
                                     mMode = MODE_DEFAULT;
                                     kino->stop();
                                     mInput->removeKeyListener(kino->getName());
-                                    mInput->removeMouseListener(kino);
+                                    mInput->removeMouseListener(kino->getName());
+                                }
+                                return false; // stop iterating the Input->mKeyListeners map since we changed it
+                            }else if(obj->getType() == "CPU_Keyboard")
+                            {
+                                CPUKeyboard *keyboard = ((CPUKeyboard *)obj);
+                                if(mMode == MODE_DEFAULT)
+                                {
+                                    mMode = MODE_KEYBOARD;
+                                    mInput->addKeyListener(keyboard, keyboard->getName());
+                                }else if(mMode == MODE_KEYBOARD)
+                                {
+                                    mMode = MODE_DEFAULT;
+                                    mInput->removeKeyListener(keyboard->getName());
                                 }
                                 return false; // stop iterating the Input->mKeyListeners map since we changed it
                             }

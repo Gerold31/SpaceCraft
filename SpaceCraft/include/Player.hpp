@@ -53,6 +53,7 @@ private:
     {
         MODE_DEFAULT,
         MODE_KINOCONTROL,
+        MODE_KEYBOARD,
         MODE_DESIGN
     };
     MODE mMode;
