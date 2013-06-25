@@ -32,6 +32,11 @@ void CPU::interrupt(WORD msg)
 {
     if(mIA != 0)
     {
+        if(mIdle)
+        {
+            mIdle = false;
+            mThread.interrupt();
+        }
         if(mInterrupQueuing)
         {
             if(mInterrupts < 0x100)
@@ -79,6 +84,7 @@ void CPU::reset()
     while(!mInterruptQueue.empty())
         mInterruptQueue.pop();
     mInterrupts = 0;
+    mIdle = false;
 }
 
 void CPU::run()
@@ -98,6 +104,16 @@ void CPU::run()
     {
         instr++;
         cycle += mCycles;
+        
+        if(mIdle)
+        {
+            try{
+                while(1)
+                    boost::this_thread::sleep(boost::posix_time::seconds(1));
+            }catch(...)
+            {
+            }
+        }
 
         mMutex.lock();
         
@@ -383,6 +399,15 @@ void CPU::run()
                         if(dev)
                             dev->interrupt();
                         mCycles+=4;
+                        break;
+                    }
+                    case 0x1F: // WFI
+                    {
+                        mIdle = true;
+                        if(a == mRam[mPC])
+                            mPC--;  // 2 Word instruction
+                        mPC--;
+                        mCycles++;
                         break;
                     }
                 default:

@@ -176,9 +176,9 @@ main:
 ;        ADD I, 1
 ;        IFE I, 384
 ;            SET I, 32
-
+		WFI 0
     main_loop_end:
-    SET PC, main_loop
+    WFI 0
 
 main_end:
 

@@ -54,6 +54,7 @@ private:
     
     int mCycles;
     bool mRunning;
+    bool mIdle;
 
     boost::thread mThread;
     boost::mutex mMutex;
