@@ -45,15 +45,16 @@ INTEGER_HEX    "0x"[[:digit:]a-fA-F]+
 [Ss][Tt][Ii] {yylval.intValue = 0x1E; return INSTRUCTION2;}
 [Ss][Tt][Dd] {yylval.intValue = 0x1F; return INSTRUCTION2;}
 
-[Jj][Ss][Rr] {yylval.intValue = 0x01; return INSTRUCTION1;}
-[Ii][Nn][Tt] {yylval.intValue = 0x08; return INSTRUCTION1;}
-[Ii][Aa][Gg] {yylval.intValue = 0x09; return INSTRUCTION1;}
-[Ii][Aa][Ss] {yylval.intValue = 0x0A; return INSTRUCTION1;}
-[Rr][Ff][Ii] {yylval.intValue = 0x0B; return INSTRUCTION1;}
-[Ii][Aa][Qq] {yylval.intValue = 0x0C; return INSTRUCTION1;}
-[Hh][Ww][Nn] {yylval.intValue = 0x10; return INSTRUCTION1;}
-[Hh][Ww][Qq] {yylval.intValue = 0x11; return INSTRUCTION1;}
-[Hh][Ww][Ii] {yylval.intValue = 0x12; return INSTRUCTION1;}
+[Jj][Ss][Rr] {yylval.intValue = 0x01; return INSTRUCTION1R;}
+[Ii][Nn][Tt] {yylval.intValue = 0x08; return INSTRUCTION1R;}
+[Ii][Aa][Gg] {yylval.intValue = 0x09; return INSTRUCTION1W;}
+[Ii][Aa][Ss] {yylval.intValue = 0x0A; return INSTRUCTION1R;}
+[Rr][Ff][Ii] {yylval.intValue = 0x0B; return INSTRUCTION1R;}
+[Ii][Aa][Qq] {yylval.intValue = 0x0C; return INSTRUCTION1R;}
+[Hh][Ww][Nn] {yylval.intValue = 0x10; return INSTRUCTION1W;}
+[Hh][Ww][Qq] {yylval.intValue = 0x11; return INSTRUCTION1R;}
+[Hh][Ww][Ii] {yylval.intValue = 0x12; return INSTRUCTION1R;}
+[Ww][Ff][Ii] {yylval.intValue = 0x1F; return INSTRUCTION1R;}
 
 [Dd][Aa][Tt] {return DAT;}
 

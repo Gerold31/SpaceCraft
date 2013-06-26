@@ -31,7 +31,8 @@ int error;
 
 // used tokens
 %token <intValue> INSTRUCTION2
-%token <intValue> INSTRUCTION1
+%token <intValue> INSTRUCTION1R
+%token <intValue> INSTRUCTION1W
 %token <intValue> REGISTER
 %token <intValue> PUSH
 %token <intValue> POP
@@ -85,11 +86,11 @@ value:                  literal                     {ram[pos++] = $1;}
 
 
 instruction:            reset INSTRUCTION2 b',' a   {ram[pos++] = ($2 | ($3 << 5) | ($5 << 10))&0xFFFF; pos += i;}
-                    |   reset INSTRUCTION1 a        {ram[pos++] = (     ($2 << 5) | ($3 << 10))&0xFFFF; pos += i;/*should be sometimes b e.g. HWN*/};
+                    |   reset INSTRUCTION1R a       {ram[pos++] = (     ($2 << 5) | ($3 << 10))&0xFFFF; pos += i;}
+                    |   reset INSTRUCTION1W b       {ram[pos++] = (     ($2 << 5) | ($3 << 10))&0xFFFF; pos += i;};
 
 b:                      common                      {$$ = $1;}
-                    |   PUSH                        {$$ = $1;}
-                    |   literal                     {$$ = $1;}; /*really? does this work in emulator?*/
+                    |   PUSH                        {$$ = $1;};
 
 a:                      common                      {$$ = $1;}
                     |   POP                         {$$ = $1;}

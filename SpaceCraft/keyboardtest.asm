@@ -165,20 +165,11 @@ main:
 
     main_loop:
 
-;        SET A, 1
-;        HWI [dev_keyboard]
-;        IFE C, 0
-;            SET PC, main_loop
-
-;        AND [I + image], 0xFF00
-;        ADD [I + image], C
-
-;        ADD I, 1
-;        IFE I, 384
-;            SET I, 32
-		WFI 0
+        WFI 0
+ 
+    SET PC, main_loop
     main_loop_end:
-    WFI 0
+
 
 main_end:
 
