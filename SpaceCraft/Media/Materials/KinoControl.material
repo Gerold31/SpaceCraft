@@ -14,15 +14,15 @@ material _missing_material_
     }
 }
 
-// Base genrated by blender2ogre 0.5.8
+// KinoControl/Base genrated by blender2ogre 0.5.8
 
-material Base 
+material KinoControl/Base 
 {
     receive_shadows on 
 
     technique
     {
-        pass Base
+        pass KinoControl/Base
         {
             ambient 0.08103756606578827 0.08352787792682648 0.08242528885602951 1.0
             diffuse 0.06483005381867368 0.06682230333719108 0.06594023206740962 1.0
@@ -49,18 +49,18 @@ material Base
         }
     }
 }
-// Screen genrated by blender2ogre 0.5.8
+// KinoControl/Screen genrated by blender2ogre 0.5.8
 
-material Screen 
+material KinoControl/Screen 
 {
     receive_shadows on 
 
     technique
     {
-        pass Screen
+        pass KinoControl/Screen
         {
-            ambient 1.0 1.0 1.0 1.0
-            diffuse 1.0 1.0 1.0 1.0
+            ambient 0.800000011920929 0.03816547617316246 0.0 1.0
+            diffuse 0.6400000190734865 0.030532381393497898 0.0 1.0
             specular 0.5 0.5 0.5 1.0 12.5
             emissive 0.0 0.0 0.0 1.0
 

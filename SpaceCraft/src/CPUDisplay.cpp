@@ -18,13 +18,13 @@ CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode 
     Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
 	Ogre::String textureName = name + "Texture";
 
-    mTexture = textureManager.createManual(textureName, "recources",
+    mTexture = textureManager.createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 		Ogre::TEX_TYPE_2D, 128, 96, 0,
         Ogre::PF_R8G8B8, Ogre::TU_DEFAULT);
 
     
     Ogre::MaterialManager& materialManager = Ogre::MaterialManager::getSingleton();
-    Ogre::MaterialPtr material = materialManager.create(name + "Material", "recources");
+    Ogre::MaterialPtr material = materialManager.create(name + "Material", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
             
     Ogre::Technique *technique = material->getTechnique(0);
     Ogre::Pass *pass = technique->getPass(0);
@@ -159,9 +159,9 @@ void CPUDisplay::initFont()
 		img.load(data_stream, "png");
 		Ogre::TextureManager::getSingleton().loadImage("font.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, img, Ogre::TEX_TYPE_2D, 0, 1.0f);
 
-        for(int x=0; x<img.getWidth(); x+=4)
+        for(size_t x=0; x<img.getWidth(); x+=4)
         {
-            for(int y=0; y<img.getHeight(); y+=8)
+            for(size_t y=0; y<img.getHeight(); y+=8)
             {
                 int letter = 0;
                 for(int i=0; i<4; i++)

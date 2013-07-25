@@ -22,7 +22,7 @@ KinoControl::KinoControl(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNod
     Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
 	Ogre::String textureName = name + "Texture";
 
-    Ogre::TexturePtr textureWithRtt = textureManager.createManual(textureName, "recources", 
+    Ogre::TexturePtr textureWithRtt = textureManager.createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, 
 		Ogre::TEX_TYPE_2D, 1024, 1024, 0,
 		Ogre::PF_R8G8B8, Ogre::TU_RENDERTARGET, 0, false, 0);
     Ogre::RenderTexture* renderTarget = NULL;
@@ -36,13 +36,13 @@ KinoControl::KinoControl(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNod
     rttViewport1->setBackgroundColour(Ogre::ColourValue(1,.5,.8));
     	
     Ogre::MaterialManager& materialManager = Ogre::MaterialManager::getSingleton();
-    Ogre::MaterialPtr material = materialManager.create(name + "Material", "recources");
+    Ogre::MaterialPtr material = materialManager.create(name + "Material", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 	Ogre::Technique *technique = material->getTechnique(0);
 	Ogre::Pass *pass = technique->getPass(0);
 	Ogre::TextureUnitState* textureUnit = pass->createTextureUnitState();
 	textureUnit->setTextureName(textureName);
     textureUnit->setTextureScale(-1, -1);
-    mEntity->getSubEntity("Screen")->setMaterial(material);
+    mEntity->getSubEntity("KinoControl/Screen")->setMaterial(material);
     /*
     textureUnit->setNumMipmaps(0);
 	textureUnit->setTextureFiltering(Ogre::TFO_BILINEAR);
