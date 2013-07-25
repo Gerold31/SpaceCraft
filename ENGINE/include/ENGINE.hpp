@@ -11,9 +11,12 @@ namespace Ogre
 }
 
 class Map;
+class GUIManager;
 
 #include <stdlib.h>
 #include <vector>
+
+#include "MyGUI.h"
 
 class ENGINE
 {
@@ -22,12 +25,16 @@ public:
     ~ENGINE();
 
     bool init(Map *map = NULL);
+    void initGUIManager();
     void run();
     
-    Ogre::RenderWindow  *getWindow()  {return mWindow;}
-    Ogre::Root          *getRoot()    {return mRoot;}
-    Ogre::SceneManager  *getSceneMgr(){return mSceneMgr;}
-    Map                 *getMap()     {return mMap;}
+    Ogre::RenderWindow  *getWindow()    {return mWindow;}
+    Ogre::Root          *getRoot()      {return mRoot;}
+    Ogre::SceneManager  *getSceneMgr()  {return mSceneMgr;}
+    Map                 *getMap()       {return mMap;}
+    GUIManager          *getGUIManager(){return mGUIManager;}
+
+    MyGUI::VectorWidgetPtr loadGUI(std::string fileName);
 
 private:
     Ogre::Root          *mRoot;
@@ -35,7 +42,8 @@ private:
     Ogre::SceneManager  *mSceneMgr;
     Ogre::SceneNode     *mRootSceneNode;
 
-    Map *mMap;
+    Map                 *mMap;
+    GUIManager          *mGUIManager;
 
     bool update(float elapsedTime);
 };

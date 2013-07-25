@@ -1,6 +1,7 @@
 #include "ENGINE.hpp"
 
 #include "Map.hpp"
+#include "GUIManager.hpp"
 
 #include "OGRE/OgreRoot.h"
 #include "OGRE/OgreRenderSystem.h"
@@ -8,12 +9,13 @@
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreSceneNode.h"
 #include "OGRE/OgreWindowEventUtilities.h"
+#include "OGRE/OgreConfigFile.h"
 
 #include <vector>
 #include <exception>
 #include <stdio.h>
 
-#define ENGINE_ERROR(x) printf(x);
+#define ENGINE_ERROR(x) printf("%s", x);
 
 
 ENGINE::ENGINE()
@@ -21,6 +23,7 @@ ENGINE::ENGINE()
     mRoot = NULL;
     mWindow = NULL;
     mMap = NULL;
+    mGUIManager = NULL;
 }
 
 ENGINE::~ENGINE()
@@ -42,7 +45,7 @@ ENGINE::~ENGINE()
 bool ENGINE::init(Map *map)
 {
     try{
-        mRoot = new Ogre::Root("plugins.cfg", "", "Ogre.log");
+        mRoot = new Ogre::Root(Ogre::String("plugins").append(OGRE_DEBUG_MODE ? "_d.cfg" : ".cfg"), "", "Ogre.log");
 
         /*
         std::vector<Ogre::String> plugins;
@@ -79,7 +82,7 @@ bool ENGINE::init(Map *map)
         Ogre::NameValuePairList params;
         params["FSAA"] = "0"; 
         params["vsync"] = "true";
-        mWindow = mRoot->createRenderWindow("ENGINE", 800, 600, false, &params);
+        mWindow = mRoot->createRenderWindow("ENGINE", 1024, 1024, false, &params);
 
         mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC, "SceneMgr");
         mRootSceneNode = mSceneMgr->getRootSceneNode();
@@ -87,20 +90,45 @@ bool ENGINE::init(Map *map)
         mWindow->setActive(true);
         mWindow->setAutoUpdated(false);
 
+        // set up resources
+        // Load resource paths from config file
+        Ogre::ConfigFile cf;
+        cf.load("resources.cfg");
+ 
+        // Go through all sections & settings in the file
+        Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
+ 
+        Ogre::String secName, typeName, archName;
+        while (seci.hasMoreElements())
+        {
+            secName = seci.peekNextKey();
+            Ogre::ConfigFile::SettingsMultiMap *settings = seci.getNext();
+            Ogre::ConfigFile::SettingsMultiMap::iterator i;
+            for (i = settings->begin(); i != settings->end(); ++i)
+            {
+                typeName = i->first;
+                archName = i->second;
+                Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
+            }
+        }
+        Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+        /*
         Ogre::ResourceGroupManager& recourceMgr = Ogre::ResourceGroupManager::getSingleton();
         Ogre::String recourceGroup = "recources";
 		recourceMgr.createResourceGroup(recourceGroup);
         recourceMgr.addResourceLocation("Models", "FileSystem", recourceGroup, false);
         recourceMgr.initialiseResourceGroup(recourceGroup);
         recourceMgr.loadResourceGroup(recourceGroup);
+        */
 
         mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
-
+        
         if(!map)
             mMap = new Map(this);
         else
             mMap = map;
         mMap->init();
+
 
         return true;
     }catch(Ogre::Exception &e)
@@ -116,6 +144,11 @@ bool ENGINE::init(Map *map)
     return false;
 }
 
+void ENGINE::initGUIManager()
+{
+    mGUIManager = new GUIManager(this);
+}
+
 void ENGINE::run()
 {
     mRoot->clearEventTimes();
@@ -128,7 +161,7 @@ void ENGINE::run()
     while(!mWindow->isClosed())
     {
         unsigned long currentTime = timer->getMilliseconds();
-		elapsedTime = (currentTime - lastTime) * 1e-3;
+		elapsedTime = (currentTime - lastTime) * 1e-3f;
 		if(elapsedTime == 0)
 			continue;
 		lastTime = currentTime;
@@ -150,4 +183,9 @@ void ENGINE::run()
 bool ENGINE::update(float elapsedTime)
 {
     return mMap->update(elapsedTime);
+}
+
+MyGUI::VectorWidgetPtr ENGINE::loadGUI(std::string fileName)
+{
+    return mGUIManager->createGUI(fileName);
 }
