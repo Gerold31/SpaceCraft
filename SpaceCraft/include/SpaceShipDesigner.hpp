@@ -5,12 +5,16 @@
 
 class ENGINE;
 class SpaceShip;
+class SpaceShipPart;
+class SpaceShipDesignerGUI;
+
 
 namespace Ogre
 {
     class SceneNode;
     class Camera;
     class Viewport;
+    class RaySceneQuery;
 };
 
 class SpaceShipDesigner : public OIS::KeyListener, public OIS::MouseListener
@@ -27,6 +31,9 @@ public:
     bool mouseMoved(const OIS::MouseEvent &e);
     bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
     bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
+
+    void setSelectedPartType(int type);
+
 private:
     Ogre::SceneNode *mNode;
     Ogre::SceneNode *mCameraYawNode;
@@ -34,10 +41,23 @@ private:
     Ogre::SceneNode *mCameraRollNode;
     Ogre::Camera    *mCamera;
     Ogre::Viewport  *mViewport;
+	Ogre::RaySceneQuery* mRaySceneQuery;
 
     ENGINE *mEngine;
 
     SpaceShip *mSpaceShip;
+    SpaceShipDesignerGUI *mGUI;
+
+    int mSelectedPartType;
+    int mNextPartID;
+
+    std::vector<SpaceShipPart *> mPossibleParts;
+    
+    void initPossibleParts();
+    void removePossibleParts();
+    void updateSelectedPartType();
+
+    void addPossibleParts(SpaceShipPart *part);
 };
 
 #endif

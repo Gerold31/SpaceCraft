@@ -18,6 +18,7 @@
 #include "SpaceShipDesigner.hpp"
 #include "SpaceShipPart.hpp"
 #include "CPUKeyboard.hpp"
+#include "GUIManager.hpp"
 
 #include <stdio.h>
 
@@ -43,11 +44,16 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     mCamera->setAspectRatio(1.0f * mViewport->getActualWidth() / mViewport->getActualHeight());
     mCamera->setNearClipDistance(0.5);
     mCamera->setFarClipDistance(5000.0);
-
+    
     mInput = Input::getSingletonPtr();
     mInput->initialise(window);
     mInput->addKeyListener(this, name);
     mInput->addMouseListener(this, name);
+
+    engine->initGUIManager();
+    mInput->addKeyListener(engine->getGUIManager(), "GUIManager");
+    mInput->addMouseListener(engine->getGUIManager(), "GUIManager");
+
 
     mRaySceneQuery = engine->getSceneMgr()->createRayQuery(Ogre::Ray());
 

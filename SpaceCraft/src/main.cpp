@@ -30,17 +30,16 @@ int main(int argc, char **argv)
     try{
         ENGINE *engine = new ENGINE();
         Universe *map = new Universe(engine);
-        
 
         if(!engine->init(map))
         {
             ENGINE_ERROR("failed to initialize ENGINE");
             return -1;
         }
-
+        
         SpaceShip *ship = new SpaceShip(455e3, Ogre::Vector3(0, 0, 0), Ogre::Vector3(0, 0, 0), Ogre::Quaternion(), engine->getSceneMgr()->getRootSceneNode(), "Ship", engine);
         map->addGravityObject(ship);
-
+        
         Player *player = new Player(Ogre::Vector3(0,1.8,0), Ogre::Quaternion(), ship->getSceneNode(), engine->getWindow(), "Player", engine);
         player->setSpaceShip(ship);
     

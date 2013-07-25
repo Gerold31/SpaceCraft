@@ -25,6 +25,8 @@ public:
 
     void setEnable(bool enable);
 
+    MyGUI::IntPoint getMousePos();
+
     bool keyPressed(const OIS::KeyEvent &e);
     bool keyReleased(const OIS::KeyEvent &e);
  

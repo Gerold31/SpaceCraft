@@ -37,7 +37,12 @@ MyGUI::VectorWidgetPtr GUIManager::createGUI(std::string fileName)
 void GUIManager::setEnable(bool enable)
 {
     mEnable = enable;
-    mGUI->setVisiblePointer(enable);
+    MyGUI::PointerManager::getInstancePtr()->setVisible(enable);
+}
+
+MyGUI::IntPoint GUIManager::getMousePos()
+{
+    return MyGUI::InputManager::getInstancePtr()->getMousePosition();
 }
 
 bool GUIManager::keyPressed(const OIS::KeyEvent &e)

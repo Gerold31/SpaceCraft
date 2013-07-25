@@ -16,6 +16,8 @@ public:
 
     void registerEntity(Entity *ent);
 
+    void destroyEntity(Entity *ent);
+
 protected:
     std::vector<Entity *> mEntities;
     std::vector<Entity *> mEntitiesToRegister;

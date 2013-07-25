@@ -18,3 +18,9 @@ Entity::Entity(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     mNode->attachObject(this);
     mMap->registerEntity(this);
 }
+
+Entity::~Entity()
+{
+    mEngine->getSceneMgr()->destroySceneNode(mNode);
+    mNode = NULL;
+}

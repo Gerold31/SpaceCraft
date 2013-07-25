@@ -23,6 +23,7 @@ class Entity : public Ogre::ManualObject
 {
 public:
     Entity(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, Ogre::String type, ENGINE *engine);
+    virtual ~Entity();
 
     virtual void init(){}
     virtual bool update(float elapsedTime){return true;}

@@ -34,3 +34,16 @@ void Map::registerEntity(Entity *ent)
 {
     mEntitiesToRegister.push_back(ent);
 }
+
+void Map::destroyEntity(Entity *ent)
+{
+    for(std::vector<Entity *>::iterator i=mEntities.begin(); i!=mEntities.end(); ++i)
+    {
+        if((*i) == ent)
+        {
+            delete ent;
+            mEntities.erase(i);
+            return;
+        }
+    }
+}
