@@ -14,6 +14,8 @@
 #include "OGRE/OgreEntity.h"
 #include "OGRE/OgreStringConverter.h"
 
+#define LENGTH_THRESHOLD (1e-6)
+
 SpaceShipDesigner::SpaceShipDesigner(ENGINE *engine)
 {
     mEngine = engine;
@@ -113,24 +115,23 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                             for(size_t j=0; j<newPart->getNumberNeighbors(); j++)
                             {
                                 SpaceShipPart *neighbor = newPart->getNeighbor(j);
-                                if(neighbor)
+                                if(!neighbor)
+                                continue;
+                                for(size_t k=0; k<neighbor->getNumberNeighbors(); k++)
                                 {
-                                    for(size_t k=0; k<neighbor->getNumberNeighbors(); k++)
+                                    if(neighbor->getNeighbor(k) == part)
                                     {
-                                        if(neighbor->getNeighbor(k) == part)
-                                        {
-                                            neighbor->setNeighbor(newPart, k);
-                                            break;
-                                        }
+                                        neighbor->setNeighbor(newPart, k);
+                                        break;
                                     }                                    
                                 }
                             }
-                            mSpaceShip->addPart(newPart);
-
                             removePossiblePart(part);
-                            
-                            debugShip(SpaceShipPart::PART_FLOOR);
+
+                            mSpaceShip->addPart(newPart);
                             addPossibleParts(newPart);
+
+                            debugShip();
                             break;
                         }
                     }
@@ -164,7 +165,7 @@ void SpaceShipDesigner::initPossibleParts()
         SpaceShipPart *part = mSpaceShip->getPart(i);
         addPossibleParts(part);
     }
-    debugShip(SpaceShipPart::PART_FLOOR);
+    debugShip();
 }
 
 void SpaceShipDesigner::removePossibleParts()
@@ -201,28 +202,29 @@ void SpaceShipDesigner::updateSelectedPartType()
 
 void SpaceShipDesigner::addPossibleParts(SpaceShipPart *part)
 {
+    printf("addPossibleParts: %s\n", part->getName().c_str());
     for(size_t i=0; i<part->getNumberNeighbors(); i++)
     {
         SpaceShipPart *neighbor = part->getNeighbor(i);
-        if(neighbor == NULL)
+        if(!neighbor)
         {
-            //printf("\tneighbor %d is null\n", i);
+            printf("\tneighbor %d is null\n", i);
             SpaceShipPart::SpaceShipPartInfo *info = part->getNeighborInfo(i);
-            Ogre::Vector3 pos = part->getSceneNode()->getPosition() + info->mPos;
             Ogre::Quaternion rot = part->getSceneNode()->getOrientation() * info->mRot;
-            SpaceShipPart *other;
-            bool found = false;
+            Ogre::Vector3 pos = part->getSceneNode()->getPosition() + rot * info->mPos;
+
+            SpaceShipPart *other = NULL;
             for(std::vector<SpaceShipPart *>::iterator j = mPossibleParts.begin(); j != mPossibleParts.end(); ++j)
             {
-                other = *j;
-                if(other && other->getPartType() == info->mPartType && other->getSceneNode()->getPosition() == pos)
+                SpaceShipPart *part = *j;
+                if(part && part->getPartType() == info->mPartType && (part->getSceneNode()->getPosition() - pos).length() < LENGTH_THRESHOLD)
                 {
-                    found = true;
-                    //printf("\t\tpart %s is new neighbor\n", other->getName().c_str());
+                    other = part;
+                    printf("\t\tpart %s is new neighbor\n", other->getName().c_str());
                     break;
                 }
             }
-            if(!found)
+            if(!other && info->mPlacable)
             {
                 char name[32];
                 sprintf(name, "DesignerPart%d", mNextPartID);
@@ -231,24 +233,25 @@ void SpaceShipDesigner::addPossibleParts(SpaceShipPart *part)
                 if(info->mPartType != mSelectedPartType)
                     other->getSceneNode()->setVisible(false);
                 other->setMaterial("DesignerPart");
-                //printf("\t\tnew part %s is new neighbor\n", other->getName().c_str());
+                printf("\t\tnew part %s is new neighbor\n", other->getName().c_str());
                 mPossibleParts.push_back(other);
             }
-            part->setNeighbor(other, i);
-            int id = info->mOtherID;
-            if(id == -1)
+            if(other)
             {
+                part->setNeighbor(other, i);
                 for(size_t k = 0; k<other->getNumberNeighbors(); k++)
                 {
                     SpaceShipPart::SpaceShipPartInfo *nInfo = other->getNeighborInfo(k);
-                    if(nInfo->mPartType == part->getPartType() && pos + nInfo->mPos == part->getSceneNode()->getPosition())
+                    if(nInfo->mPartType == part->getPartType())
                     {
-                        id = k;
-                        break;
+                        if((other->getSceneNode()->getPosition() + other->getSceneNode()->getOrientation() * nInfo->mRot * nInfo->mPos - part->getSceneNode()->getPosition()).length() < LENGTH_THRESHOLD)
+                        {
+                            other->setNeighbor(part, k);
+                            //break;
+                        }
                     }
                 }
             }
-            other->setNeighbor(part, id);
         }
     }
 }

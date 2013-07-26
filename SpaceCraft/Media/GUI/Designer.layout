@@ -7,11 +7,8 @@
 		<Widget type="Button" skin="Button" position="850 140 150 50" name="SelectCeil">
             <Property key="Caption" value="Ceil"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 200 150 50" name="SelectOuterWall">
-            <Property key="Caption" value="Outer Wall"/>
-        </Widget>
-        <Widget type="Button" skin="Button" position="850 260 150 50" name="SelectInnerWall">
-            <Property key="Caption" value="Inner Wall"/>
+        <Widget type="Button" skin="Button" position="850 200 150 50" name="SelectWall">
+            <Property key="Caption" value="Wall"/>
         </Widget>
     </Widget>
 </MyGUI>

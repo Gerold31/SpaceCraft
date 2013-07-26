@@ -10,22 +10,21 @@ class SpaceShipPart : public Entity
 public:
     enum PART_TYPE
     {
-        PART_FLOOR      = 0x1,
-        PART_CEIL       = 0x2,
-        PART_OUTERWALL  = 0x4,
-        PART_INNERWALL  = 0x8,
-        PART_INTERIOR   = 0x10,
-        PART_EXTERIOR   = 0x20
+        PART_FLOOR,
+        PART_CEIL,
+        PART_WALL,
+        PART_INTERIOR,
+        PART_EXTERIOR
     };
 
     class SpaceShipPartInfo
     {
     public:
-        SpaceShipPartInfo(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quaternion rot, int otherID);
+        SpaceShipPartInfo(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quaternion rot, bool placable);
         PART_TYPE mPartType;
         Ogre::Vector3 mPos;
         Ogre::Quaternion mRot;
-        int mOtherID;
+        bool mPlacable;
     };
 
     SpaceShipPart(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
@@ -47,7 +46,7 @@ private:
     std::vector<std::pair<SpaceShipPart *, SpaceShipPartInfo * >> mNeighbor;
     PART_TYPE mPartType;
 
-    static SpaceShipPartInfo mPartInfoFloor[10], mPartInfoCeil[5], mPartInfoOuterWall[6], mPartInfoInnerWall[7], mPartInfoInterior[1], mPartInfoExterior[1];
+    static SpaceShipPartInfo mPartInfoFloor[9], mPartInfoCeil[5], mPartInfoWall[8], mPartInfoInterior[1], mPartInfoExterior[1];
 };
 
 #endif

@@ -6,43 +6,37 @@
 #include "OGRE/OgreRenderWindow.h"
 #include "OGRE/OgreEntity.h"
 
-SpaceShipPart::SpaceShipPartInfo SpaceShipPart::mPartInfoFloor[]     = {SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3( 1  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  2),
-                                                                        SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3( 0  , 0, 1  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  3),
-                                                                        SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3(-1  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  0),
-                                                                        SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3( 0  , 0,-1  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  1),
-                                                                        SpaceShipPartInfo(PART_OUTERWALL, Ogre::Vector3( 0.5, 0, 0  ), Ogre::Quaternion(0, 0, 1, 0)                 ,  0),
-                                                                        SpaceShipPartInfo(PART_OUTERWALL, Ogre::Vector3( 0  , 0, 0.5), Ogre::Quaternion(sqrt(0.5), 0, -sqrt(0.5), 0) ,  0),
-                                                                        SpaceShipPartInfo(PART_OUTERWALL, Ogre::Vector3(-0.5, 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  0),
-                                                                        SpaceShipPartInfo(PART_OUTERWALL, Ogre::Vector3( 0  , 0,-0.5), Ogre::Quaternion(sqrt(0.5), 0, sqrt(0.5), 0),  0),
-                                                                        SpaceShipPartInfo(PART_INTERIOR,  Ogre::Vector3( 0  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  0),
-                                                                        SpaceShipPartInfo(PART_INNERWALL, Ogre::Vector3( 0  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  0) };
-SpaceShipPart::SpaceShipPartInfo SpaceShipPart::mPartInfoCeil[]      = {SpaceShipPartInfo(PART_CEIL,      Ogre::Vector3( 1  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  2),
-                                                                        SpaceShipPartInfo(PART_CEIL,      Ogre::Vector3( 0  , 0, 1  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  3),
-                                                                        SpaceShipPartInfo(PART_CEIL,      Ogre::Vector3(-1  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  0),
-                                                                        SpaceShipPartInfo(PART_CEIL,      Ogre::Vector3( 0  , 0,-1  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  1),
-                                                                        SpaceShipPartInfo(PART_INTERIOR,  Ogre::Vector3( 0  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  0) };
-SpaceShipPart::SpaceShipPartInfo SpaceShipPart::mPartInfoOuterWall[] = {SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3( 0  , 0,-0.5), Ogre::Quaternion(1, 0, 0, 0)                 , -1),
-                                                                        SpaceShipPartInfo(PART_OUTERWALL, Ogre::Vector3( 1  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  2),
-                                                                        SpaceShipPartInfo(PART_OUTERWALL, Ogre::Vector3(-1  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  1),
-                                                                        SpaceShipPartInfo(PART_OUTERWALL, Ogre::Vector3( 0  , 2, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  4),
-                                                                        SpaceShipPartInfo(PART_OUTERWALL, Ogre::Vector3( 0  ,-2, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  3),
-                                                                        SpaceShipPartInfo(PART_INTERIOR,  Ogre::Vector3( 0  , 1, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  0) };
-SpaceShipPart::SpaceShipPartInfo SpaceShipPart::mPartInfoInnerWall[] = {SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3( 0  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  9),
-                                                                        SpaceShipPartInfo(PART_INNERWALL, Ogre::Vector3( 1  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  1),
-                                                                        SpaceShipPartInfo(PART_INNERWALL, Ogre::Vector3(-1  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  2),
-                                                                        SpaceShipPartInfo(PART_INNERWALL, Ogre::Vector3( 0  , 2, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  4),
-                                                                        SpaceShipPartInfo(PART_INNERWALL, Ogre::Vector3( 0  ,-2, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  3),
-                                                                        SpaceShipPartInfo(PART_INTERIOR,  Ogre::Vector3( 0  , 1,-1  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  0),
-                                                                        SpaceShipPartInfo(PART_INTERIOR,  Ogre::Vector3( 0  , 1, 1  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  0) };
-SpaceShipPart::SpaceShipPartInfo SpaceShipPart::mPartInfoInterior[]  = {SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3( 0  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  8) };
-SpaceShipPart::SpaceShipPartInfo SpaceShipPart::mPartInfoExterior[]  = {SpaceShipPartInfo(PART_OUTERWALL, Ogre::Vector3( 0  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  9) };
+SpaceShipPart::SpaceShipPartInfo SpaceShipPart::mPartInfoFloor[]    = {SpaceShipPartInfo(PART_FLOOR,    Ogre::Vector3( 1  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  true),
+                                                                       SpaceShipPartInfo(PART_FLOOR,    Ogre::Vector3( 0  , 0, 1  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  true),
+                                                                       SpaceShipPartInfo(PART_FLOOR,    Ogre::Vector3(-1  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  true),
+                                                                       SpaceShipPartInfo(PART_FLOOR,    Ogre::Vector3( 0  , 0,-1  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  true),
+                                                                       SpaceShipPartInfo(PART_WALL,     Ogre::Vector3( 0.5, 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  true),
+                                                                       SpaceShipPartInfo(PART_WALL,     Ogre::Vector3( 0.5, 0, 0  ), Ogre::Quaternion(sqrt(0.5), 0, -sqrt(0.5), 0),  true),
+                                                                       SpaceShipPartInfo(PART_WALL,     Ogre::Vector3( 0.5, 0, 0  ), Ogre::Quaternion(0, 0, 1, 0)                 ,  true),
+                                                                       SpaceShipPartInfo(PART_WALL,     Ogre::Vector3( 0.5, 0, 0  ), Ogre::Quaternion(sqrt(0.5), 0,  sqrt(0.5), 0),  true),
+                                                                       SpaceShipPartInfo(PART_INTERIOR, Ogre::Vector3( 0  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 , false) };
+SpaceShipPart::SpaceShipPartInfo SpaceShipPart::mPartInfoCeil[]     = {SpaceShipPartInfo(PART_CEIL,     Ogre::Vector3( 1  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  true),
+                                                                       SpaceShipPartInfo(PART_CEIL,     Ogre::Vector3( 0  , 0, 1  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  true),
+                                                                       SpaceShipPartInfo(PART_CEIL,     Ogre::Vector3(-1  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  true),
+                                                                       SpaceShipPartInfo(PART_CEIL,     Ogre::Vector3( 0  , 0,-1  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  true),
+                                                                       SpaceShipPartInfo(PART_INTERIOR, Ogre::Vector3( 0  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 , false) };
+SpaceShipPart::SpaceShipPartInfo SpaceShipPart::mPartInfoWall[]     = {SpaceShipPartInfo(PART_FLOOR,    Ogre::Vector3(-0.5, 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 , false),
+                                                                       SpaceShipPartInfo(PART_FLOOR,    Ogre::Vector3( 0.5, 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 , false),
+                                                                       SpaceShipPartInfo(PART_WALL,     Ogre::Vector3( 0  , 0, 1  ), Ogre::Quaternion(1, 0, 0, 0)                 , false),
+                                                                       SpaceShipPartInfo(PART_WALL,     Ogre::Vector3( 0  , 0,-1  ), Ogre::Quaternion(1, 0, 0, 0)                 , false),
+                                                                       SpaceShipPartInfo(PART_WALL,     Ogre::Vector3( 0  , 2, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 ,  true),
+                                                                       SpaceShipPartInfo(PART_WALL,     Ogre::Vector3( 0  ,-2, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 , false),
+                                                                       SpaceShipPartInfo(PART_INTERIOR, Ogre::Vector3( 0  , 1,-1  ), Ogre::Quaternion(1, 0, 0, 0)                 , false),
+                                                                       SpaceShipPartInfo(PART_INTERIOR, Ogre::Vector3( 0  , 1, 1  ), Ogre::Quaternion(1, 0, 0, 0)                 , false) };
+SpaceShipPart::SpaceShipPartInfo SpaceShipPart::mPartInfoInterior[] = {SpaceShipPartInfo(PART_FLOOR,    Ogre::Vector3( 0  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 , false) };
+SpaceShipPart::SpaceShipPartInfo SpaceShipPart::mPartInfoExterior[] = {SpaceShipPartInfo(PART_WALL,     Ogre::Vector3( 0  , 0, 0  ), Ogre::Quaternion(1, 0, 0, 0)                 , false) };
 
-SpaceShipPart::SpaceShipPartInfo::SpaceShipPartInfo(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quaternion rot, int otherID)
+SpaceShipPart::SpaceShipPartInfo::SpaceShipPartInfo(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quaternion rot, bool placable)
 {
     mPartType = partType;
     mPos = pos;
     mRot = rot;
-    mOtherID = otherID;
+    mPlacable = placable;
 }
 
 SpaceShipPart::SpaceShipPart(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
@@ -68,20 +62,12 @@ SpaceShipPart::SpaceShipPart(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quater
             mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfoCeil[i]));
         }
         break;
-    case PART_OUTERWALL:
+    case PART_WALL:
         mEntity = engine->getSceneMgr()->createEntity(name + "Ent", "SpaceShip/Part_Wall.mesh");
         mNode->attachObject(mEntity);
-        for(int i=0; i<sizeof(mPartInfoOuterWall)/sizeof(SpaceShipPartInfo); i++)
+        for(int i=0; i<sizeof(mPartInfoWall)/sizeof(SpaceShipPartInfo); i++)
         {
-            mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfoOuterWall[i]));
-        }
-        break;
-    case PART_INNERWALL:
-        mEntity = engine->getSceneMgr()->createEntity(name + "Ent", "SpaceShip/Part_Wall.mesh");
-        mNode->attachObject(mEntity);
-        for(int i=0; i<sizeof(mPartInfoInnerWall)/sizeof(SpaceShipPartInfo); i++)
-        {
-            mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfoInnerWall[i]));
+            mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfoWall[i]));
         }
         break;
     case PART_INTERIOR:
@@ -116,11 +102,7 @@ SpaceShipPart::SpaceShipPart(SpaceShipPart *old, Ogre::String name)
         mEntity = mEngine->getSceneMgr()->createEntity(name + "Ent", "SpaceShip/Part_Ceil.mesh");
         mNode->attachObject(mEntity);
         break;
-    case PART_OUTERWALL:
-        mEntity = mEngine->getSceneMgr()->createEntity(name + "Ent", "SpaceShip/Part_Wall.mesh");
-        mNode->attachObject(mEntity);
-        break;
-    case PART_INNERWALL:
+    case PART_WALL:
         mEntity = mEngine->getSceneMgr()->createEntity(name + "Ent", "SpaceShip/Part_Wall.mesh");
         mNode->attachObject(mEntity);
         break;

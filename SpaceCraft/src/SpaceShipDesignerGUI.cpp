@@ -44,8 +44,6 @@ void SpaceShipDesignerGUI::buttonClicked(MyGUI::Widget *widget)
         mParent->setSelectedPartType(SpaceShipPart::PART_FLOOR);
     else if(widget->getName() == "SelectCeil")
         mParent->setSelectedPartType(SpaceShipPart::PART_CEIL);
-    else if(widget->getName() == "SelectOuterWall")
-        mParent->setSelectedPartType(SpaceShipPart::PART_OUTERWALL);
-    else if(widget->getName() == "SelectInnerWall")
-        mParent->setSelectedPartType(SpaceShipPart::PART_INNERWALL);
+    else if(widget->getName() == "SelectWall")
+        mParent->setSelectedPartType(SpaceShipPart::PART_WALL);
 }
