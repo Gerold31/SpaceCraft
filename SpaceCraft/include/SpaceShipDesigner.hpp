@@ -58,6 +58,10 @@ private:
     void updateSelectedPartType();
 
     void addPossibleParts(SpaceShipPart *part);
+    void removePossiblePart(SpaceShipPart *part);
+    
+    void debugShip(int partType = -1);
+    void debugPart(SpaceShipPart *part, int partType = -1);
 };
 
 #endif

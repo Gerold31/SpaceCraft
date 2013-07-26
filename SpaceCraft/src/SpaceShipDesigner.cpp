@@ -84,11 +84,7 @@ bool SpaceShipDesigner::mouseMoved(const OIS::MouseEvent &e)
 }
 
 bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
-{
-    printf("click\n");
-    //find the current mouse position
-    MyGUI::IntPoint pos = mEngine->getGUIManager()->getMousePos();
- 
+{ 
 	//create a raycast straight out from the camera at the mouse's location
     Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(e.state.X.abs/float(e.state.width), e.state.Y.abs/float(e.state.height));
 	mRaySceneQuery->setRay(mouseRay);
@@ -96,7 +92,6 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
 	Ogre::RaySceneQueryResult& result = mRaySceneQuery->execute();
 	Ogre::RaySceneQueryResult::iterator i = result.begin();
  
-	//check to see if the mouse is pointing at the world and put our current object at that location
     while(i != result.end())
 	{
         if(i->movable && i->movable->getMovableType() == "Entity")
@@ -115,7 +110,6 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                             char name[32];
                             sprintf(name, "%sPart%d", mSpaceShip->getSceneNode()->getName().c_str(), mSpaceShip->getNextPartID());
                             SpaceShipPart *newPart = new SpaceShipPart(part, name);
-                            printf("add SpaceShipPart %s at %s\n", newPart->getSceneNode()->getName().c_str(), Ogre::StringConverter::toString(newPart->getSceneNode()->getPosition()).c_str());
                             for(size_t j=0; j<newPart->getNumberNeighbors(); j++)
                             {
                                 SpaceShipPart *neighbor = newPart->getNeighbor(j);
@@ -132,17 +126,10 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                                 }
                             }
                             mSpaceShip->addPart(newPart);
-                            for(std::vector<SpaceShipPart *>::iterator i = mPossibleParts.begin(); i != mPossibleParts.end(); ++i)
-                            {
-                                if(*i == part)
-                                {
-                                    mPossibleParts.erase(i);
-                                }
-                            }
+
+                            removePossiblePart(part);
                             
-                            printf("remove DesignerPart %s at %s\n", part->getName().c_str(), Ogre::StringConverter::toString(part->getSceneNode()->getPosition()).c_str());
-                            mEngine->getMap()->destroyEntity(part);
-                            
+                            debugShip(SpaceShipPart::PART_FLOOR);
                             addPossibleParts(newPart);
                             break;
                         }
@@ -172,17 +159,12 @@ void SpaceShipDesigner::setSelectedPartType(int type)
 
 void SpaceShipDesigner::initPossibleParts()
 {
-    std::vector<SpaceShipPart *>parts;
     for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
     {
-        parts.push_back(mSpaceShip->getPart(i));
+        SpaceShipPart *part = mSpaceShip->getPart(i);
+        addPossibleParts(part);
     }
-    while(parts.size() > 0)
-    {
-        SpaceShipPart *cur = parts.back();
-        parts.pop_back();
-        addPossibleParts(cur);
-    }
+    debugShip(SpaceShipPart::PART_FLOOR);
 }
 
 void SpaceShipDesigner::removePossibleParts()
@@ -219,72 +201,106 @@ void SpaceShipDesigner::updateSelectedPartType()
 
 void SpaceShipDesigner::addPossibleParts(SpaceShipPart *part)
 {
-    printf("addPossibleParts from %s\n", part->getName().c_str());
     for(size_t i=0; i<part->getNumberNeighbors(); i++)
     {
         SpaceShipPart *neighbor = part->getNeighbor(i);
         if(neighbor == NULL)
         {
-            printf("\tneighbor %d is empty\n", i);
+            //printf("\tneighbor %d is null\n", i);
             SpaceShipPart::SpaceShipPartInfo *info = part->getNeighborInfo(i);
             Ogre::Vector3 pos = part->getSceneNode()->getPosition() + info->mPos;
+            Ogre::Quaternion rot = part->getSceneNode()->getOrientation() * info->mRot;
+            SpaceShipPart *other;
             bool found = false;
             for(std::vector<SpaceShipPart *>::iterator j = mPossibleParts.begin(); j != mPossibleParts.end(); ++j)
             {
-                SpaceShipPart *possible = *j;
-                if(possible->getPartType() == info->mPartType && possible->getSceneNode()->getPosition() == pos)
+                other = *j;
+                if(other && other->getPartType() == info->mPartType && other->getSceneNode()->getPosition() == pos)
                 {
-                    printf("\t\tpossible part %s needs to fill this slot\n", possible->getName());
-                    part->setNeighbor(possible, i);
-                    int id = info->mOtherID;
-                    if(id == -1)
-                    {
-                        for(size_t k = 0; k<possible->getNumberNeighbors(); k++)
-                        {
-                            SpaceShipPart::SpaceShipPartInfo *nInfo = possible->getNeighborInfo(k);
-                            if(nInfo->mPartType == part->getPartType() && possible->getSceneNode()->getPosition() + nInfo->mPos == part->getSceneNode()->getPosition())
-                            {
-                                id = k;
-                                break;
-                            }
-                        }
-                    }
-                    printf("\t\tother id is %d\n", id);
-                    possible->setNeighbor(part, id);
                     found = true;
+                    //printf("\t\tpart %s is new neighbor\n", other->getName().c_str());
                     break;
                 }
             }
             if(!found)
             {
-                printf("\t\tneed to create new part\n");
                 char name[32];
                 sprintf(name, "DesignerPart%d", mNextPartID);
                 mNextPartID++;
-                SpaceShipPart *newPart = new SpaceShipPart(info->mPartType, pos, Ogre::Quaternion(), mSpaceShip->getSceneNode(), name, mEngine);
-                printf("\t\tadd DesignerPart %s at %s\n", newPart->getSceneNode()->getName().c_str(), Ogre::StringConverter::toString(pos).c_str());
-                printf("\t\tpart pos: %s\n", Ogre::StringConverter::toString(newPart->getSceneNode()->getPosition()).c_str());
+                other = new SpaceShipPart(info->mPartType, pos, rot, mSpaceShip->getSceneNode(), name, mEngine);
                 if(info->mPartType != mSelectedPartType)
-                    newPart->getSceneNode()->setVisible(false);
-                newPart->setMaterial("DesignerPart");
-                part->setNeighbor(newPart, i);
-                int id = info->mOtherID;
-                if(id == -1)
+                    other->getSceneNode()->setVisible(false);
+                other->setMaterial("DesignerPart");
+                //printf("\t\tnew part %s is new neighbor\n", other->getName().c_str());
+                mPossibleParts.push_back(other);
+            }
+            part->setNeighbor(other, i);
+            int id = info->mOtherID;
+            if(id == -1)
+            {
+                for(size_t k = 0; k<other->getNumberNeighbors(); k++)
                 {
-                    printf("\t\tid == -1\n");
-                    for(size_t k = 0; k<newPart->getNumberNeighbors(); k++)
+                    SpaceShipPart::SpaceShipPartInfo *nInfo = other->getNeighborInfo(k);
+                    if(nInfo->mPartType == part->getPartType() && pos + nInfo->mPos == part->getSceneNode()->getPosition())
                     {
-                        SpaceShipPart::SpaceShipPartInfo *nInfo = newPart->getNeighborInfo(k);
-                        if(nInfo->mPartType == part->getPartType() && pos + nInfo->mPos == part->getSceneNode()->getPosition())
-                        {
-                            id = k;
-                            break;
-                        }
+                        id = k;
+                        break;
                     }
                 }
-                printf("\t\tother id is %d\n", id);
-                newPart->setNeighbor(part, id);
-                mPossibleParts.push_back(newPart);
+            }
+            other->setNeighbor(part, id);
+        }
+    }
+}
+
+void SpaceShipDesigner::removePossiblePart(SpaceShipPart *part)
+{
+    for(std::vector<SpaceShipPart *>::iterator i = mPossibleParts.begin(); i != mPossibleParts.end(); ++i)
+    {
+        if(*i == part)
+        {
+            mEngine->getMap()->destroyEntity(*i);
+            mPossibleParts.erase(i);
+            return;
+        }
+    }
+    printf("No Part deleted!\n");
+}
+
+void SpaceShipDesigner::debugShip(int partType)
+{
+    printf("==========\nShipdump:\n");
+    printf("\tShipParts:\n");
+    for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
+    {
+        SpaceShipPart *part = mSpaceShip->getPart(i);
+        if(partType == -1 || partType == part->getPartType())
+            debugPart(part, partType);
+    }
+    printf("\tDesignerParts:\n");
+    for(std::vector<SpaceShipPart *>::iterator i = mPossibleParts.begin(); i != mPossibleParts.end(); ++i)
+    {
+        SpaceShipPart *part = *i;
+        if(partType == -1 || partType == part->getPartType())
+            debugPart(part, partType);
+    }
+    printf("==========\n");
+}
+
+void SpaceShipDesigner::debugPart(SpaceShipPart *part, int partType)
+{
+    printf("\t\tName: %s\n", part->getName().c_str());
+    printf("\t\tPos:  %s\n", Ogre::StringConverter::toString(part->getSceneNode()->getPosition()).c_str());
+    for(size_t i=0; i<part->getNumberNeighbors(); i++)
+    {
+        SpaceShipPart *neighbor = part->getNeighbor(i);
+        if(neighbor)
+        {
+            if(partType == -1 || partType == neighbor->getPartType())
+            {
+                printf("\t\t\tNeighbor %d:\n", i);
+                printf("\t\t\t\tName: %s\n", neighbor->getName().c_str());
+                printf("\t\t\t\tPos:  %s\n", Ogre::StringConverter::toString(neighbor->getSceneNode()->getPosition()).c_str());
             }
         }
     }
