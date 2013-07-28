@@ -24,13 +24,13 @@ SpaceShipDesigner::SpaceShipDesigner(ENGINE *engine)
 
     mNode = mParentNode->createChildSceneNode("SpaceShipDesignerNode");
     mNode->setPosition(Ogre::Vector3(0, 10, 0));
+    mNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
 
     mCamera = mEngine->getSceneMgr()->createCamera("SpaceShipDesignerCamera");
     mCamera->setNearClipDistance(0.5);
     mCamera->setFarClipDistance(5000.0);
 
     mNode->attachObject(mCamera);
-    mNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
     
     mRaySceneQuery = engine->getSceneMgr()->createRayQuery(Ogre::Ray());
 
@@ -80,12 +80,14 @@ bool SpaceShipDesigner::keyReleased(const OIS::KeyEvent &e)
 bool SpaceShipDesigner::mouseMoved(const OIS::MouseEvent &e)
 {
     mNode->setPosition(mNode->getPosition() + mNode->getOrientation() * Ogre::Vector3(0, 0, -e.state.Z.rel/240.0));
-    if(e.state.buttonDown(OIS::MB_Left))
+    if(e.state.buttonDown(OIS::MB_Right))
     {
         mParentNode->rotate(Ogre::Quaternion(Ogre::Degree(-e.state.X.rel), Ogre::Vector3::UNIT_Y), Ogre::Node::TS_WORLD);
         mParentNode->rotate(Ogre::Quaternion(Ogre::Degree(-e.state.Y.rel), mParentNode->getOrientation().xAxis()), Ogre::Node::TS_WORLD);
-
-        //mNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
+    }
+    if(e.state.buttonDown(OIS::MB_Middle))
+    {
+        mParentNode->setPosition(mParentNode->getPosition() + mParentNode->getOrientation() * Ogre::Vector3(e.state.X.rel, 0, e.state.Y.rel));
     }
     return true;
 }
