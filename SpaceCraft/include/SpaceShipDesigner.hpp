@@ -35,10 +35,8 @@ public:
     void setSelectedPartType(int type);
 
 private:
+    Ogre::SceneNode *mParentNode;
     Ogre::SceneNode *mNode;
-    Ogre::SceneNode *mCameraYawNode;
-    Ogre::SceneNode *mCameraPitchNode;
-    Ogre::SceneNode *mCameraRollNode;
     Ogre::Camera    *mCamera;
     Ogre::Viewport  *mViewport;
 	Ogre::RaySceneQuery* mRaySceneQuery;

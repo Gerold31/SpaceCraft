@@ -19,20 +19,18 @@
 SpaceShipDesigner::SpaceShipDesigner(ENGINE *engine)
 {
     mEngine = engine;
-    mNode = mEngine->getSceneMgr()->getRootSceneNode()->createChildSceneNode("SpaceShipDesignerNode");
-    mNode->setPosition(Ogre::Vector3(0,10,0));
-    mNode->setOrientation(Ogre::Quaternion::IDENTITY);
+    mParentNode = mEngine->getSceneMgr()->getRootSceneNode()->createChildSceneNode("SpaceShipDesignerParentNode");
+    mParentNode->setOrientation(Ogre::Quaternion::IDENTITY);
+
+    mNode = mParentNode->createChildSceneNode("SpaceShipDesignerNode");
+    mNode->setPosition(Ogre::Vector3(0, 10, 0));
 
     mCamera = mEngine->getSceneMgr()->createCamera("SpaceShipDesignerCamera");
-    mCamera->lookAt(0, 0, -10);
     mCamera->setNearClipDistance(0.5);
     mCamera->setFarClipDistance(5000.0);
 
-    mCameraYawNode   = mNode->createChildSceneNode();
-    mCameraPitchNode = mCameraYawNode->createChildSceneNode();
-    mCameraRollNode  = mCameraPitchNode->createChildSceneNode();
-    mCameraRollNode->attachObject(mCamera);
-    mCameraPitchNode->pitch(Ogre::Radian(-Ogre::Math::PI/2));
+    mNode->attachObject(mCamera);
+    mNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
     
     mRaySceneQuery = engine->getSceneMgr()->createRayQuery(Ogre::Ray());
 
@@ -81,7 +79,14 @@ bool SpaceShipDesigner::keyReleased(const OIS::KeyEvent &e)
 
 bool SpaceShipDesigner::mouseMoved(const OIS::MouseEvent &e)
 {
-    mNode->setPosition(mNode->getPosition() + Ogre::Vector3(0, -e.state.Z.rel/240.0, 0));
+    mNode->setPosition(mNode->getPosition() + mNode->getOrientation() * Ogre::Vector3(0, 0, -e.state.Z.rel/240.0));
+    if(e.state.buttonDown(OIS::MB_Left))
+    {
+        mParentNode->rotate(Ogre::Quaternion(Ogre::Degree(-e.state.X.rel), Ogre::Vector3::UNIT_Y), Ogre::Node::TS_WORLD);
+        mParentNode->rotate(Ogre::Quaternion(Ogre::Degree(-e.state.Y.rel), mParentNode->getOrientation().xAxis()), Ogre::Node::TS_WORLD);
+
+        //mNode->lookAt(Ogre::Vector3(0, 0, 0), Ogre::Node::TS_WORLD);
+    }
     return true;
 }
 
