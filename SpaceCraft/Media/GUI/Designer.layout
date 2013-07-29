@@ -4,10 +4,7 @@
         <Widget type="Button" skin="Button" position="850 80 150 50" name="SelectFloor">
             <Property key="Caption" value="Floor"/>
         </Widget>
-		<Widget type="Button" skin="Button" position="850 140 150 50" name="SelectCeil">
-            <Property key="Caption" value="Ceil"/>
-        </Widget>
-        <Widget type="Button" skin="Button" position="850 200 150 50" name="SelectWall">
+        <Widget type="Button" skin="Button" position="850 140 150 50" name="SelectWall">
             <Property key="Caption" value="Wall"/>
         </Widget>
     </Widget>

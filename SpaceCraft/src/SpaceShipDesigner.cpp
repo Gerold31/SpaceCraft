@@ -87,7 +87,7 @@ bool SpaceShipDesigner::mouseMoved(const OIS::MouseEvent &e)
     }
     if(e.state.buttonDown(OIS::MB_Middle))
     {
-        mParentNode->setPosition(mParentNode->getPosition() + mParentNode->getOrientation() * Ogre::Vector3(e.state.X.rel, 0, e.state.Y.rel));
+        mParentNode->setPosition(mParentNode->getPosition() + mParentNode->getOrientation() * Ogre::Vector3(-e.state.X.rel/24.0, 0, -e.state.Y.rel/24.0));
     }
     return true;
 }

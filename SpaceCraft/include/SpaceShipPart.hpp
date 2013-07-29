@@ -11,7 +11,6 @@ public:
     enum PART_TYPE
     {
         PART_FLOOR,
-        PART_CEIL,
         PART_WALL,
         PART_INTERIOR,
         PART_EXTERIOR
@@ -46,7 +45,7 @@ private:
     std::vector<std::pair<SpaceShipPart *, SpaceShipPartInfo * >> mNeighbor;
     PART_TYPE mPartType;
 
-    static SpaceShipPartInfo mPartInfoFloor[9], mPartInfoCeil[5], mPartInfoWall[8], mPartInfoInterior[1], mPartInfoExterior[1];
+    static SpaceShipPartInfo mPartInfoFloor[13], mPartInfoWall[10], mPartInfoInterior[1], mPartInfoExterior[1];
 };
 
 #endif
