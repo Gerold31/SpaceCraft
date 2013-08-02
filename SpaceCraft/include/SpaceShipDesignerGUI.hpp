@@ -13,8 +13,9 @@ public:
 
     void setVisible(bool visible);
     bool getVisible();
-
+    
     static void buttonClicked(MyGUI::Widget *widget);
+    static void editBoxUpdated(MyGUI::EditBox *widget);
 
 private:
     ENGINE *mEngine;

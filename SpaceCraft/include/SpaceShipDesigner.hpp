@@ -33,6 +33,10 @@ public:
     bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
 
     void setSelectedPartType(int type);
+    void setSelectedFloorFrom(int from);
+    void setSelectedFloorTo(int to);
+    void enableSelectedFloorFrom(bool enabled);
+    void enableSelectedFloorTo(bool enabled);
 
 private:
     Ogre::SceneNode *mParentNode;
@@ -47,13 +51,18 @@ private:
     SpaceShipDesignerGUI *mGUI;
 
     int mSelectedPartType;
+    int mSelectedFloorFrom;
+    int mSelectedFloorTo;
+    bool mSelectedFloorFromEnabled;
+    bool mSelectedFloorToEnabled;
+
     int mNextPartID;
 
     std::vector<SpaceShipPart *> mPossibleParts;
     
     void initPossibleParts();
     void removePossibleParts();
-    void updateSelectedPartType();
+    void updateVisibleParts();
 
     void addPossibleParts(SpaceShipPart *part);
     void removePossiblePart(SpaceShipPart *part);

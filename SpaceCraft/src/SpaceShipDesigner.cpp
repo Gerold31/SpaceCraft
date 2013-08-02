@@ -51,8 +51,11 @@ void SpaceShipDesigner::enterEditMode(SpaceShip *ship)
 
     mGUI->setVisible(true);
     
-    mSelectedPartType = -1;
     mNextPartID = 0;
+
+    mSelectedPartType = -1;
+    mSelectedFloorFrom = mSelectedFloorTo = 0;
+    mSelectedFloorFromEnabled = mSelectedFloorToEnabled = false;
 
     initPossibleParts();
     //mNode->setPosition(mSpaceShip->getSceneNode()->getPosition() + Ogre::Vector3(0, 10, 0));
@@ -63,6 +66,9 @@ void SpaceShipDesigner::exitEditMode()
     mEngine->getWindow()->removeViewport(100);
 
     removePossibleParts();
+    
+    mSelectedFloorFromEnabled = mSelectedFloorToEnabled = false;
+    updateVisibleParts();
 
     mGUI->setVisible(false);
 }
@@ -94,6 +100,9 @@ bool SpaceShipDesigner::mouseMoved(const OIS::MouseEvent &e)
 
 bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 { 
+    if(id != OIS::MB_Left)
+        return true;
+
 	//create a raycast straight out from the camera at the mouse's location
     Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(e.state.X.abs/float(e.state.width), e.state.Y.abs/float(e.state.height));
 	mRaySceneQuery->setRay(mouseRay);
@@ -114,7 +123,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                     if(obj->getType() == "SC_SpaceShipPart")
                     {
                         SpaceShipPart *part = (SpaceShipPart *)obj;
-                        if(part->getPartType() == mSelectedPartType && part->getName().find("Designer") == 0)
+                        if(part->getPartType() == mSelectedPartType && part->getName().find("Designer") == 0 && part->getVisible())
                         {
                             char name[32];
                             sprintf(name, "%sPart%d", mSpaceShip->getSceneNode()->getName().c_str(), mSpaceShip->getNextPartID());
@@ -138,7 +147,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                             mSpaceShip->addPart(newPart);
                             addPossibleParts(newPart);
 
-                            debugShip();
+                            //debugShip();
                             break;
                         }
                     }
@@ -161,7 +170,45 @@ void SpaceShipDesigner::setSelectedPartType(int type)
     if(mSelectedPartType != type)
     {
         mSelectedPartType = type;
-        updateSelectedPartType();
+        updateVisibleParts();
+    }
+}
+
+void SpaceShipDesigner::setSelectedFloorFrom(int from)
+{
+    if(mSelectedFloorFrom != from || !mSelectedFloorFromEnabled)
+    {
+        mSelectedFloorFrom = from;
+        mSelectedFloorFromEnabled = true;
+        updateVisibleParts();
+    }
+}
+
+void SpaceShipDesigner::setSelectedFloorTo(int to)
+{
+    if(mSelectedFloorTo != to || !mSelectedFloorToEnabled)
+    {
+        mSelectedFloorTo = to;
+        mSelectedFloorToEnabled = true;
+        updateVisibleParts();
+    }
+}
+
+void SpaceShipDesigner::enableSelectedFloorFrom(bool enabled)
+{
+    if(mSelectedFloorFromEnabled != enabled)
+    {
+        mSelectedFloorFromEnabled = enabled;
+        updateVisibleParts();
+    }
+}
+
+void SpaceShipDesigner::enableSelectedFloorTo(bool enabled)
+{
+    if(mSelectedFloorToEnabled != enabled)
+    {
+        mSelectedFloorToEnabled = enabled;
+        updateVisibleParts();
     }
 }
 
@@ -172,7 +219,7 @@ void SpaceShipDesigner::initPossibleParts()
         SpaceShipPart *part = mSpaceShip->getPart(i);
         addPossibleParts(part);
     }
-    debugShip();
+    //debugShip();
 }
 
 void SpaceShipDesigner::removePossibleParts()
@@ -193,16 +240,28 @@ void SpaceShipDesigner::removePossibleParts()
     }
 }
 
-void SpaceShipDesigner::updateSelectedPartType()
+void SpaceShipDesigner::updateVisibleParts()
 {
     for(std::vector<SpaceShipPart *>::iterator i = mPossibleParts.begin(); i != mPossibleParts.end(); ++i)
     {
-        if((*i)->getPartType() == mSelectedPartType)
+        if((*i)->getPartType() == mSelectedPartType && (!mSelectedFloorFromEnabled || (*i)->getSceneNode()->getPosition().y >= mSelectedFloorFrom*2) && (!mSelectedFloorToEnabled || (*i)->getSceneNode()->getPosition().y <= mSelectedFloorTo*2))
         {
             (*i)->getSceneNode()->setVisible(true);
         }else
         {
             (*i)->getSceneNode()->setVisible(false);
+        }
+
+    }
+    for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
+    {
+        SpaceShipPart *part = mSpaceShip->getPart(i);
+        if((!mSelectedFloorFromEnabled || part->getSceneNode()->getPosition().y >= mSelectedFloorFrom*2) && (!mSelectedFloorToEnabled || part->getSceneNode()->getPosition().y <= mSelectedFloorTo*2))
+        {
+            part->getSceneNode()->setVisible(true);
+        }else
+        {
+            part->getSceneNode()->setVisible(false);
         }
     }
 }
@@ -237,7 +296,7 @@ void SpaceShipDesigner::addPossibleParts(SpaceShipPart *part)
                 sprintf(name, "DesignerPart%d", mNextPartID);
                 mNextPartID++;
                 other = new SpaceShipPart(info->mPartType, pos, rot, mSpaceShip->getSceneNode(), name, mEngine);
-                if(info->mPartType != mSelectedPartType)
+                if(info->mPartType != mSelectedPartType || (mSelectedFloorFromEnabled && pos.y < mSelectedFloorFrom*2) || (mSelectedFloorToEnabled && pos.y > mSelectedFloorTo*2))
                     other->getSceneNode()->setVisible(false);
                 other->setMaterial("DesignerPart");
                 printf("\t\tnew part %s is new neighbor\n", other->getName().c_str());
