@@ -6,12 +6,12 @@
 #include "OGRE/OgreRenderWindow.h"
 #include "OGRE/OgreEntity.h"
 
-#define FLOOR_SIZE_X (1.0)
+#define FLOOR_SIZE_X (1.2)
 #define FLOOR_SIZE_Y (0.2)
-#define FLOOR_SIZE_Z (1.0)
+#define FLOOR_SIZE_Z (1.2)
 #define  WALL_SIZE_X (0.2)
-#define  WALL_SIZE_Y (2.0)
-#define  WALL_SIZE_Z (1.0)
+#define  WALL_SIZE_Y (2.2)
+#define  WALL_SIZE_Z (1.2)
 
 
 SpaceShipPart::SpaceShipPartInfo SpaceShipPart::mPartInfoFloor[]    = {SpaceShipPartInfo(PART_FLOORMOUNT,Ogre::Vector3(0, FLOOR_SIZE_Y/2, 0), Ogre::Quaternion(1, 0, 0, 0), false),
