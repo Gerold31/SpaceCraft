@@ -34,6 +34,8 @@ private:
     void initData();
     void initFont();
     void initPalette();
+
+    static SpaceShipPartInfo mPartInfo[1];
 };
 
 #endif

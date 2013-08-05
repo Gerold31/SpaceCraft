@@ -31,8 +31,9 @@ public:
     bool mouseMoved(const OIS::MouseEvent &e);
     bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
     bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
-
+    
     void setSelectedPartType(int type);
+    void setSelectedPartName(std::string name);
     void setSelectedFloorFrom(int from);
     void setSelectedFloorTo(int to);
     void enableSelectedFloorFrom(bool enabled);
@@ -48,6 +49,7 @@ private:
     ENGINE *mEngine;
 
     SpaceShip *mSpaceShip;
+    SpaceShipPart *mSelectedPart;
     SpaceShipDesignerGUI *mGUI;
 
     int mSelectedPartType;

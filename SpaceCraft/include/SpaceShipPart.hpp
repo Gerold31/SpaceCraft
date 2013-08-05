@@ -12,8 +12,9 @@ public:
     {
         PART_FLOOR,
         PART_WALL,
-        PART_INTERIOR,
-        PART_EXTERIOR
+        PART_FLOORMOUNT,
+        PART_WALLMOUNT,
+        PART_CEILMOUNT
     };
 
     class SpaceShipPartInfo
@@ -26,7 +27,7 @@ public:
         bool mPlacable;
     };
 
-    SpaceShipPart(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    SpaceShipPart(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, Ogre::String type, ENGINE *engine);
     SpaceShipPart(SpaceShipPart *old, Ogre::String name);
     ~SpaceShipPart();
     
@@ -40,12 +41,12 @@ public:
 
     void setMaterial(Ogre::String name);
 
-private:
+protected:
     Ogre::Entity *mEntity;
     std::vector<std::pair<SpaceShipPart *, SpaceShipPartInfo * >> mNeighbor;
     PART_TYPE mPartType;
 
-    static SpaceShipPartInfo mPartInfoFloor[13], mPartInfoWall[10], mPartInfoInterior[1], mPartInfoExterior[1];
+    static SpaceShipPartInfo mPartInfoFloor[14], mPartInfoWall[10];
 };
 
 #endif

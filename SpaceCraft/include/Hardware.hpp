@@ -1,7 +1,7 @@
 #ifndef _HARDWARE_HPP_
 #define _HARDWARE_HPP_
 
-#include "Entity.hpp"
+#include "SpaceShipPart.hpp"
 
 class CPU;
 
@@ -10,10 +10,10 @@ class CPU;
 typedef unsigned short WORD;
 typedef unsigned char  BYTE;
 
-class Hardware : public Entity
+class Hardware : public SpaceShipPart
 {
 public:
-    Hardware(int ID, int MF, int VER, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, Ogre::String type, ENGINE *engine);
+    Hardware(int ID, int MF, int VER, SpaceShipPart::PART_TYPE part, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, Ogre::String type, ENGINE *engine);
 
     void connect(CPU *_CPU) {mCPU = _CPU;}
 

@@ -48,6 +48,8 @@ void SpaceShipDesignerGUI::buttonClicked(MyGUI::Widget *widget)
         mParent->setSelectedPartType(SpaceShipPart::PART_FLOOR);
     else if(widget->getName() == "SelectWall")
         mParent->setSelectedPartType(SpaceShipPart::PART_WALL);
+    else
+        mParent->setSelectedPartName(((MyGUI::ButtonPtr)widget)->getCaption().asUTF8());
 }
 
 void SpaceShipDesignerGUI::editBoxUpdated(MyGUI::EditBox *widget)

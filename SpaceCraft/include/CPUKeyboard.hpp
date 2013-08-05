@@ -38,6 +38,8 @@ private:
 
     OIS::KeyCode keyToCode(WORD key);
     WORD codeToKey(OIS::KeyCode code);
+
+    static SpaceShipPartInfo mPartInfo[1];
 };
 
 #endif
