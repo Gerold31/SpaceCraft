@@ -58,6 +58,8 @@ private:
     bool mSelectedFloorFromEnabled;
     bool mSelectedFloorToEnabled;
 
+    int mRotation;
+
     int mNextPartID;
 
     std::vector<SpaceShipPart *> mPossibleParts;

@@ -40,6 +40,7 @@ SpaceShipDesigner::SpaceShipDesigner(ENGINE *engine)
     mGUI->setVisible(false);
 
     mSelectedPartType = -1;
+    mRotation = 0;
 }
 
 void SpaceShipDesigner::enterEditMode(SpaceShip *ship) 
@@ -90,26 +91,23 @@ bool SpaceShipDesigner::keyReleased(const OIS::KeyEvent &e)
 bool SpaceShipDesigner::mouseMoved(const OIS::MouseEvent &e)
 {
     mNode->setPosition(mNode->getPosition() + mNode->getOrientation() * Ogre::Vector3(0, 0, -e.state.Z.rel/240.0));
-    if(e.state.buttonDown(OIS::MB_Right))
+    if(e.state.buttonDown(OIS::MB_Middle))
     {
         mParentNode->rotate(Ogre::Quaternion(Ogre::Degree(-e.state.X.rel), Ogre::Vector3::UNIT_Y), Ogre::Node::TS_WORLD);
         mParentNode->rotate(Ogre::Quaternion(Ogre::Degree(-e.state.Y.rel), mParentNode->getOrientation().xAxis()), Ogre::Node::TS_WORLD);
     }
-    if(e.state.buttonDown(OIS::MB_Middle))
+    if(e.state.buttonDown(OIS::MB_Right))
     {
         mParentNode->setPosition(mParentNode->getPosition() + mParentNode->getOrientation() * Ogre::Vector3(-e.state.X.rel/24.0, 0, -e.state.Y.rel/24.0));
     }
-    if(e.state.buttonDown(OIS::MB_Left))
-    {
-        mousePressed(e, OIS::MB_Left);
-    }
+    mousePressed(e, OIS::MB_Left);
     return true;
 }
 
 bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
-    if(id != OIS::MB_Left)
-        return true;
+    if(id == OIS::MB_Middle)
+        mRotation++;
 
 	//create a raycast straight out from the camera at the mouse's location
     Ogre::Ray mouseRay = mCamera->getCameraToViewportRay(e.state.X.abs/float(e.state.width), e.state.Y.abs/float(e.state.height));
@@ -117,6 +115,8 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
     mRaySceneQuery->setSortByDistance(true);
 	Ogre::RaySceneQueryResult& result = mRaySceneQuery->execute();
 	Ogre::RaySceneQueryResult::iterator i = result.begin();
+
+    bool hit = false;
  
     while(i != result.end())
 	{
@@ -136,39 +136,48 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                         {
                             assert(mSelectedPart->getNumberNeighbors() == 1); // @todo cannot deal with "big" parts
                             SpaceShipPart::SpaceShipPartInfo *info = NULL;
+                            Ogre::Quaternion rot = Ogre::Quaternion();
                             if(mSelectedPartType == SpaceShipPart::PART_FLOORMOUNT && type == SpaceShipPart::PART_FLOOR)
                             {
                                 if(part->getNeighbor(0) == NULL)
                                 {
+                                    mRotation %= 4;
+                                    rot = Ogre::Quaternion(Ogre::Radian(Ogre::Math::PI/2 * mRotation), Ogre::Vector3::UNIT_Y);
                                     info = part->getNeighborInfo(0);
                                 }
                             }else if(mSelectedPartType == SpaceShipPart::PART_CEILMOUNT && type == SpaceShipPart::PART_FLOOR)
                             {
                                 if(part->getNeighbor(0) == NULL)
                                 {
+                                    mRotation %= 4;
+                                    rot = Ogre::Quaternion(Ogre::Radian(Ogre::Math::PI * mRotation), Ogre::Vector3::UNIT_Y);
                                     info = part->getNeighborInfo(1);
                                 }
                             }else if(mSelectedPartType == SpaceShipPart::PART_WALLMOUNT && type == SpaceShipPart::PART_WALL)
                             {
                                 if(part->getNeighbor(0) == NULL)
                                 {
-                                    info = part->getNeighborInfo(0); // @todo neighbor 0 or 1 i.e. which side of wall
+                                    mRotation %= 2;
+                                    info = part->getNeighborInfo(mRotation);
                                 }
                             }
                             if(info)
                             {
                                 Ogre::Quaternion ori = part->getSceneNode()->getOrientation() * info->mRot;
                                 Ogre::Vector3 pos = part->getSceneNode()->getPosition() + ori * info->mPos;
-                                ori = ori * mSelectedPart->getNeighborInfo(0)->mRot.Inverse();
-                                pos = pos - mSelectedPart->getNeighborInfo(0)->mRot.Inverse() * mSelectedPart->getNeighborInfo(0)->mPos;
+                                ori = ori * mSelectedPart->getNeighborInfo(0)->mRot.Inverse() * rot;
+                                pos = pos - mSelectedPart->getNeighborInfo(0)->mRot.Inverse() * rot * mSelectedPart->getNeighborInfo(0)->mPos;
                                 mSelectedPart->getSceneNode()->setPosition(pos);
                                 mSelectedPart->getSceneNode()->setOrientation(ori);
-                                mSelectedPart->getSceneNode()->setVisible(true);
-                                part->setNeighbor(mSelectedPart, 0);
-                                mSelectedPart->setNeighbor(part, 0);
-                                mSelectedPart = NULL; // @todo create new instead, to place multiple parts at once
+                                hit = true;
+                                if(e.state.buttonDown(OIS::MB_Left))
+                                {
+                                    part->setNeighbor(mSelectedPart, 0);
+                                    mSelectedPart->setNeighbor(part, 0);
+                                    mSelectedPart = NULL; // @todo create new instead, to place multiple parts at once
+                                }
                             }
-                        }else if(type == mSelectedPartType && part->getName().find("Designer") == 0)
+                        }else if(e.state.buttonDown(OIS::MB_Left) && type == mSelectedPartType && part->getName().find("Designer") == 0)
                         {
                             char name[32];
                             sprintf(name, "%sPart%d", mSpaceShip->getSceneNode()->getName().c_str(), mSpaceShip->getNextPartID());
@@ -201,6 +210,9 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
         }
         ++i;
 	}	
+
+    if(!hit && mSelectedPart)
+        mSelectedPart->getSceneNode()->setPosition(0, -1e300, 0);
 
     return true;
 }
@@ -243,15 +255,14 @@ void SpaceShipDesigner::setSelectedPartName(std::string name)
     sprintf(partName, "%sPart%d", mSpaceShip->getSceneNode()->getName().c_str(), mSpaceShip->getNextPartID());
 
     if(name == "Display")
-        mSelectedPart = new CPUDisplay(Ogre::Vector3(), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new CPUDisplay(Ogre::Vector3(0, -1e300, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
     else if(name == "Keyboard")
-        mSelectedPart = new CPUKeyboard(Ogre::Vector3(), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new CPUKeyboard(Ogre::Vector3(0, -1e300, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
 
     if(!mSelectedPart)
         return;
     
     mSpaceShip->addPart(mSelectedPart);
-    mSelectedPart->getSceneNode()->setVisible(false);
     mSelectedPartType = mSelectedPart->getPartType();
     printf("created %s, partType: %d\n", name.c_str(), mSelectedPartType);
     updateVisibleParts();
