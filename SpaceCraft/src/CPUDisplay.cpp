@@ -221,5 +221,5 @@ void CPUDisplay::draw()
 
     mTexture->getBuffer()->blitFromMemory(img.getPixelBox());
 
-    delete data;
+    delete[] data;
 }
