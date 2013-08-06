@@ -43,6 +43,12 @@ int main(int argc, char **argv)
         Player *player = new Player(Ogre::Vector3(0,1.6,0), Ogre::Quaternion(), ship->getSceneNode(), engine->getWindow(), "Player", engine);
         player->setSpaceShip(ship);
 
+        Ogre::Light *light = engine->getSceneMgr()->createLight("Light0");
+        light->setType(Ogre::Light::LT_DIRECTIONAL);
+        light->setDiffuseColour(0.8, 0.8, 0.8);
+        light->setSpecularColour(0.8, 0.8, 0.8);
+        light->setDirection(1, -2, 1);
+        light->setCastShadows(true);
 
         engine->run();
 

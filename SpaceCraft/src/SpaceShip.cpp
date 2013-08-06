@@ -11,7 +11,7 @@
 SpaceShip::SpaceShip(double mass, Ogre::Vector3 velocity, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
     :GravityObject(mass, velocity, pos, ori, parent, name, "SC_SpaceShip", engine)
 {
-    mParts.push_back(new SpaceShipPart(SpaceShipPart::PART_FLOOR, pos, ori, mNode, name + "Part0", "SC_SpaceShipPart", engine));
+    mParts.push_back(new SpaceShipPart(SpaceShipPart::PART_FLOOR, true, pos, ori, mNode, name + "Part0", "SC_SpaceShipPart", engine));
     mNextPartID = 1;
 }
 

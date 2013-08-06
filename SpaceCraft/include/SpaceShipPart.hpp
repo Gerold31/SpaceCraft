@@ -27,7 +27,7 @@ public:
         bool mPlacable;
     };
 
-    SpaceShipPart(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, Ogre::String type, ENGINE *engine);
+    SpaceShipPart(PART_TYPE partType, bool castShadows, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, Ogre::String type, ENGINE *engine);
     SpaceShipPart(SpaceShipPart *old, Ogre::String name);
     ~SpaceShipPart();
     

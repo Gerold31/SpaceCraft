@@ -52,7 +52,7 @@ SpaceShipPart::SpaceShipPartInfo::SpaceShipPartInfo(PART_TYPE partType, Ogre::Ve
     mPlacable = placable;
 }
 
-SpaceShipPart::SpaceShipPart(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, Ogre::String type,ENGINE *engine)
+SpaceShipPart::SpaceShipPart(PART_TYPE partType, bool castShadows, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, Ogre::String type,ENGINE *engine)
     :Entity(pos, ori, parent, name, type, engine)
 {
     mPartType = partType;
@@ -61,7 +61,6 @@ SpaceShipPart::SpaceShipPart(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quater
     {
     case PART_FLOOR:
         mEntity = engine->getSceneMgr()->createEntity(name + "Ent", "SpaceShip/Part_Floor.mesh");
-        mNode->attachObject(mEntity);
         for(int i=0; i<sizeof(mPartInfoFloor)/sizeof(SpaceShipPartInfo); i++)
         {
             mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfoFloor[i]));
@@ -69,7 +68,6 @@ SpaceShipPart::SpaceShipPart(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quater
         break;
     case PART_WALL:
         mEntity = engine->getSceneMgr()->createEntity(name + "Ent", "SpaceShip/Part_Wall.mesh");
-        mNode->attachObject(mEntity);
         for(int i=0; i<sizeof(mPartInfoWall)/sizeof(SpaceShipPartInfo); i++)
         {
             mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfoWall[i]));
@@ -78,6 +76,11 @@ SpaceShipPart::SpaceShipPart(PART_TYPE partType, Ogre::Vector3 pos, Ogre::Quater
     default:
         return;
     }
+    if(mEntity)
+    {
+        mEntity->setCastShadows(castShadows);
+        mNode->attachObject(mEntity);
+    }
 }
 
 SpaceShipPart::SpaceShipPart(SpaceShipPart *old, Ogre::String name)
@@ -85,18 +88,22 @@ SpaceShipPart::SpaceShipPart(SpaceShipPart *old, Ogre::String name)
 {
     mPartType = old->mPartType;
     mNeighbor = old->mNeighbor;
+    mEntity = NULL;
     switch(mPartType)
     {
     case PART_FLOOR:
         mEntity = mEngine->getSceneMgr()->createEntity(name + "Ent", "SpaceShip/Part_Floor.mesh");
-        mNode->attachObject(mEntity);
         break;
     case PART_WALL:
         mEntity = mEngine->getSceneMgr()->createEntity(name + "Ent", "SpaceShip/Part_Wall.mesh");
-        mNode->attachObject(mEntity);
         break;
     default:
         return;
+    }
+    if(mEntity)
+    {
+        mEntity->setCastShadows(true);
+        mNode->attachObject(mEntity);
     }
 }
 

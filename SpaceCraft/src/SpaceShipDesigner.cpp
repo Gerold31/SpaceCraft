@@ -396,7 +396,7 @@ void SpaceShipDesigner::addPossibleParts(SpaceShipPart *part)
                 char name[32];
                 sprintf(name, "DesignerPart%d", mNextPartID);
                 mNextPartID++;
-                other = new SpaceShipPart(info->mPartType, pos, rot, mSpaceShip->getSceneNode(), name, "SC_SpaceShipPart", mEngine);
+                other = new SpaceShipPart(info->mPartType, false, pos, rot, mSpaceShip->getSceneNode(), name, "SC_SpaceShipPart", mEngine);
                 if(info->mPartType != mSelectedPartType || (mSelectedFloorFromEnabled && pos.y < mSelectedFloorFrom*2) || (mSelectedFloorToEnabled && pos.y > mSelectedFloorTo*2))
                     other->getSceneNode()->setVisible(false);
                 other->setMaterial("DesignerPart");

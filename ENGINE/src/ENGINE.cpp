@@ -120,8 +120,10 @@ bool ENGINE::init(Map *map)
         recourceMgr.initialiseResourceGroup(recourceGroup);
         recourceMgr.loadResourceGroup(recourceGroup);
         */
-
-        mSceneMgr->setAmbientLight(Ogre::ColourValue(1, 1, 1));
+        
+        mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5,0.5,0.5));
+        mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+        mSceneMgr->setShadowFarDistance(10000);
         
         if(!map)
             mMap = new Map(this);

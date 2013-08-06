@@ -1,5 +1,6 @@
 material DesignerPart 
 {
+	receive_shadows off
 	technique
 	{
 		pass
@@ -18,6 +19,7 @@ material DesignerPart
 
 material DesignerPartSelected 
 {
+	receive_shadows off
 	technique
 	{
 		pass
