@@ -43,7 +43,7 @@ public:
 
 protected:
     Ogre::Entity *mEntity;
-    std::vector<std::pair<SpaceShipPart *, SpaceShipPartInfo * >> mNeighbor;
+    std::vector<std::pair<SpaceShipPart *, SpaceShipPartInfo *> > mNeighbor;
     PART_TYPE mPartType;
 
     static SpaceShipPartInfo mPartInfoFloor[14], mPartInfoWall[10];
