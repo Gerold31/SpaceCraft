@@ -58,6 +58,8 @@ private:
     bool mSelectedFloorFromEnabled;
     bool mSelectedFloorToEnabled;
 
+    std::string mSelectedPartName;
+
     int mRotation;
 
     int mNextPartID;

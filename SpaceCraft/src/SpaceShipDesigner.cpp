@@ -136,29 +136,33 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                         {
                             assert(mSelectedPart->getNumberNeighbors() == 1); // @todo cannot deal with "big" parts
                             SpaceShipPart::SpaceShipPartInfo *info = NULL;
+                            int neighborId = -1;
                             Ogre::Quaternion rot = Ogre::Quaternion();
                             if(mSelectedPartType == SpaceShipPart::PART_FLOORMOUNT && type == SpaceShipPart::PART_FLOOR)
                             {
+                                mRotation %= 4;
                                 if(part->getNeighbor(0) == NULL)
                                 {
-                                    mRotation %= 4;
                                     rot = Ogre::Quaternion(Ogre::Radian(Ogre::Math::PI/2 * mRotation), Ogre::Vector3::UNIT_Y);
                                     info = part->getNeighborInfo(0);
+                                    neighborId = 0;
                                 }
                             }else if(mSelectedPartType == SpaceShipPart::PART_CEILMOUNT && type == SpaceShipPart::PART_FLOOR)
                             {
-                                if(part->getNeighbor(0) == NULL)
+                                mRotation %= 4;
+                                if(part->getNeighbor(1) == NULL)
                                 {
-                                    mRotation %= 4;
-                                    rot = Ogre::Quaternion(Ogre::Radian(Ogre::Math::PI * mRotation), Ogre::Vector3::UNIT_Y);
+                                    rot = Ogre::Quaternion(Ogre::Radian(Ogre::Math::PI/2 * mRotation), Ogre::Vector3::UNIT_Y);
                                     info = part->getNeighborInfo(1);
+                                    neighborId = 1;
                                 }
                             }else if(mSelectedPartType == SpaceShipPart::PART_WALLMOUNT && type == SpaceShipPart::PART_WALL)
                             {
-                                if(part->getNeighbor(0) == NULL)
+                                mRotation %= 2;
+                                if(part->getNeighbor(mRotation) == NULL)
                                 {
-                                    mRotation %= 2;
                                     info = part->getNeighborInfo(mRotation);
+                                    neighborId = mRotation;
                                 }
                             }
                             if(info)
@@ -172,9 +176,10 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                                 hit = true;
                                 if(e.state.buttonDown(OIS::MB_Left))
                                 {
-                                    part->setNeighbor(mSelectedPart, 0);
+                                    part->setNeighbor(mSelectedPart, neighborId);
                                     mSelectedPart->setNeighbor(part, 0);
-                                    mSelectedPart = NULL; // @todo create new instead, to place multiple parts at once
+                                    mSelectedPart = NULL;
+                                    setSelectedPartName(mSelectedPartName);
                                 }
                             }
                         }else if(e.state.buttonDown(OIS::MB_Left) && type == mSelectedPartType && part->getName().find("Designer") == 0)
@@ -264,6 +269,7 @@ void SpaceShipDesigner::setSelectedPartName(std::string name)
     
     mSpaceShip->addPart(mSelectedPart);
     mSelectedPartType = mSelectedPart->getPartType();
+    mSelectedPartName = name;
     printf("created %s, partType: %d\n", name.c_str(), mSelectedPartType);
     updateVisibleParts();
 }
