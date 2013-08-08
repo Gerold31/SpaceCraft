@@ -15,6 +15,9 @@ public:
     size_t getNumberOfParts() {return mParts.size();}
     SpaceShipPart *getPart(size_t i) {return mParts.at(i);}
     int getNextPartID() {return mNextPartID;}
+    
+    void save(std::string fileName);
+    void load(std::string fileName);
 
 private:
     std::vector<SpaceShipPart *>mParts;

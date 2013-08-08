@@ -86,6 +86,22 @@ void SpaceShipDesigner::exitEditMode()
 
 bool SpaceShipDesigner::keyPressed(const OIS::KeyEvent &e)
 {
+    switch(e.key)
+    {
+    case OIS::KC_S:
+        mSpaceShip->save("Ship.ship");
+        break;
+    case OIS::KC_L:
+        removePossibleParts();
+        mSpaceShip->load("Ship.ship");
+        initPossibleParts();
+        break;
+    case OIS::KC_C:
+        removePossibleParts();
+        mSpaceShip->load("");
+        initPossibleParts();
+        break;
+    }
     return true;
 }
 
@@ -134,7 +150,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                 Entity *obj = dynamic_cast<Entity *>(node->getAttachedObject(node->getName() + "Obj"));
                 if(obj && obj->getVisible())
                 {              
-                    if(obj->getType() == "SC_SpaceShipPart")
+                    if(obj->getType() == "SC_SpaceShipPartFloor" || obj->getType() == "SC_SpaceShipPartWall")
                     {
                         SpaceShipPart *part = (SpaceShipPart *)obj;
                         SpaceShipPart::PART_TYPE type = part->getPartType();
@@ -197,7 +213,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                             {
                                 SpaceShipPart *neighbor = newPart->getNeighbor(j);
                                 if(!neighbor)
-                                continue;
+                                    continue;
                                 for(size_t k=0; k<neighbor->getNumberNeighbors(); k++)
                                 {
                                     if(neighbor->getNeighbor(k) == part)
@@ -412,7 +428,20 @@ void SpaceShipDesigner::addPossibleParts(SpaceShipPart *part)
                 char name[32];
                 sprintf(name, "DesignerPart%d", mNextPartID);
                 mNextPartID++;
-                other = new SpaceShipPart(info->mPartType, false, pos, rot, mSpaceShip->getSceneNode(), name, "SC_SpaceShipPart", mEngine);
+
+                std::string type;
+                switch(info->mPartType)
+                {
+                case SpaceShipPart::PART_FLOOR:
+                    type = "SC_SpaceShipPartFloor";
+                    break;
+                case SpaceShipPart::PART_WALL:
+                    type = "SC_SpaceShipPartWall";
+                    break;
+                default:
+                    printf("invalid part type\n");
+                }
+                other = new SpaceShipPart(info->mPartType, false, pos, rot, mSpaceShip->getSceneNode(), name, type, mEngine);
                 if(info->mPartType != mSelectedPartType || (mSelectedFloorFromEnabled && pos.y < mSelectedFloorFrom*2) || (mSelectedFloorToEnabled && pos.y > mSelectedFloorTo*2))
                     other->getSceneNode()->setVisible(false);
                 other->setMaterial("DesignerPart");

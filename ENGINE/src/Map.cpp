@@ -22,10 +22,17 @@ bool Map::update(float elapsedTime)
         mEntities.push_back(*i);
     }
     mEntitiesToRegister.clear();
-    for(std::vector<Entity *>::iterator i=mEntities.begin(); i!=mEntities.end(); ++i)
+    for(std::vector<Entity *>::iterator i=mEntities.begin(); i!=mEntities.end();)
     {
-        if(!((*i)->update(elapsedTime)))
-            return false;
+        if(*i)
+        {
+            if(!((*i)->update(elapsedTime)))
+                return false;
+            ++i;
+        }else
+        {
+            i = mEntities.erase(i);
+        }
     }
     return true;
 }
@@ -39,10 +46,10 @@ void Map::destroyEntity(Entity *ent)
 {
     for(std::vector<Entity *>::iterator i=mEntities.begin(); i!=mEntities.end(); ++i)
     {
-        if((*i) == ent)
+        if(*i == ent)
         {
             delete ent;
-            mEntities.erase(i);
+            *i = NULL;
             return;
         }
     }

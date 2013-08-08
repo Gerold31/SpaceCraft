@@ -84,7 +84,7 @@ SpaceShipPart::SpaceShipPart(PART_TYPE partType, bool castShadows, Ogre::Vector3
 }
 
 SpaceShipPart::SpaceShipPart(SpaceShipPart *old, Ogre::String name)
-    :Entity(old->getParentSceneNode()->getPosition(), old->getParentSceneNode()->getOrientation(), old->getParentSceneNode()->getParentSceneNode(), name, "SC_SpaceShipPart", old->mEngine)
+    :Entity(old->getParentSceneNode()->getPosition(), old->getParentSceneNode()->getOrientation(), old->getParentSceneNode()->getParentSceneNode(), name, old->getType(), old->mEngine)
 {
     mPartType = old->mPartType;
     mNeighbor = old->mNeighbor;
