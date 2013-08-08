@@ -8,7 +8,6 @@ class SpaceShip;
 class SpaceShipPart;
 class SpaceShipDesignerGUI;
 
-
 namespace Ogre
 {
     class SceneNode;

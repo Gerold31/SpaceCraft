@@ -7,18 +7,24 @@
         <Widget type="Button" skin="Button" position="850 140 150 50" name="SelectWall">
             <Property key="Caption" value="Wall"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 200 150 50" name="SelectDisplay">
+        <Widget type="Button" skin="Button" position="850 200 150 50" name="SelectCPU">
+            <Property key="Caption" value="CPU"/>
+        </Widget>
+        <Widget type="Button" skin="Button" position="850 260 150 50" name="SelectDisplay">
             <Property key="Caption" value="Display"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 260 150 50" name="SelectKeyboard">
+        <Widget type="Button" skin="Button" position="850 320 150 50" name="SelectKeyboard">
             <Property key="Caption" value="Keyboard"/>
         </Widget>
+        <Widget type="Button" skin="Button" position="850 380 150 50" name="SelectLight">
+            <Property key="Caption" value="Light"/>
+        </Widget>
 		
-        <Widget type="TextBox" skin="TextBox" position="850 320 150 55">
+        <Widget type="TextBox" skin="TextBox" position="850 440 150 55">
             <Property key="Caption" value="Show Floors:\n\nFrom              To"/>
             <Property key="TextColour" value="1 1 1"/>
         </Widget>
-        <Widget type="EditBox" skin="EditBox" position="895 340 30 30" name="SelectFloorFrom"/>
-        <Widget type="EditBox" skin="EditBox" position="965 340 30 30" name="SelectFloorTo"/>
+        <Widget type="EditBox" skin="EditBox" position="895 460 30 30" name="SelectFloorFrom"/>
+        <Widget type="EditBox" skin="EditBox" position="965 460 30 30" name="SelectFloorTo"/>
     </Widget>
 </MyGUI>

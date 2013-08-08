@@ -121,7 +121,7 @@ bool ENGINE::init(Map *map)
         recourceMgr.loadResourceGroup(recourceGroup);
         */
         
-        mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5,0.5,0.5));
+        mSceneMgr->setAmbientLight(Ogre::ColourValue(0,0,0));
         mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
         mSceneMgr->setShadowFarDistance(10000);
         

@@ -39,7 +39,8 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     mViewport = window->addViewport(mCamera, 100, 0, 0, 1, 1);
 
     mViewport->setAutoUpdated(true);
-    mViewport->setBackgroundColour(Ogre::ColourValue(1,.5,.8));
+    mViewport->setBackgroundColour(Ogre::ColourValue(0,0,0));
+    engine->getSceneMgr()->setAmbientLight(Ogre::ColourValue(0.5,0.5,0.5));
 
     mCamera->setAspectRatio(1.0f * mViewport->getActualWidth() / mViewport->getActualHeight());
     mCamera->setNearClipDistance(0.5);
@@ -201,7 +202,8 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
             mSpaceShipDesigner->exitEditMode();
             mViewport = mEngine->getWindow()->addViewport(mCamera, 100, 0, 0, 1, 1);
             mViewport->setAutoUpdated(true);
-            mViewport->setBackgroundColour(Ogre::ColourValue(1,.5,.8));
+            mViewport->setBackgroundColour(Ogre::ColourValue(0,0,0));
+            mEngine->getSceneMgr()->setAmbientLight(Ogre::ColourValue(0.5,0.5,0.5));
             mInput->removeKeyListener("SpaceShipDesigner");
             mInput->removeMouseListener("SpaceShipDesigner");
         }

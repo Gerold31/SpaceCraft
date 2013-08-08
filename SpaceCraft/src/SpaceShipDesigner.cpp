@@ -6,8 +6,10 @@
 #include "SpaceShip.hpp"
 #include "SpaceShipPart.hpp"
 #include "SpaceShipDesignerGUI.hpp"
+#include "CPU.hpp"
 #include "CPUDisplay.hpp"
 #include "CPUKeyboard.hpp"
+#include "SpaceShipPartRotatingLight.hpp"
 
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreSceneNode.h"
@@ -52,6 +54,8 @@ void SpaceShipDesigner::enterEditMode(SpaceShip *ship)
     mViewport->setBackgroundColour(Ogre::ColourValue(0,0,.6));
     mCamera->setAspectRatio(1.0f * mViewport->getActualWidth() / mViewport->getActualHeight());
 
+    mEngine->getSceneMgr()->setAmbientLight(Ogre::ColourValue(1,1,1));
+
     mGUI->setVisible(true);
     
     mNextPartID = 0;
@@ -69,6 +73,8 @@ void SpaceShipDesigner::enterEditMode(SpaceShip *ship)
 void SpaceShipDesigner::exitEditMode()
 {
     mEngine->getWindow()->removeViewport(100);
+
+    mEngine->getSceneMgr()->setAmbientLight(Ogre::ColourValue(0,0,0));
 
     removePossibleParts();
     
@@ -258,11 +264,15 @@ void SpaceShipDesigner::setSelectedPartName(std::string name)
     
     char partName[32];
     sprintf(partName, "%sPart%d", mSpaceShip->getSceneNode()->getName().c_str(), mSpaceShip->getNextPartID());
-
-    if(name == "Display")
+    
+    if(name == "CPU")
+        mSelectedPart = new CPU(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+    else if(name == "Display")
         mSelectedPart = new CPUDisplay(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
     else if(name == "Keyboard")
         mSelectedPart = new CPUKeyboard(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+    else if(name == "Light")
+        mSelectedPart = new SpaceShipPartRotatingLight(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
 
     if(!mSelectedPart)
         return;
