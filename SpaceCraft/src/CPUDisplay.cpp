@@ -13,6 +13,8 @@
 #define SIZE_Y (1.92)
 #define SIZE_Z (2.56)
 
+#define LIGHT_RANGE (10.0)
+
 SpaceShipPart::SpaceShipPartInfo CPUDisplay::mPartInfo[] = {SpaceShipPartInfo(PART_WALL, Ogre::Vector3(0, 0, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
 
 CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
@@ -24,9 +26,9 @@ CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode 
     for(int i=0; i<4; i++)
     {
         mLight[i] = engine->getSceneMgr()->createLight(name + "Light" + Ogre::StringConverter::toString(i));
-        mLight[i]->setPosition(-5*SIZE_X, (i/2)*SIZE_Y-SIZE_Y/2, (i%2)*SIZE_Z-SIZE_Z/2);
+        mLight[i]->setPosition(-SIZE_X/4, (i/2)*SIZE_Y/2-SIZE_Y/4, (i%2)*SIZE_Z/2-SIZE_Z/4);
         mLight[i]->setType(Ogre::Light::LT_POINT);
-        mLight[i]->setAttenuation(15, 1.0, 4.5/15, 75.0/15/15);
+        mLight[i]->setAttenuation(LIGHT_RANGE, 1.0, 4.5/LIGHT_RANGE, 75.0/(LIGHT_RANGE*LIGHT_RANGE));
         mNode->attachObject(mLight[i]);
     }
 
@@ -163,8 +165,8 @@ void CPUDisplay::initPalette()
     mDefaultPalette[0x0] = 0x0000;
     mDefaultPalette[0x1] = 0x000A;
     mDefaultPalette[0x2] = 0x00A0;
-    mDefaultPalette[0x4] = 0x00AA; // @ todo re-change
-    mDefaultPalette[0x3] = 0x0A00;
+    mDefaultPalette[0x3] = 0x00AA;
+    mDefaultPalette[0x4] = 0x0A00;
     mDefaultPalette[0x5] = 0x0A0A;
     mDefaultPalette[0x6] = 0x0A50;
     mDefaultPalette[0x7] = 0x0AAA;
