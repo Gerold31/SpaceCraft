@@ -14,6 +14,7 @@ class Hardware : public SpaceShipPart
 {
 public:
     Hardware(int ID, int MF, int VER, SpaceShipPart::PART_TYPE part, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, Ogre::String type, ENGINE *engine);
+    virtual ~Hardware(){}
 
     void connect(CPU *_CPU) {mCPU = _CPU;}
 

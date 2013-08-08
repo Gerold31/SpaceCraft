@@ -6,6 +6,7 @@
 namespace Ogre
 {
     class Entity;
+    class Light;
 };
 #include "OGRE/OgreString.h"
 #include "OGRE/OgreTexture.h"
@@ -14,6 +15,7 @@ class CPUDisplay : public Hardware
 {
 public:
     CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    ~CPUDisplay();
 
     bool update(float elapsedTime);
     
@@ -22,6 +24,7 @@ public:
 private:
     Ogre::Entity *mEntity;
     Ogre::TexturePtr mTexture;
+    Ogre::Light *mLight[4];
 
     unsigned short *mData;
     unsigned int *mFont;

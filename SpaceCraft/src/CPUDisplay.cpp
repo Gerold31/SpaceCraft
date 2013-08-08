@@ -9,6 +9,10 @@
 #include "OGRE/OgreHardwarePixelBuffer.h"
 #include "OGRE/OgreMaterial.h"
 
+#define SIZE_X (0.02)
+#define SIZE_Y (1.92)
+#define SIZE_Z (2.56)
+
 SpaceShipPart::SpaceShipPartInfo CPUDisplay::mPartInfo[] = {SpaceShipPartInfo(PART_WALL, Ogre::Vector3(0, 0, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
 
 CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
@@ -16,6 +20,15 @@ CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode 
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPUDisplay.mesh");
     mNode->attachObject(mEntity);
+
+    for(int i=0; i<4; i++)
+    {
+        mLight[i] = engine->getSceneMgr()->createLight(name + "Light" + Ogre::StringConverter::toString(i));
+        mLight[i]->setPosition(-5*SIZE_X, (i/2)*SIZE_Y-SIZE_Y/2, (i%2)*SIZE_Z-SIZE_Z/2);
+        mLight[i]->setType(Ogre::Light::LT_POINT);
+        mLight[i]->setAttenuation(15, 1.0, 4.5/15, 75.0/15/15);
+        mNode->attachObject(mLight[i]);
+    }
 
     Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
 	Ogre::String textureName = name + "Texture";
@@ -49,6 +62,15 @@ CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode 
     for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)
     {
         mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfo[i]));
+    }
+}
+
+CPUDisplay::~CPUDisplay()
+{
+    for(int i=0; i<4; i++)
+    {
+        mEngine->getSceneMgr()->destroyLight(mLight[i]);
+        mLight[i] = 0;
     }
 }
 
@@ -131,7 +153,8 @@ void CPUDisplay::initData()
         mData = new unsigned short[32*12];
     for(int i=0; i<32; i++)
         for(int j=0; j<12; j++)
-            mData[i + 32*j] = 0x20 + (i/2 << 8);
+            mData[i + 32*j] = 0x20 + ((i/16 + j/6*2) << 8);
+            //mData[i + 32*j] = 0x20 + (i/2 << 8);
 }
 void CPUDisplay::initPalette()
 {
@@ -140,8 +163,8 @@ void CPUDisplay::initPalette()
     mDefaultPalette[0x0] = 0x0000;
     mDefaultPalette[0x1] = 0x000A;
     mDefaultPalette[0x2] = 0x00A0;
-    mDefaultPalette[0x3] = 0x00AA;
-    mDefaultPalette[0x4] = 0x0A00;
+    mDefaultPalette[0x4] = 0x00AA; // @ todo re-change
+    mDefaultPalette[0x3] = 0x0A00;
     mDefaultPalette[0x5] = 0x0A0A;
     mDefaultPalette[0x6] = 0x0A50;
     mDefaultPalette[0x7] = 0x0AAA;
@@ -198,6 +221,7 @@ void CPUDisplay::draw()
 
     Ogre::uint8* pDest = static_cast<Ogre::uint8*>(pixBox.data);
 
+    int lightColor[4][3] = {0};
     
     for(int y=0; y<96; y++)
     {
@@ -205,12 +229,22 @@ void CPUDisplay::draw()
         {
             int data = *(mData + x/4 + 32*(y/8));
             int color = mFont[data & 0x7F] & (1 << (32 - x%4 + 4*(y%8))) ? mPalette[(data >> 12) & 0xF] : mPalette[(data >> 8) & 0xF];
-            *pDest++ = (((color >> 0) & 0xF) << 4) | (color >> 0) & 0xF;
-            *pDest++ = (((color >> 4) & 0xF) << 4) | (color >> 4) & 0xF;
-            *pDest++ = (((color >> 8) & 0xF) << 4) | (color >> 8) & 0xF;
+
+            int b = (((color >> 0) & 0xF) << 4) | (color >> 0) & 0xF;
+            int g = (((color >> 4) & 0xF) << 4) | (color >> 4) & 0xF;
+            int r = (((color >> 8) & 0xF) << 4) | (color >> 8) & 0xF;
+
+            int i = (x>128/2?1:0) + (y<96/2?2:0);
+            lightColor[i][0] += r;
+            lightColor[i][1] += g;
+            lightColor[i][2] += b;
+                                    
+            *pDest++ = b;
+            *pDest++ = g;
+            *pDest++ = r;
             *pDest++ = 0;
         }
-    }
+    } 
     //pixelBuffer->unlock();
 
     Ogre::uchar* pData = static_cast<Ogre::uchar*>(pixBox.data);
@@ -221,5 +255,12 @@ void CPUDisplay::draw()
 
     mTexture->getBuffer()->blitFromMemory(img.getPixelBox());
 
+    for(int i=0; i<4; i++)
+    {
+        Ogre::ColourValue c(lightColor[i][0]/(96*128/4*256.0),lightColor[i][1]/(96*128/4*256.0),lightColor[i][2]/(96*128/4*256.0));
+        mLight[i]->setDiffuseColour(c);
+        mLight[i]->setSpecularColour(c);
+    }
+    
     delete[] data;
 }
