@@ -1,7 +1,7 @@
 #ifndef _CPU_HPP_
 #define _CPU_HPP_
 
-#include "Entity.hpp"
+#include "SpaceShipPart.hpp"
 
 class Hardware;
 class Memory;
@@ -16,7 +16,7 @@ class Memory;
 typedef unsigned short WORD;
 typedef unsigned char  BYTE;
 
-class CPU : public Entity
+class CPU : public SpaceShipPart
 {
 public:
     CPU(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
@@ -60,6 +60,8 @@ private:
     boost::mutex mMutex;
 
     std::string disas(WORD i);
+
+    static SpaceShipPartInfo mPartInfo[1];
 };
 
 #endif

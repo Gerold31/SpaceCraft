@@ -30,7 +30,6 @@ public:
     bool keyReleased(const OIS::KeyEvent &e);
 
 private:
-    Ogre::Entity *mEntity;
     Input *mInput;
 
     std::queue<WORD > mKeyBuffer;

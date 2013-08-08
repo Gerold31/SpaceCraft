@@ -1,14 +1,28 @@
 #include "CPU.hpp"
 
+#include "ENGINE.hpp"
 #include "Hardware.hpp"
 #include "Memory.hpp"
 
 #include <assert.h>
 
+#include "OGRE/OgreSceneManager.h"
+#include "OGRE/OgreEntity.h"
+
+SpaceShipPart::SpaceShipPartInfo CPU::mPartInfo[] = {SpaceShipPartInfo(PART_FLOOR, Ogre::Vector3(0, -0.75, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
+
 CPU::CPU(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    : Entity(pos, ori, parent, name, "SC_CPU", engine),
+    : SpaceShipPart(SpaceShipPart::PART_FLOORMOUNT, true, pos, ori, parent, name, "SC_CPU", engine),
     mFrequency(1000000.0)
 {
+    mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPU.mesh");
+    mNode->attachObject(mEntity);
+    
+    for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)
+    {
+        mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfo[i]));
+    }
+
     mRunning = false;
     mInterrupQueuing = false;
     mInstructionsSinceInterrupt = 0;

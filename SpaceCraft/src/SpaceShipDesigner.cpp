@@ -217,7 +217,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
 	}	
 
     if(!hit && mSelectedPart)
-        mSelectedPart->getSceneNode()->setPosition(0, -1e300, 0);
+        mSelectedPart->getSceneNode()->setPosition(0, -1e38, 0);
 
     return true;
 }
@@ -260,9 +260,9 @@ void SpaceShipDesigner::setSelectedPartName(std::string name)
     sprintf(partName, "%sPart%d", mSpaceShip->getSceneNode()->getName().c_str(), mSpaceShip->getNextPartID());
 
     if(name == "Display")
-        mSelectedPart = new CPUDisplay(Ogre::Vector3(0, -1e300, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new CPUDisplay(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
     else if(name == "Keyboard")
-        mSelectedPart = new CPUKeyboard(Ogre::Vector3(0, -1e300, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new CPUKeyboard(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
 
     if(!mSelectedPart)
         return;
