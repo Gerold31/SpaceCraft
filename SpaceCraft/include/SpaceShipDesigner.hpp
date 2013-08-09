@@ -19,6 +19,12 @@ namespace Ogre
 class SpaceShipDesigner : public OIS::KeyListener, public OIS::MouseListener
 {
 public:
+    enum MODE
+    {
+        MODE_BUILD,
+        MODE_WIRE
+    };
+
     SpaceShipDesigner(ENGINE *engine);
 
     void enterEditMode(SpaceShip *ship);
@@ -31,6 +37,7 @@ public:
     bool mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id);
     bool mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id);
     
+    void setMode(MODE mode);
     void setSelectedPartType(int type);
     void setSelectedPartName(std::string name);
     void setSelectedFloorFrom(int from);
@@ -64,6 +71,10 @@ private:
     int mNextPartID;
 
     std::vector<SpaceShipPart *> mPossibleParts;
+    
+    MODE mMode;
+
+    SpaceShipPart *mLinkFirst;
     
     void initPossibleParts();
     void removePossibleParts();

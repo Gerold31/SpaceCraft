@@ -12,7 +12,7 @@
 SpaceShipPart::SpaceShipPartInfo CPU::mPartInfo[] = {SpaceShipPartInfo(PART_FLOOR, Ogre::Vector3(0, -0.75, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
 
 CPU::CPU(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    : SpaceShipPart(PART_FLOORMOUNT, true, pos, ori, parent, name, "SC_CPU", engine),
+    : SpaceShipPart(PART_FLOORMOUNT, true, pos, ori, parent, name, "CPU", engine),
     mFrequency(1000000.0)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPU.mesh");

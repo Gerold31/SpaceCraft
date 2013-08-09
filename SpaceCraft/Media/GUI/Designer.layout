@@ -19,12 +19,17 @@
         <Widget type="Button" skin="Button" position="850 380 150 50" name="SelectLight">
             <Property key="Caption" value="Light"/>
         </Widget>
-		
         <Widget type="TextBox" skin="TextBox" position="850 440 150 55">
             <Property key="Caption" value="Show Floors:\n\nFrom              To"/>
             <Property key="TextColour" value="1 1 1"/>
         </Widget>
         <Widget type="EditBox" skin="EditBox" position="895 460 30 30" name="SelectFloorFrom"/>
         <Widget type="EditBox" skin="EditBox" position="965 460 30 30" name="SelectFloorTo"/>
+        <Widget type="Button" skin="Button" position="20 20 150 50" name="ModeBuild">
+            <Property key="Caption" value="Build"/>
+        </Widget>
+        <Widget type="Button" skin="Button" position="180 20 150 50" name="ModeWire">
+            <Property key="Caption" value="Wire"/>
+        </Widget>
     </Widget>
 </MyGUI>

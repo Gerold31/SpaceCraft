@@ -48,6 +48,10 @@ void SpaceShipDesignerGUI::buttonClicked(MyGUI::Widget *widget)
         mParent->setSelectedPartType(SpaceShipPart::PART_FLOOR);
     else if(widget->getName() == "SelectWall")
         mParent->setSelectedPartType(SpaceShipPart::PART_WALL);
+    else if(widget->getName() == "ModeBuild")
+        mParent->setMode(SpaceShipDesigner::MODE_BUILD);
+    else if(widget->getName() == "ModeWire")
+        mParent->setMode(SpaceShipDesigner::MODE_WIRE);
     else
         mParent->setSelectedPartName(((MyGUI::ButtonPtr)widget)->getCaption().asUTF8());
 }
