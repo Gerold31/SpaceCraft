@@ -20,6 +20,7 @@ class CPU : public SpaceShipPart
 {
 public:
     CPU(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    ~CPU();
 
     bool update(float elapsedTime);
     void interrupt(WORD msg);

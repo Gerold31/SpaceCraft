@@ -1,6 +1,8 @@
 #include "CPU.hpp"
 
 #include "ENGINE.hpp"
+#include "Map.hpp"
+
 #include "Hardware.hpp"
 #include "Memory.hpp"
 
@@ -28,6 +30,11 @@ CPU::CPU(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre:
     mInstructionsSinceInterrupt = 0;
     mInterrupts = 0;
     reset();
+}
+
+CPU::~CPU()
+{
+    stop();
 }
 
 bool CPU::update(float elapsedTime)
@@ -122,8 +129,9 @@ void CPU::run()
         if(mIdle)
         {
             try{
-                while(1)
+                while(mRunning)
                     boost::this_thread::sleep(boost::posix_time::seconds(1));
+                break;
             }catch(...)
             {
             }

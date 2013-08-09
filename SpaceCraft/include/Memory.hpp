@@ -12,6 +12,7 @@ class Memory : public Entity
 {
 public:
     Memory(std::string fileName, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    ~Memory();
     
     bool update(float elapsedTime){return true;};
 

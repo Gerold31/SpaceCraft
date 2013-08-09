@@ -54,3 +54,7 @@ Memory::Memory(std::string fileName, Ogre::Vector3 pos, Ogre::Quaternion ori, Og
         printf("%4x %4x %4x %4x %4x %4x %4x %4x\n", mMem[i], mMem[i+1], mMem[i+2], mMem[i+3], mMem[i+4], mMem[i+5], mMem[i+6], mMem[i+7]); 
     }
 }
+
+Memory::~Memory()
+{
+}

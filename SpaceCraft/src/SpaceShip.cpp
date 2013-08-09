@@ -164,10 +164,9 @@ void SpaceShip::load(std::string fileName)
         mParts.push_back(new SpaceShipPart(SpaceShipPart::PART_FLOOR, true, Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, mName + "Part0", "SC_SpaceShipPartFloor", mEngine));
     mNextPartID = mParts.size();
 
-    Memory *mem = new Memory("program.a", Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, "Memory", mEngine);
-
     for(int i=0; i<cpus.size(); i++)
     {
+        Memory *mem = new Memory("program.a", Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, "Memory", mEngine);
         cpus.at(i)->setMemory(mem);
         cpus.at(i)->start();
     }
