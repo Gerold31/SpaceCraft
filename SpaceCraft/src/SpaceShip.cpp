@@ -5,6 +5,7 @@
 
 #include "SpaceShipPart.hpp"
 #include "CPU.hpp"
+#include "Memory.hpp"
 #include "CPUDisplay.hpp"
 #include "CPUKeyboard.hpp"
 #include "SpaceShipPartRotatingLight.hpp"
@@ -43,11 +44,14 @@ void SpaceShip::removePart(SpaceShipPart *part)
 void SpaceShip::save(std::string fileName)
 {
     std::ofstream file(fileName);
+    std::vector<std::pair<CPU *, int> >cpus;
     for(int i=0; i<mParts.size(); i++)
     {
         file << mParts.at(i)->getType() << std::endl;
         file << Ogre::StringConverter::toString(mParts.at(i)->getSceneNode()->getPosition()) << std::endl;
         file << Ogre::StringConverter::toString(mParts.at(i)->getSceneNode()->getOrientation()) << std::endl;
+        if(mParts.at(i)->getType() == "CPU")
+            cpus.push_back(std::pair<CPU *, int>((CPU *)mParts.at(i), i));
     }
     file << std::endl;
     for(int i=0; i<mParts.size(); i++)
@@ -64,6 +68,20 @@ void SpaceShip::save(std::string fileName)
             }
         }
     }
+    file << std::endl;
+    for(int i=0; i<cpus.size(); i++)
+    {
+        for(int j=0; j<cpus.at(i).first->getNumberDevices(); j++)
+        {
+            for(int k=0; k<mParts.size(); k++)
+            {
+                if(mParts.at(k) == cpus.at(i).first->getDevice(j))
+                {
+                    file << Ogre::StringConverter::toString(Ogre::Vector2(cpus.at(i).second, k)) << std::endl;
+                }
+            }
+        }
+    }
 }
 
 void SpaceShip::load(std::string fileName)
@@ -74,6 +92,8 @@ void SpaceShip::load(std::string fileName)
         mParts.pop_back();
     }
     std::ifstream file(fileName);
+    
+    std::vector<CPU *>cpus;
 
     if(file.is_open())
     {
@@ -102,9 +122,10 @@ void SpaceShip::load(std::string fileName)
             }else if(type == "SC_SpaceShipPartWall")
             {
                 part = new SpaceShipPart(SpaceShipPart::PART_WALL, false, pos, ori, mNode, name, type, mEngine);
-            }else if(type == "SC_CPU")
+            }else if(type == "CPU")
             {
                 part = new CPU(pos, ori, mNode, name, mEngine);
+                cpus.push_back((CPU *)part);
             }else if(type == "CPU_Display")
             {
                 part = new CPUDisplay(pos, ori, mNode, name, mEngine);
@@ -127,8 +148,27 @@ void SpaceShip::load(std::string fileName)
             data = Ogre::StringConverter::parseVector3(line);
             mParts.at(data.x)->setNeighbor(mParts.at(data.z), data.y);
         }
+        
+        while(!file.eof())
+        {
+            Ogre::Vector2 data;
+            std::getline(file, line);
+            if(line == "")
+                break;
+            data = Ogre::StringConverter::parseVector2(line);
+            ((CPU *)mParts.at(data.x))->addDevice((Hardware *)mParts.at(data.y));
+            ((Hardware *)mParts.at(data.y))->connect((CPU *)mParts.at(data.x));
+        }
     }
     if(mParts.size() == 0)
         mParts.push_back(new SpaceShipPart(SpaceShipPart::PART_FLOOR, true, Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, mName + "Part0", "SC_SpaceShipPartFloor", mEngine));
     mNextPartID = mParts.size();
+
+    Memory *mem = new Memory("program.a", Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, "Memory", mEngine);
+
+    for(int i=0; i<cpus.size(); i++)
+    {
+        cpus.at(i)->setMemory(mem);
+        cpus.at(i)->start();
+    }
 }

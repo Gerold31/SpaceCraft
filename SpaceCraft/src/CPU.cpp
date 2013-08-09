@@ -1000,3 +1000,13 @@ void CPU::addDevice(Hardware *dev)
 {
     mDevices.push_back(dev);
 }
+
+int CPU::getNumberDevices()
+{
+    return mDevices.size();
+}
+
+Hardware *CPU::getDevice(int i)
+{
+    return mDevices.at(i);
+}

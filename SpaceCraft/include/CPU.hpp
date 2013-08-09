@@ -32,6 +32,8 @@ public:
     void run();
 
     void addDevice(Hardware *dev);
+    int getNumberDevices();
+    Hardware *getDevice(int i);
 
     WORD getRegister(int r) {return mRegister[r];}
     void setRegister(int r, WORD val) {mRegister[r] = val;}
