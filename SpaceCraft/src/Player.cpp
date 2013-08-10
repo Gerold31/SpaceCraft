@@ -29,14 +29,18 @@
 #endif
 
 Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::RenderWindow *window, Ogre::String name, ENGINE *engine)
-    : Entity(pos, ori, parent, name, "SC_Player", engine)
+    : Human(pos, ori, parent, name, engine)
 {
     mCamera = engine->getSceneMgr()->createCamera(name);
     mCamera->lookAt(0,0,-10);
+    mCamera->setPosition(0, 0, 0.3);
     mCameraYawNode   = mNode->createChildSceneNode();
     mCameraPitchNode = mCameraYawNode->createChildSceneNode();
     mCameraRollNode  = mCameraPitchNode->createChildSceneNode();
     mCameraRollNode->attachObject(mCamera);
+
+    mEntity->detachFromParent();
+    mCameraYawNode->attachObject(mEntity);
 
     mViewport = window->addViewport(mCamera, 100, 0, 0, 1, 1);
 
@@ -99,8 +103,9 @@ bool Player::update(float elapsedTime)
             {
                 if(i->movable)
                 {
-                    if(i->movable->getMovableType() == "Entity")
+                    if(i->movable->getMovableType() == "Entity" && i->movable->getName() != mNode->getName() + "Mesh")
                     {
+                        printf("colliding with %s", i->movable->getName().c_str());
                         speed = i->distance - PLAYER_SIZE;
                         break;
                     }

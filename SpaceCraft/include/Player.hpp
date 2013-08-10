@@ -19,9 +19,9 @@ namespace Ogre
 
 #include "OGRE/OgreString.h"
 
-#include "Entity.hpp"
+#include "Human.hpp"
 
-class Player : public Entity, public OIS::KeyListener, public OIS::MouseListener
+class Player : public Human, public OIS::KeyListener, public OIS::MouseListener
 {
 public:
     Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::RenderWindow *window, Ogre::String name, ENGINE *engine);
