@@ -6,12 +6,12 @@
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreEntity.h"
 
-SpaceShipPart::SpaceShipPartInfo CPUKeyboard::mPartInfo[] = {SpaceShipPartInfo(PART_FLOOR, Ogre::Vector3(0, -0.8, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
+SpaceShipPart::SpaceShipPartInfo CPUKeyboard::mPartInfo[] = {SpaceShipPartInfo(PART_FLOOR, Ogre::Vector3(0, -0.5, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
 
 CPUKeyboard::CPUKeyboard(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
     :Hardware(0x30cf7406, 0x1C6C8B36, 0x1802, PART_FLOORMOUNT, pos, ori, parent, name, "CPU_Keyboard", engine)
 {
-    mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "KinoControl.mesh"/*"CPUKeyboard.mesh"*/);
+    mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPUKeyboard.mesh");
     mNode->attachObject(mEntity);
     
     for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)
