@@ -32,15 +32,15 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     : Human(pos, ori, parent, name, engine)
 {
     mCamera = engine->getSceneMgr()->createCamera(name);
-    mCamera->lookAt(0,0,-10);
-    mCamera->setPosition(0, 0, 0.3);
+    mCamera->lookAt(0,0,-1);
+    mCamera->setPosition(0, 0.3, 0);
     mCameraYawNode   = mNode->createChildSceneNode();
     mCameraPitchNode = mCameraYawNode->createChildSceneNode();
     mCameraRollNode  = mCameraPitchNode->createChildSceneNode();
     mCameraRollNode->attachObject(mCamera);
 
-    mEntity->detachFromParent();
-    mCameraYawNode->attachObject(mEntity);
+    mEntity->getParentSceneNode()->getParentSceneNode()->removeChild(mEntity->getParentSceneNode());
+    mCameraYawNode->addChild(mEntity->getParentSceneNode());
 
     mViewport = window->addViewport(mCamera, 100, 0, 0, 1, 1);
 
@@ -257,7 +257,7 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
                 if(i->distance > 10)
                     break;
             
-                if(i->movable && i->movable->getMovableType() == "Entity")
+                if(i->movable && i->movable->getMovableType() == "Entity" && i->movable->getName() != mNode->getName() + "Mesh")
                 {
                     Ogre::SceneNode *node = i->movable->getParentSceneNode();
                     if(node)

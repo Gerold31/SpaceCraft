@@ -13,6 +13,7 @@ Human::Human(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, O
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "Human/Human.mesh");
     node->attachObject(mEntity);
     node->setPosition(0,-1.6,0);
+    node->setOrientation(0, 0, 1, 0);
     node->scale(0.1, 0.1, 0.1);
 }
 
