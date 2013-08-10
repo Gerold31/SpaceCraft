@@ -17,6 +17,7 @@ CPULifeDetection::CPULifeDetection(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre
     :Hardware(0x11F3DE7C, 0x1C6C8B36, 0x0001, PART_CEILMOUNT, pos, ori, parent, name, "CPU_LifeDetection", engine)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPULifeDetection.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
     
     mInterruptMsg = 0;

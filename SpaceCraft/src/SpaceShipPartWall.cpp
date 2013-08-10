@@ -28,6 +28,7 @@ SpaceShipPartWall::SpaceShipPartWall(Ogre::Vector3 pos, Ogre::Quaternion ori, Og
     if(type == "SC_SpaceShipPartWall")
     {
         mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "SpaceShip/Part_Wall.mesh");
+        mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
         mNode->attachObject(mEntity);
     }else
         mEntity = NULL;

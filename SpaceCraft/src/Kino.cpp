@@ -11,12 +11,13 @@ Kino::Kino(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogr
     : Entity(pos, ori, parent, name, "SC_Kino", engine)
 {
     mEntity = engine->getSceneMgr()->createEntity("Kino.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
 
     mCamera = engine->getSceneMgr()->createCamera(name + "Camera");
-    mCameraYawNode   = mNode->createChildSceneNode();
-    mCameraPitchNode = mCameraYawNode->createChildSceneNode();
-    mCameraRollNode  = mCameraPitchNode->createChildSceneNode();
+    mCameraYawNode   = mNode->createChildSceneNode(name + "YawNode");
+    mCameraPitchNode = mCameraYawNode->createChildSceneNode(name + "PitchNode");
+    mCameraRollNode  = mCameraPitchNode->createChildSceneNode(name + "RollNode");
     mCameraRollNode->attachObject(mCamera);
 
 	mCamera->setNearClipDistance(1.5f);

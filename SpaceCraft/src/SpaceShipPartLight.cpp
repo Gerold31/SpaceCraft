@@ -12,6 +12,7 @@ SpaceShipPartLight::SpaceShipPartLight(Ogre::Vector3 pos, Ogre::Quaternion ori, 
     : SpaceShipPart(PART_CEILMOUNT, true, pos, ori, parent, name, "SC_SpaceShipPartLight", engine)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "Light.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
     
     for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)
@@ -24,6 +25,8 @@ SpaceShipPartLight::SpaceShipPartLight(Ogre::Vector3 pos, Ogre::Quaternion ori, 
     mLight->setPosition(0,-0.025,0);
     mLight->setDiffuseColour(0.9, 0.8, 0.8);
     mLight->setSpecularColour(0.9, 0.8, 0.8);
+    mLight->setCastShadows(true);
+    mLight->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mLight);
 }
 

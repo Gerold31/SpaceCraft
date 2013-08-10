@@ -10,6 +10,7 @@ Star::Star(double mass, double radius, Ogre::Vector3 velocity, Ogre::Vector3 pos
     :GravityObject(mass, velocity, pos, ori, parent, name, "SC_Star", engine)
 {
     mEntity = engine->getSceneMgr()->createEntity("Star.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
     mNode->scale(radius, radius, radius);
 }

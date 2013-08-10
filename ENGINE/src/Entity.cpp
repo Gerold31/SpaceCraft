@@ -11,11 +11,12 @@ Entity::Entity(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     mEngine(engine),
     mType(type)
 {
-    mMap = engine->getMap();
     mNode = parent->createChildSceneNode(name);
     mNode->setPosition(pos);
     mNode->setOrientation(ori);
+    mNode->getUserObjectBindings().setUserAny("Entity", Ogre::Any(this));
     mNode->attachObject(this);
+    mMap = engine->getMap();
     mMap->registerEntity(this);
 }
 

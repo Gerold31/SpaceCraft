@@ -106,7 +106,7 @@ bool Player::update(float elapsedTime)
                 {
                     if(i->movable->getMovableType() == "Entity" && i->movable->getName() != mNode->getName() + "Mesh")
                     {
-                        Entity *ent = dynamic_cast<Entity *>(i->movable->getParentSceneNode()->getAttachedObject(i->movable->getParentSceneNode()->getName() + "Obj"));
+                        Entity *ent = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
                         if(ent && ent->getType() == "SC_SpaceShipPartDoor" && ((SpaceShipPartDoor *)ent)->isOpen())
                             continue;
                         printf("colliding with %s", i->movable->getName().c_str());
@@ -148,63 +148,6 @@ bool Player::update(float elapsedTime)
             translation.normalise();
             mNode->getParentSceneNode()->translate(translation * speed, Ogre::Node::TS_LOCAL);
 	    }
-    }
-
-    if(mMode == MODE_DESIGN)
-    {
-        /*
-        Ogre::Ray ray(mNode->getParentSceneNode()->getPosition() + mNode->getPosition(), mCameraYawNode->getOrientation() * mCameraPitchNode->getOrientation() * Ogre::Vector3(0,0,-1));
-        mRaySceneQuery->setRay(ray);
-        mRaySceneQuery->setSortByDistance(true);
-
-        Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
-        Ogre::RaySceneQueryResult::iterator i = result.begin();
-                
-        mNextPart->getSceneNode()->setVisible(false);
-
-        while(i!=result.end())
-        {
-            if(i->distance > 50)
-                break;
-            if(i->movable && i->movable->getMovableType() == "Entity")
-            {
-                Ogre::SceneNode *node = i->movable->getParentSceneNode();
-                if(node)
-                {
-                    Entity *obj = dynamic_cast<Entity *>(node->getAttachedObject(node->getName() + "Obj"));
-                    if(obj)
-                    {                
-                        if(obj->getType() == "SC_SpaceShipPart")
-                        {
-                            if(mNextPart != obj)
-                            {
-                                Ogre::Vector3 relPos;
-                                switch(mNextPartPos)
-                                {
-                                case 0:
-                                    relPos = Ogre::Vector3(1,0,0);
-                                    break;
-                                case 1:
-                                    relPos = Ogre::Vector3(0,0,1);
-                                    break;
-                                case 2:
-                                    relPos = Ogre::Vector3(-1,0,0);
-                                    break;
-                                case 3:
-                                    relPos = Ogre::Vector3(0,0,-1);
-                                    break;
-                                }
-                                mNextPart->getSceneNode()->setPosition(obj->getSceneNode()->getPosition() + relPos);
-                                mNextPart->getSceneNode()->setVisible(true);
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-            ++i;
-        }
-            */
     }
     return true;
 }
@@ -263,52 +206,48 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
             
                 if(i->movable && i->movable->getMovableType() == "Entity" && i->movable->getName() != mNode->getName() + "Mesh")
                 {
-                    Ogre::SceneNode *node = i->movable->getParentSceneNode();
-                    if(node)
-                    {
-                        Entity *obj = dynamic_cast<Entity *>(node->getAttachedObject(node->getName() + "Obj"));
-                        if(obj)
-                        {           
-                            printf("hit %s", obj->getType().c_str());
-                            if(obj->getType() == "SC_KinoControl")
+                    Entity *obj = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
+                    if(obj)
+                    {           
+                        printf("hit %s", obj->getType().c_str());
+                        if(obj->getType() == "SC_KinoControl")
+                        {
+                            Kino *kino = ((KinoControl *)obj)->getKino();
+                            if(mMode == MODE_DEFAULT)
                             {
-                                Kino *kino = ((KinoControl *)obj)->getKino();
-                                if(mMode == MODE_DEFAULT)
-                                {
-                                    mMode = MODE_KINOCONTROL;
-                                    mInput->addKeyListener(kino, kino->getName());
-                                    mInput->addMouseListener(kino, kino->getName());
-                                }else if(mMode == MODE_KINOCONTROL)
-                                {
-                                    mMode = MODE_DEFAULT;
-                                    kino->stop();
-                                    mInput->removeKeyListener(kino->getName());
-                                    mInput->removeMouseListener(kino->getName());
-                                }
-                                return false; // stop iterating the Input->mKeyListeners map since we changed it
-                            }else if(obj->getType() == "CPU_Keyboard")
+                                mMode = MODE_KINOCONTROL;
+                                mInput->addKeyListener(kino, kino->getName());
+                                mInput->addMouseListener(kino, kino->getName());
+                            }else if(mMode == MODE_KINOCONTROL)
                             {
-                                CPUKeyboard *keyboard = ((CPUKeyboard *)obj);
-                                if(mMode == MODE_DEFAULT)
-                                {
-                                    mMode = MODE_KEYBOARD;
-                                    mInput->addKeyListener(keyboard, keyboard->getName());
-                                }else if(mMode == MODE_KEYBOARD)
-                                {
-                                    mMode = MODE_DEFAULT;
-                                    mInput->removeKeyListener(keyboard->getName());
-                                }
-                                return false; // stop iterating the Input->mKeyListeners map since we changed it
-                            }else if(obj->getType() == "SC_SpaceShipPartDoor")
-                            {
-                                if(mMode == MODE_DEFAULT)
-                                {
-                                    printf("using door\n");
-                                    SpaceShipPartDoor *door = ((SpaceShipPartDoor *)obj);
-                                    door->open(!door->isOpen());
-                                }
-                                return true;
+                                mMode = MODE_DEFAULT;
+                                kino->stop();
+                                mInput->removeKeyListener(kino->getName());
+                                mInput->removeMouseListener(kino->getName());
                             }
+                            return false; // stop iterating the Input->mKeyListeners map since we changed it
+                        }else if(obj->getType() == "CPU_Keyboard")
+                        {
+                            CPUKeyboard *keyboard = ((CPUKeyboard *)obj);
+                            if(mMode == MODE_DEFAULT)
+                            {
+                                mMode = MODE_KEYBOARD;
+                                mInput->addKeyListener(keyboard, keyboard->getName());
+                            }else if(mMode == MODE_KEYBOARD)
+                            {
+                                mMode = MODE_DEFAULT;
+                                mInput->removeKeyListener(keyboard->getName());
+                            }
+                            return false; // stop iterating the Input->mKeyListeners map since we changed it
+                        }else if(obj->getType() == "SC_SpaceShipPartDoor")
+                        {
+                            if(mMode == MODE_DEFAULT)
+                            {
+                                printf("using door\n");
+                                SpaceShipPartDoor *door = ((SpaceShipPartDoor *)obj);
+                                door->open(!door->isOpen());
+                            }
+                            return true;
                         }
                     }
                 }

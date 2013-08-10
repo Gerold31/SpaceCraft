@@ -15,6 +15,7 @@ KinoControl::KinoControl(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNod
     : Entity(pos, ori, parent, name, "SC_KinoControl", engine)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Ent", "KinoControl.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
 
     mKino = new Kino(pos + Ogre::Vector3(0, 5, 0), ori, parent, name + "_Kino", engine);

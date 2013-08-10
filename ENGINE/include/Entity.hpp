@@ -3,10 +3,7 @@
 
 namespace Ogre
 {
-    class SceneManager;
     class SceneNode;
-    class RenderQueue;
-    class Renderable;
 };
 
 class ENGINE;
@@ -15,7 +12,8 @@ class Map;
 #include "OGRE/OgreString.h"
 #include "OGRE/OgreVector3.h"
 #include "OGRE/OgreQuaternion.h"
-#include "OGRE/OgreAxisAlignedBox.h"
+#include "OGRE/OgreUserObjectBindings.h"
+#include "OGRE/OgreAny.h"
 
 #include "OGRE/OgreManualObject.h"
 
@@ -33,7 +31,6 @@ public:
 protected: 
     Ogre::SceneNode *mNode;
     const Ogre::String mType;
-    Ogre::AxisAlignedBox mBoundingBox;
     ENGINE *mEngine;
     Map *mMap;
 };

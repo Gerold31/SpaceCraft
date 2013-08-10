@@ -15,7 +15,9 @@ SpaceShipPartDoor::SpaceShipPartDoor(Ogre::Vector3 pos, Ogre::Quaternion ori, Og
     : SpaceShipPartWall(pos, ori, parent, name, engine, "SC_SpaceShipPartDoor")
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "DoorFrame.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mDoor   = engine->getSceneMgr()->createEntity(name + "DoorMesh", "Door.mesh");
+    mDoor->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
     mDoorNode = mNode->createChildSceneNode(name + "DoorNode");
     mDoorNode->attachObject(mDoor);
@@ -28,7 +30,9 @@ SpaceShipPartDoor::SpaceShipPartDoor(SpaceShipPart *old, Ogre::String name)
     if(mEntity)
         mEngine->getSceneMgr()->destroyEntity(mEntity);
     mEntity = mEngine->getSceneMgr()->createEntity(name + "Mesh", "DoorFrame.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mDoor   = mEngine->getSceneMgr()->createEntity(name + "DoorMesh", "Door.mesh");
+    mDoor->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
     mDoorNode = mNode->createChildSceneNode(name + "DoorNode");
     mDoorNode->attachObject(mDoor);

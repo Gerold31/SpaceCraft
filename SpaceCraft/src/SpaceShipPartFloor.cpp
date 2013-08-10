@@ -30,6 +30,7 @@ SpaceShipPartFloor::SpaceShipPartFloor(Ogre::Vector3 pos, Ogre::Quaternion ori, 
     if(mEntity)
         engine->getSceneMgr()->destroyEntity(mEntity);
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "SpaceShip/Part_Floor.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
     
     for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)

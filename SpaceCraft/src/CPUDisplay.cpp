@@ -21,6 +21,7 @@ CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode 
     :Hardware(0x7349F615, 0x1C6C8B36, 0x1802, PART_WALLMOUNT, pos, ori, parent, name, "CPU_Display", engine)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPUDisplay.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
 
     for(int i=0; i<4; i++)
@@ -29,6 +30,7 @@ CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode 
         mLight[i]->setPosition(-SIZE_X/4, (i/2)*SIZE_Y/2-SIZE_Y/4, (i%2)*SIZE_Z/2-SIZE_Z/4);
         mLight[i]->setType(Ogre::Light::LT_POINT);
         mLight[i]->setAttenuation(LIGHT_RANGE, 1.0, 4.5/LIGHT_RANGE, 75.0/(LIGHT_RANGE*LIGHT_RANGE));
+        mLight[i]->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
         mNode->attachObject(mLight[i]);
     }
 

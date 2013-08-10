@@ -24,6 +24,8 @@
 #include "OGRE/OgreRay.h"
 #include "OGRE/OgreEntity.h"
 #include "OGRE/OgreStringConverter.h"
+#include "OGRE/OgreUserObjectBindings.h"
+#include "OGRE/OgreAny.h"
 
 #define LENGTH_THRESHOLD (1e-6)
 
@@ -153,155 +155,151 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
 	{
         if(i->movable && i->movable->getMovableType() == "Entity")
         {
-            Ogre::SceneNode *node = i->movable->getParentSceneNode();
-            if(node)
-            {
-                Entity *obj = dynamic_cast<Entity *>(node->getAttachedObject(node->getName() + "Obj"));
-                if(obj && obj->getVisible())
-                {   
-                    if(mMode == MODE_BUILD)
+            Entity *obj = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
+            if(obj && obj->getVisible())
+            {   
+                if(mMode == MODE_BUILD)
+                {
+                    if(obj->getType() == "SC_SpaceShipPartFloor" || obj->getType() == "SC_SpaceShipPartWall")
                     {
-                        if(obj->getType() == "SC_SpaceShipPartFloor" || obj->getType() == "SC_SpaceShipPartWall")
+                        SpaceShipPart *part = (SpaceShipPart *)obj;
+                        SpaceShipPart::PART_TYPE type = part->getPartType();
+                        if(mSelectedPart && part->getName().find("Designer") != 0)
                         {
-                            SpaceShipPart *part = (SpaceShipPart *)obj;
-                            SpaceShipPart::PART_TYPE type = part->getPartType();
-                            if(mSelectedPart && part->getName().find("Designer") != 0)
+                            SpaceShipPart::SpaceShipPartInfo *info = NULL;
+                            int neighborId = -1;
+                            Ogre::Quaternion rot = Ogre::Quaternion();
+                            if(mSelectedPartType == SpaceShipPart::PART_FLOORMOUNT && type == SpaceShipPart::PART_FLOOR)
                             {
-                                SpaceShipPart::SpaceShipPartInfo *info = NULL;
-                                int neighborId = -1;
-                                Ogre::Quaternion rot = Ogre::Quaternion();
-                                if(mSelectedPartType == SpaceShipPart::PART_FLOORMOUNT && type == SpaceShipPart::PART_FLOOR)
+                                mRotation %= 4;
+                                if(part->getNeighbor(0) == NULL)
                                 {
-                                    mRotation %= 4;
-                                    if(part->getNeighbor(0) == NULL)
-                                    {
-                                        rot = Ogre::Quaternion(Ogre::Radian(Ogre::Math::PI/2 * mRotation), Ogre::Vector3::UNIT_Y);
-                                        info = part->getNeighborInfo(0);
-                                        neighborId = 0;
-                                    }
-                                }else if(mSelectedPartType == SpaceShipPart::PART_CEILMOUNT && type == SpaceShipPart::PART_FLOOR)
-                                {
-                                    mRotation %= 4;
-                                    if(part->getNeighbor(1) == NULL)
-                                    {
-                                        rot = Ogre::Quaternion(Ogre::Radian(Ogre::Math::PI/2 * mRotation), Ogre::Vector3::UNIT_Y);
-                                        info = part->getNeighborInfo(1);
-                                        neighborId = 1;
-                                    }
-                                }else if(mSelectedPartType == SpaceShipPart::PART_WALLMOUNT && type == SpaceShipPart::PART_WALL)
-                                {
-                                    mRotation %= 2;
-                                    if(part->getNeighbor(mRotation) == NULL)
-                                    {
-                                        info = part->getNeighborInfo(mRotation);
-                                        neighborId = mRotation;
-                                    }
+                                    rot = Ogre::Quaternion(Ogre::Radian(Ogre::Math::PI/2 * mRotation), Ogre::Vector3::UNIT_Y);
+                                    info = part->getNeighborInfo(0);
+                                    neighborId = 0;
                                 }
-                                if(info)
-                                {
-                                    assert(mSelectedPart->getNumberNeighbors() == 1); // @todo deal with "big" parts
-                                    Ogre::Quaternion ori = part->getSceneNode()->getOrientation() * info->mRot;
-                                    Ogre::Vector3 pos = part->getSceneNode()->getPosition() + ori * info->mPos;
-                                    ori = ori * mSelectedPart->getNeighborInfo(0)->mRot.Inverse() * rot;
-                                    pos = pos - mSelectedPart->getNeighborInfo(0)->mRot.Inverse() * rot * mSelectedPart->getNeighborInfo(0)->mPos;
-                                    mSelectedPart->getSceneNode()->setPosition(pos);
-                                    mSelectedPart->getSceneNode()->setOrientation(ori);
-                                    hit = true;
-                                    if(e.state.buttonDown(OIS::MB_Left))
-                                    {
-                                        part->setNeighbor(mSelectedPart, neighborId);
-                                        mSelectedPart->setNeighbor(part, 0);
-                                        mSelectedPart = NULL;
-                                        setSelectedPartName(mSelectedPartName);
-                                    }
-                                }
-                            }else if(e.state.buttonDown(OIS::MB_Left) && type == mSelectedPartType && part->getName().find("Designer") == 0)
+                            }else if(mSelectedPartType == SpaceShipPart::PART_CEILMOUNT && type == SpaceShipPart::PART_FLOOR)
                             {
-                                char name[32];
-                                sprintf(name, "%sPart%d", mSpaceShip->getSceneNode()->getName().c_str(), mSpaceShip->getNextPartID());
-                                SpaceShipPart *newPart = NULL;
-                                switch(part->getPartType())
+                                mRotation %= 4;
+                                if(part->getNeighbor(1) == NULL)
                                 {
-                                case SpaceShipPart::PART_FLOOR: 
-                                    newPart = new SpaceShipPartFloor(part, name);
-                                    break;
-                                case SpaceShipPart::PART_WALL:
-                                    if(mSelectedPart && mSelectedPart->getType() == "SC_SpaceShipPartDoor")
-                                        newPart = new SpaceShipPartDoor(part, name);
-                                    else
-                                        newPart = new SpaceShipPartWall(part, name);
-                                    break;
+                                    rot = Ogre::Quaternion(Ogre::Radian(Ogre::Math::PI/2 * mRotation), Ogre::Vector3::UNIT_Y);
+                                    info = part->getNeighborInfo(1);
+                                    neighborId = 1;
                                 }
-                                assert(newPart);
-                                for(size_t j=0; j<newPart->getNumberNeighbors(); j++)
+                            }else if(mSelectedPartType == SpaceShipPart::PART_WALLMOUNT && type == SpaceShipPart::PART_WALL)
+                            {
+                                mRotation %= 2;
+                                if(part->getNeighbor(mRotation) == NULL)
                                 {
-                                    SpaceShipPart *neighbor = newPart->getNeighbor(j);
-                                    if(!neighbor)
-                                        continue;
-                                    for(size_t k=0; k<neighbor->getNumberNeighbors(); k++)
-                                    {
-                                        if(neighbor->getNeighbor(k) == part)
-                                        {
-                                            neighbor->setNeighbor(newPart, k);
-                                            break;
-                                        }                                    
-                                    }
+                                    info = part->getNeighborInfo(mRotation);
+                                    neighborId = mRotation;
                                 }
-                                removePossiblePart(part);
-
-                                mSpaceShip->addPart(newPart);
-                                addPossibleParts(newPart);
-
-                                //debugShip();
                             }
-                            break;
-                        }
-                    }else if(mMode == MODE_WIRE)
-                    {
-                        if(obj->getType().find("CPU") == 0)
-                        {
-                            SpaceShipPart *part = (SpaceShipPart *)obj;
-                            if(mLinkFirst && mLinkFirst != part)
+                            if(info)
                             {
-                                if(mLinkFirst->getType() == "CPU" && part->getType() != "CPU")
+                                assert(mSelectedPart->getNumberNeighbors() == 1); // @todo deal with "big" parts
+                                Ogre::Quaternion ori = part->getSceneNode()->getOrientation() * info->mRot;
+                                Ogre::Vector3 pos = part->getSceneNode()->getPosition() + ori * info->mPos;
+                                ori = ori * mSelectedPart->getNeighborInfo(0)->mRot.Inverse() * rot;
+                                pos = pos - mSelectedPart->getNeighborInfo(0)->mRot.Inverse() * rot * mSelectedPart->getNeighborInfo(0)->mPos;
+                                mSelectedPart->getSceneNode()->setPosition(pos);
+                                mSelectedPart->getSceneNode()->setOrientation(ori);
+                                hit = true;
+                                if(e.state.buttonDown(OIS::MB_Left))
                                 {
-                                    ((CPU *)mLinkFirst)->addDevice((Hardware *)part);
-                                    ((Hardware *)part)->connect((CPU *)mLinkFirst);
-                                    mLinkFirst = NULL;
-                                }else if(mLinkFirst->getType() != "CPU" && part->getType() == "CPU")
-                                {
-                                    ((CPU *)part)->addDevice((Hardware *)mLinkFirst);
-                                    ((Hardware *)mLinkFirst)->connect((CPU *)part);
-                                    mLinkFirst = NULL;
-                                }else
-                                {
-                                    mLinkFirst = part;
+                                    part->setNeighbor(mSelectedPart, neighborId);
+                                    mSelectedPart->setNeighbor(part, 0);
+                                    mSelectedPart = NULL;
+                                    setSelectedPartName(mSelectedPartName);
                                 }
+                            }
+                        }else if(e.state.buttonDown(OIS::MB_Left) && type == mSelectedPartType && part->getName().find("Designer") == 0)
+                        {
+                            char name[32];
+                            sprintf(name, "%sPart%d", mSpaceShip->getSceneNode()->getName().c_str(), mSpaceShip->getNextPartID());
+                            SpaceShipPart *newPart = NULL;
+                            switch(part->getPartType())
+                            {
+                            case SpaceShipPart::PART_FLOOR: 
+                                newPart = new SpaceShipPartFloor(part, name);
+                                break;
+                            case SpaceShipPart::PART_WALL:
+                                if(mSelectedPart && mSelectedPart->getType() == "SC_SpaceShipPartDoor")
+                                    newPart = new SpaceShipPartDoor(part, name);
+                                else
+                                    newPart = new SpaceShipPartWall(part, name);
+                                break;
+                            }
+                            assert(newPart);
+                            for(size_t j=0; j<newPart->getNumberNeighbors(); j++)
+                            {
+                                SpaceShipPart *neighbor = newPart->getNeighbor(j);
+                                if(!neighbor)
+                                    continue;
+                                for(size_t k=0; k<neighbor->getNumberNeighbors(); k++)
+                                {
+                                    if(neighbor->getNeighbor(k) == part)
+                                    {
+                                        neighbor->setNeighbor(newPart, k);
+                                        break;
+                                    }                                    
+                                }
+                            }
+                            removePossiblePart(part);
+
+                            mSpaceShip->addPart(newPart);
+                            addPossibleParts(newPart);
+
+                            //debugShip();
+                        }
+                        break;
+                    }
+                }else if(mMode == MODE_WIRE)
+                {
+                    if(obj->getType().find("CPU") == 0)
+                    {
+                        SpaceShipPart *part = (SpaceShipPart *)obj;
+                        if(mLinkFirst && mLinkFirst != part)
+                        {
+                            if(mLinkFirst->getType() == "CPU" && part->getType() != "CPU")
+                            {
+                                ((CPU *)mLinkFirst)->addDevice((Hardware *)part);
+                                ((Hardware *)part)->connect((CPU *)mLinkFirst);
+                                mLinkFirst = NULL;
+                            }else if(mLinkFirst->getType() != "CPU" && part->getType() == "CPU")
+                            {
+                                ((CPU *)part)->addDevice((Hardware *)mLinkFirst);
+                                ((Hardware *)mLinkFirst)->connect((CPU *)part);
+                                mLinkFirst = NULL;
                             }else
                             {
                                 mLinkFirst = part;
                             }
-                            break;
+                        }else
+                        {
+                            mLinkFirst = part;
                         }
-                    }else if(mMode == MODE_WIRELIGHT)
+                        break;
+                    }
+                }else if(mMode == MODE_WIRELIGHT)
+                {
+                    if(obj->getType() == "SC_SpaceShipPartLight")
                     {
-                        if(obj->getType() == "SC_SpaceShipPartLight")
-                        {
-                            SpaceShipPartLight *light = (SpaceShipPartLight *)obj;
-                            if(mLinkFirst && mLinkFirst->getType() == "CPU_LightControl")
-                                ((CPULightControl *)mLinkFirst)->addLight(light);
-                            else
-                                mLinkFirst = light;
-                            break;
-                        }else if(obj->getType() == "CPU_LightControl")
-                        {
-                            CPULightControl *lightControl = (CPULightControl *)obj;
-                            if(mLinkFirst && mLinkFirst->getType() == "SC_SpaceShipPartLight")
-                                lightControl->addLight((SpaceShipPartLight *)mLinkFirst);
-                            else
-                                mLinkFirst = lightControl;
-                            break;
-                        }
+                        SpaceShipPartLight *light = (SpaceShipPartLight *)obj;
+                        if(mLinkFirst && mLinkFirst->getType() == "CPU_LightControl")
+                            ((CPULightControl *)mLinkFirst)->addLight(light);
+                        else
+                            mLinkFirst = light;
+                        break;
+                    }else if(obj->getType() == "CPU_LightControl")
+                    {
+                        CPULightControl *lightControl = (CPULightControl *)obj;
+                        if(mLinkFirst && mLinkFirst->getType() == "SC_SpaceShipPartLight")
+                            lightControl->addLight((SpaceShipPartLight *)mLinkFirst);
+                        else
+                            mLinkFirst = lightControl;
+                        break;
                     }
                 }
             }

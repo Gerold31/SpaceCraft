@@ -20,14 +20,27 @@ SpaceShipPart::SpaceShipPart(PART_TYPE partType, bool castShadows, Ogre::Vector3
     mEntity = NULL;
 }
 
-SpaceShipPart::SpaceShipPart(SpaceShipPart *old, Ogre::String name, Ogre::String type)
-    :Entity(old->getParentSceneNode()->getPosition(), old->getParentSceneNode()->getOrientation(), old->getParentSceneNode()->getParentSceneNode(), name, type == "" ? old->getType() : type, old->mEngine)
+SpaceShipPart::SpaceShipPart(SpaceShipPart *old, Ogre::String name)
+    :Entity(old->getParentSceneNode()->getPosition(), old->getParentSceneNode()->getOrientation(), old->getParentSceneNode()->getParentSceneNode(), name, old->mType, old->mEngine)
 {
     mPartType = old->mPartType;
     mNeighbor = old->mNeighbor;
     mEntity = old->mEntity->clone(name + "Ent");
     mEntity->setMaterialName("Part/Metal");
     mEntity->setCastShadows(true);
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
+    mNode->attachObject(mEntity);
+}
+
+SpaceShipPart::SpaceShipPart(SpaceShipPart *old, Ogre::String name, Ogre::String type)
+    :Entity(old->getParentSceneNode()->getPosition(), old->getParentSceneNode()->getOrientation(), old->getParentSceneNode()->getParentSceneNode(), name, type, old->mEngine)
+{
+    mPartType = old->mPartType;
+    mNeighbor = old->mNeighbor;
+    mEntity = old->mEntity->clone(name + "Ent");
+    mEntity->setMaterialName("Part/Metal");
+    mEntity->setCastShadows(true);
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
 }
 

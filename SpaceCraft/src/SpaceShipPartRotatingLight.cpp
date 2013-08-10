@@ -12,6 +12,7 @@ SpaceShipPartRotatingLight::SpaceShipPartRotatingLight(Ogre::Vector3 pos, Ogre::
     : SpaceShipPart(PART_CEILMOUNT, true, pos, ori, parent, name, "SC_SpaceShipPartRotatingLight", engine)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "RotatingLight.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
     
     for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)
@@ -26,6 +27,7 @@ SpaceShipPartRotatingLight::SpaceShipPartRotatingLight(Ogre::Vector3 pos, Ogre::
     mLight->setSpecularColour(1, 0.2, 0);
     mLight->setDirection(1, 0, 0);
     mLight->setSpotlightRange(Ogre::Degree(45), Ogre::Degree(90));
+    mLight->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mLight);
 }
 
