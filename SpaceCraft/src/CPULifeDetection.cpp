@@ -34,7 +34,7 @@ bool CPULifeDetection::update(float elapsedTime)
     for(int i=0; i<mEngine->getMap()->getNumberEntities(); i++)
     {
         Entity *ent = mEngine->getMap()->getEntity(i);
-        if(ent->getType() == "SC_Human")
+        if(ent && ent->getType() == "SC_Human")
         {
             float dist = ent->getSceneNode()->getPosition().distance(mNode->getPosition());
             if(dist < minDist || minDist < 0)

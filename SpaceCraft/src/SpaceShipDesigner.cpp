@@ -503,7 +503,7 @@ void SpaceShipDesigner::updateVisibleParts()
         for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
         {
             SpaceShipPart *part = mSpaceShip->getPart(i);
-            if(part->getType() == "SC_SpaceShipPartLight" || part->getType() == "CPULightControl")
+            if(part->getType() == "SC_SpaceShipPartLight" || part->getType() == "CPU_LightControl")
             {
                 part->getSceneNode()->setVisible(true);
             }else

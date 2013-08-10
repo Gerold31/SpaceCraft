@@ -4,10 +4,16 @@
 #include "Map.hpp"
 
 #include "SpaceShipPart.hpp"
-#include "CPU.hpp"
 #include "Memory.hpp"
+#include "CPU.hpp"
 #include "CPUDisplay.hpp"
 #include "CPUKeyboard.hpp"
+#include "CPULightControl.hpp"
+#include "CPUDoorControl.hpp"
+#include "CPULifeSupport.hpp"
+#include "CPULifeDetection.hpp"
+#include "SpaceShipPartDoor.hpp"
+#include "SpaceShipPartLight.hpp"
 #include "SpaceShipPartRotatingLight.hpp"
 
 #include "OGRE/OgreSceneManager.h"
@@ -117,25 +123,30 @@ void SpaceShip::load(std::string fileName)
 
 
             if(type == "SC_SpaceShipPartFloor")
-            {
                 part = new SpaceShipPart(SpaceShipPart::PART_FLOOR, false, pos, ori, mNode, name, type, mEngine);
-            }else if(type == "SC_SpaceShipPartWall")
-            {
+            else if(type == "SC_SpaceShipPartWall")
                 part = new SpaceShipPart(SpaceShipPart::PART_WALL, false, pos, ori, mNode, name, type, mEngine);
-            }else if(type == "CPU")
+            else if(type == "CPU")
             {
                 part = new CPU(pos, ori, mNode, name, mEngine);
                 cpus.push_back((CPU *)part);
             }else if(type == "CPU_Display")
-            {
                 part = new CPUDisplay(pos, ori, mNode, name, mEngine);
-            }else if(type == "CPU_Keyboard")
-            {
+            else if(type == "CPU_Keyboard")
                 part = new CPUKeyboard(pos, ori, mNode, name, mEngine);
-            }else if(type == "SC_SpaceShipPartLight")
-            {
+            else if(type == "CPU_DoorControl")
+                part = new CPUDoorControl(pos, ori, mNode, name, mEngine);
+            else if(type == "CPU_LifeSupport")
+                part = new CPULifeSupport(pos, ori, mNode, name, mEngine);
+            else if(type == "CPU_LifeDetection")
+                part = new CPULifeDetection(pos, ori, mNode, name, mEngine);
+            else if(type == "CPU_LightControl")
+                part = new CPULightControl(pos, ori, mNode, name, mEngine);
+            else if(type == "SC_SpaceShipPartLight")
+                part = new SpaceShipPartLight(pos, ori, mNode, name, mEngine);
+            else if(type == "SC_SpaceShipPartRotatingLight")
                 part = new SpaceShipPartRotatingLight(pos, ori, mNode, name, mEngine);
-            }else
+            else
                 printf("Error loading %s: invalid type %s\n", fileName.c_str(), type.c_str());
             mParts.push_back(part);
         }

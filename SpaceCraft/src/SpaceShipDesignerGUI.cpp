@@ -53,9 +53,9 @@ void SpaceShipDesignerGUI::buttonClicked(MyGUI::Widget *widget)
     else if(widget->getName() == "ModeWire")
         mParent->setMode(SpaceShipDesigner::MODE_WIRE);
     else if(widget->getName() == "ModeWireLight")
-        mParent->setMode(SpaceShipDesigner::MODE_WIRE);
+        mParent->setMode(SpaceShipDesigner::MODE_WIRELIGHT);
     else if(widget->getName() == "ModeWireDoor")
-        mParent->setMode(SpaceShipDesigner::MODE_WIRE);
+        mParent->setMode(SpaceShipDesigner::MODE_WIREDOOR);
     else
         mParent->setSelectedPartName(((MyGUI::ButtonPtr)widget)->getCaption().asUTF8());
 }
