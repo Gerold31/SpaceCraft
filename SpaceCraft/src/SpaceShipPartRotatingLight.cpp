@@ -9,9 +9,9 @@
 SpaceShipPart::SpaceShipPartInfo SpaceShipPartRotatingLight::mPartInfo[] = {SpaceShipPartInfo(PART_FLOOR, Ogre::Vector3(0, 0.05, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
 
 SpaceShipPartRotatingLight::SpaceShipPartRotatingLight(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    : SpaceShipPart(PART_CEILMOUNT, true, pos, ori, parent, name, "SC_SpaceShipPartLight", engine)
+    : SpaceShipPart(PART_CEILMOUNT, true, pos, ori, parent, name, "SC_SpaceShipPartRotatingLight", engine)
 {
-    mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "Light.mesh");
+    mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "RotatingLight.mesh");
     mNode->attachObject(mEntity);
     
     for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)

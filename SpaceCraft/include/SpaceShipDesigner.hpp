@@ -22,7 +22,9 @@ public:
     enum MODE
     {
         MODE_BUILD,
-        MODE_WIRE
+        MODE_WIRE,
+        MODE_WIRELIGHT,
+        MODE_WIREDOOR
     };
 
     SpaceShipDesigner(ENGINE *engine);

@@ -9,6 +9,12 @@
 #include "CPU.hpp"
 #include "CPUDisplay.hpp"
 #include "CPUKeyboard.hpp"
+#include "CPULightControl.hpp"
+#include "CPUDoorControl.hpp"
+#include "CPULifeSupport.hpp"
+#include "CPULifeDetection.hpp"
+#include "SpaceShipPartDoor.hpp"
+#include "SpaceShipPartLight.hpp"
 #include "SpaceShipPartRotatingLight.hpp"
 
 #include "OGRE/OgreSceneManager.h"
@@ -263,6 +269,25 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                             }
                             break;
                         }
+                    }else if(mMode == MODE_WIRELIGHT)
+                    {
+                        if(obj->getType() == "SC_SpaceShipPartLight")
+                        {
+                            SpaceShipPartLight *light = (SpaceShipPartLight *)obj;
+                            if(mLinkFirst && mLinkFirst->getType() == "CPU_LightControl")
+                                ((CPULightControl *)mLinkFirst)->addLight(light);
+                            else
+                                mLinkFirst = light;
+                            break;
+                        }else if(obj->getType() == "CPU_LightControl")
+                        {
+                            CPULightControl *lightControl = (CPULightControl *)obj;
+                            if(mLinkFirst && mLinkFirst->getType() == "SC_SpaceShipPartLight")
+                                lightControl->addLight((SpaceShipPartLight *)mLinkFirst);
+                            else
+                                mLinkFirst = lightControl;
+                            break;
+                        }
                     }
                 }
             }
@@ -328,8 +353,20 @@ void SpaceShipDesigner::setSelectedPartName(std::string name)
         mSelectedPart = new CPUDisplay(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
     else if(name == "Keyboard")
         mSelectedPart = new CPUKeyboard(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
-    else if(name == "Light")
+    else if(name == "RotatingLight")
         mSelectedPart = new SpaceShipPartRotatingLight(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+    else if(name == "Light")
+        mSelectedPart = new SpaceShipPartLight(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+    else if(name == "LightControl")
+        mSelectedPart = new CPULightControl(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+    else if(name == "Door")
+        mSelectedPart = new SpaceShipPartDoor(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+    else if(name == "DoorControl")
+        mSelectedPart = new CPUDoorControl(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+    else if(name == "LifeSupport")
+        mSelectedPart = new CPULifeSupport(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+    else if(name == "LifeDetection")
+        mSelectedPart = new CPULifeDetection(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
 
     if(!mSelectedPart)
         return;
@@ -450,6 +487,23 @@ void SpaceShipDesigner::updateVisibleParts()
         {
             SpaceShipPart *part = mSpaceShip->getPart(i);
             if(part->getType().find("CPU") == 0)
+            {
+                part->getSceneNode()->setVisible(true);
+            }else
+            {
+                part->getSceneNode()->setVisible(false);
+            }
+        }
+    }else if(mMode == MODE_WIRELIGHT)
+    {
+        for(std::vector<SpaceShipPart *>::iterator i = mPossibleParts.begin(); i != mPossibleParts.end(); ++i)
+        {
+            (*i)->getSceneNode()->setVisible(false);
+        }
+        for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
+        {
+            SpaceShipPart *part = mSpaceShip->getPart(i);
+            if(part->getType() == "SC_SpaceShipPartLight" || part->getType() == "CPULightControl")
             {
                 part->getSceneNode()->setVisible(true);
             }else
