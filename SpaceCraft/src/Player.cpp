@@ -22,6 +22,8 @@
 
 #include <stdio.h>
 
+#define PLAYER_SIZE (0.5)
+
 #if _MSC_VER
 #define snprintf _snprintf
 #endif
@@ -43,8 +45,8 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     engine->getSceneMgr()->setAmbientLight(Ogre::ColourValue(0.5,0.5,0.5));
 
     mCamera->setAspectRatio(1.0f * mViewport->getActualWidth() / mViewport->getActualHeight());
-    mCamera->setNearClipDistance(0.5);
-    mCamera->setFarClipDistance(5000.0);
+    mCamera->setNearClipDistance(0.3);
+    mCamera->setFarClipDistance(300.0);
     
     mInput = Input::getSingletonPtr();
     mInput->initialise(window);
@@ -82,7 +84,34 @@ bool Player::update(float elapsedTime)
         translation = mCameraYawNode->getOrientation() * mCameraPitchNode->getOrientation() * translation;
         translation.y = 0;
         translation.normalise();
-        mNode->translate(translation * speed, Ogre::Node::TS_LOCAL);
+
+        // collision detection
+        Ogre::Ray ray(mNode->getParentSceneNode()->getPosition() + mNode->getPosition(), translation);
+        mRaySceneQuery->setRay(ray);
+        mRaySceneQuery->setSortByDistance(true);
+
+        Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
+        Ogre::RaySceneQueryResult::iterator i = result.begin();
+
+        while(i!=result.end())
+        {
+            if(i->distance-PLAYER_SIZE < speed)
+            {
+                if(i->movable)
+                {
+                    if(i->movable->getMovableType() == "Entity")
+                    {
+                        speed = i->distance - PLAYER_SIZE;
+                        break;
+                    }
+                }
+            }else
+                break;
+            ++i;
+        }
+        
+        translation = translation * speed;
+        mNode->translate(translation, Ogre::Node::TS_LOCAL);
     }
         
     // test: ship movement
