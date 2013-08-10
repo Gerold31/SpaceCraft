@@ -16,6 +16,9 @@ public:
 
     void registerEntity(Entity *ent);
 
+    int getNumberEntities();
+    Entity *getEntity(int i);
+
     void destroyEntity(Entity *ent);
 
 protected:

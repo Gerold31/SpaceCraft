@@ -52,12 +52,6 @@ int main(int argc, char **argv)
         light->setCastShadows(true);
         */
 
-        Ogre::SceneNode *node = ship->getSceneNode()->createChildSceneNode("HumanNode");
-        Ogre::Entity *human = engine->getSceneMgr()->createEntity("Human", "Human/Human.mesh");
-        node->attachObject(human);
-        node->setPosition(0,0.2,0);
-        node->setScale(0.1, 0.1, 0.1);
-
         engine->run();
 
         delete engine;

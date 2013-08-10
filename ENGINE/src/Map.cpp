@@ -42,6 +42,16 @@ void Map::registerEntity(Entity *ent)
     mEntitiesToRegister.push_back(ent);
 }
 
+int Map::getNumberEntities()
+{
+    return mEntities.size(); 
+}
+
+Entity *Map::getEntity(int i)
+{
+    return mEntities.at(i);
+}
+
 void Map::destroyEntity(Entity *ent)
 {
     for(std::vector<Entity *>::iterator i=mEntities.begin(); i!=mEntities.end(); ++i)
