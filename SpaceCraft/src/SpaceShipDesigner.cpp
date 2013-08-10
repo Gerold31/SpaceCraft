@@ -302,6 +302,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                         break;
                     }
                 }
+                break;
             }
         }
         ++i;
