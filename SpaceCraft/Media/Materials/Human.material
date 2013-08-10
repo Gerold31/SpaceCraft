@@ -1,0 +1,140 @@
+material human_0_human
+{
+    receive_shadows on
+
+    technique
+    {
+        pass
+        {
+            lighting on
+
+            ambient 0.8 0.8 0.8 1
+            diffuse 0.8 0.8 0.8 1
+            specular 0.1 0.1 0.1 1
+            emissive 0 0 0
+
+            depth_write on
+            alpha_rejection greater 128
+
+            texture_unit
+            {
+                texture Human/texture.png
+            }
+        }
+    }
+}
+
+material human_1_Jeans_Game
+{
+    receive_shadows on
+
+    technique
+    {
+        pass
+        {
+            lighting on
+
+            ambient 0.8 0.8 0.8 1
+            diffuse 0.8 0.8 0.8 1
+            specular 0.1 0.1 0.1 1
+            emissive 0 0 0
+
+            texture_unit
+            {
+                texture Human/jeans_texture.png
+            }
+        }
+    }
+}
+
+material human_2_ClassicShoes_medium
+{
+    receive_shadows on
+
+    technique
+    {
+        pass
+        {
+            lighting on
+
+            ambient 0.8 0.8 0.8 1
+            diffuse 0.8 0.8 0.8 1
+            specular 0.1 0.1 0.1 1
+            emissive 0 0 0
+
+            texture_unit
+            {
+                texture Human/classicshoes_texture.png
+            }
+        }
+    }
+}
+
+material human_3_Tshirt_shortsleeves_game
+{
+    receive_shadows on
+
+    technique
+    {
+        pass
+        {
+            lighting on
+
+            ambient 0.8 0.8 0.8 1
+            diffuse 0.8 0.8 0.8 1
+            specular 0.1 0.1 0.1 1
+            emissive 0 0 0
+
+            texture_unit
+            {
+                texture Human/tshirt_texture_white.png
+            }
+        }
+    }
+}
+
+material human_4_short1
+{
+    receive_shadows on
+
+    technique
+    {
+        pass
+        {
+            lighting on
+
+            ambient 0.8 0.8 0.8 1
+            diffuse 0.8 0.8 0.8 1
+            specular 0.1 0.1 0.1 1
+            emissive 0 0 0
+
+            texture_unit
+            {
+                texture Human/short1_texture.png
+            }
+        }
+    }
+}
+
+material human_5_HighPolyEyes
+{
+    receive_shadows on
+
+    technique
+    {
+        pass
+        {
+            lighting on
+
+            ambient 0.8 0.8 0.8 1
+            diffuse 0.8 0.8 0.8 1
+            specular 0.1 0.1 0.1 1
+            emissive 0 0 0
+
+            texture_unit
+            {
+                texture Human/brown_eye.png
+            }
+        }
+    }
+}

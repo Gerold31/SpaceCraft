@@ -40,7 +40,7 @@ int main(int argc, char **argv)
         SpaceShip *ship = new SpaceShip(455e3, Ogre::Vector3(0, 0, 0), Ogre::Vector3(0, 0, 0), Ogre::Quaternion(), engine->getSceneMgr()->getRootSceneNode(), "Ship", engine);
         map->addGravityObject(ship);
         
-        Player *player = new Player(Ogre::Vector3(0,1.6,0), Ogre::Quaternion(), ship->getSceneNode(), engine->getWindow(), "Player", engine);
+        Player *player = new Player(Ogre::Vector3(0,1.8,0), Ogre::Quaternion(), ship->getSceneNode(), engine->getWindow(), "Player", engine);
         player->setSpaceShip(ship);
 
         /*
@@ -51,6 +51,12 @@ int main(int argc, char **argv)
         light->setDirection(1, -2, 1);
         light->setCastShadows(true);
         */
+
+        Ogre::SceneNode *node = ship->getSceneNode()->createChildSceneNode("HumanNode");
+        Ogre::Entity *human = engine->getSceneMgr()->createEntity("Human", "Human/Human.mesh");
+        node->attachObject(human);
+        node->setPosition(0,0.2,0);
+        node->setScale(0.1, 0.1, 0.1);
 
         engine->run();
 
