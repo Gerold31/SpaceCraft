@@ -167,7 +167,6 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                             SpaceShipPart::PART_TYPE type = part->getPartType();
                             if(mSelectedPart && part->getName().find("Designer") != 0)
                             {
-                                assert(mSelectedPart->getNumberNeighbors() == 1); // @todo cannot deal with "big" parts
                                 SpaceShipPart::SpaceShipPartInfo *info = NULL;
                                 int neighborId = -1;
                                 Ogre::Quaternion rot = Ogre::Quaternion();
@@ -200,6 +199,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                                 }
                                 if(info)
                                 {
+                                    assert(mSelectedPart->getNumberNeighbors() == 1); // @todo deal with "big" parts
                                     Ogre::Quaternion ori = part->getSceneNode()->getOrientation() * info->mRot;
                                     Ogre::Vector3 pos = part->getSceneNode()->getPosition() + ori * info->mPos;
                                     ori = ori * mSelectedPart->getNeighborInfo(0)->mRot.Inverse() * rot;
@@ -226,7 +226,10 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                                     newPart = new SpaceShipPartFloor(part, name);
                                     break;
                                 case SpaceShipPart::PART_WALL:
-                                    newPart = new SpaceShipPartWall(part, name);
+                                    if(mSelectedPart && mSelectedPart->getType() == "SC_SpaceShipPartDoor")
+                                        newPart = new SpaceShipPartDoor(part, name);
+                                    else
+                                        newPart = new SpaceShipPartWall(part, name);
                                     break;
                                 }
                                 assert(newPart);

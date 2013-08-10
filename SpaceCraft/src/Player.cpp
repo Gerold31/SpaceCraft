@@ -17,6 +17,7 @@
 #include "SpaceShip.hpp"
 #include "SpaceShipDesigner.hpp"
 #include "SpaceShipPart.hpp"
+#include "SpaceShipPartDoor.hpp"
 #include "CPUKeyboard.hpp"
 #include "GUIManager.hpp"
 
@@ -34,9 +35,9 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     mCamera = engine->getSceneMgr()->createCamera(name);
     mCamera->lookAt(0,0,-1);
     mCamera->setPosition(0, 0.3, 0);
-    mCameraYawNode   = mNode->createChildSceneNode();
-    mCameraPitchNode = mCameraYawNode->createChildSceneNode();
-    mCameraRollNode  = mCameraPitchNode->createChildSceneNode();
+    mCameraYawNode   = mNode->createChildSceneNode(name + "YawNode");
+    mCameraPitchNode = mCameraYawNode->createChildSceneNode(name + "PitchNode");
+    mCameraRollNode  = mCameraPitchNode->createChildSceneNode(name + "RollNode");
     mCameraRollNode->attachObject(mCamera);
 
     mEntity->getParentSceneNode()->getParentSceneNode()->removeChild(mEntity->getParentSceneNode());
@@ -105,6 +106,9 @@ bool Player::update(float elapsedTime)
                 {
                     if(i->movable->getMovableType() == "Entity" && i->movable->getName() != mNode->getName() + "Mesh")
                     {
+                        Entity *ent = dynamic_cast<Entity *>(i->movable->getParentSceneNode()->getAttachedObject(i->movable->getParentSceneNode()->getName() + "Obj"));
+                        if(ent && ent->getType() == "SC_SpaceShipPartDoor" && ((SpaceShipPartDoor *)ent)->isOpen())
+                            continue;
                         printf("colliding with %s", i->movable->getName().c_str());
                         speed = i->distance - PLAYER_SIZE;
                         break;
@@ -264,7 +268,8 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
                     {
                         Entity *obj = dynamic_cast<Entity *>(node->getAttachedObject(node->getName() + "Obj"));
                         if(obj)
-                        {                
+                        {           
+                            printf("hit %s", obj->getType().c_str());
                             if(obj->getType() == "SC_KinoControl")
                             {
                                 Kino *kino = ((KinoControl *)obj)->getKino();
@@ -294,6 +299,15 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
                                     mInput->removeKeyListener(keyboard->getName());
                                 }
                                 return false; // stop iterating the Input->mKeyListeners map since we changed it
+                            }else if(obj->getType() == "SC_SpaceShipPartDoor")
+                            {
+                                if(mMode == MODE_DEFAULT)
+                                {
+                                    printf("using door\n");
+                                    SpaceShipPartDoor *door = ((SpaceShipPartDoor *)obj);
+                                    door->open(!door->isOpen());
+                                }
+                                return true;
                             }
                         }
                     }
