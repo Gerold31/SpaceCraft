@@ -107,11 +107,11 @@ bool Player::update(float elapsedTime)
                     if(i->movable->getMovableType() == "Entity" && i->movable->getName() != mNode->getName() + "Mesh")
                     {
                         Entity *ent = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
-                        if(ent && ent->getType() == "SC_SpaceShipPartDoor" && ((SpaceShipPartDoor *)ent)->isOpen())
-                            continue;
-                        printf("colliding with %s", i->movable->getName().c_str());
-                        speed = i->distance - PLAYER_SIZE;
-                        break;
+                        if(!(ent && ent->getType() == "SC_SpaceShipPartDoor" && ((SpaceShipPartDoor *)ent)->isOpen()))
+                        {
+                            speed = i->distance - PLAYER_SIZE;
+                            break;
+                        }
                     }
                 }
             }else
@@ -208,8 +208,7 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
                 {
                     Entity *obj = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
                     if(obj)
-                    {           
-                        printf("hit %s", obj->getType().c_str());
+                    {
                         if(obj->getType() == "SC_KinoControl")
                         {
                             Kino *kino = ((KinoControl *)obj)->getKino();
@@ -243,7 +242,6 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
                         {
                             if(mMode == MODE_DEFAULT)
                             {
-                                printf("using door\n");
                                 SpaceShipPartDoor *door = ((SpaceShipPartDoor *)obj);
                                 door->open(!door->isOpen());
                             }
