@@ -3,7 +3,11 @@
 #include "ENGINE.hpp"
 #include "Map.hpp"
 
-#include "SpaceShipPart.hpp"
+#include "SpaceShipPartWall.hpp"
+#include "SpaceShipPartFloor.hpp"
+#include "SpaceShipPartDoor.hpp"
+#include "SpaceShipPartLight.hpp"
+#include "SpaceShipPartRotatingLight.hpp"
 #include "Memory.hpp"
 #include "CPU.hpp"
 #include "CPUDisplay.hpp"
@@ -12,9 +16,6 @@
 #include "CPUDoorControl.hpp"
 #include "CPULifeSupport.hpp"
 #include "CPULifeDetection.hpp"
-#include "SpaceShipPartDoor.hpp"
-#include "SpaceShipPartLight.hpp"
-#include "SpaceShipPartRotatingLight.hpp"
 
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreRenderWindow.h"
@@ -25,7 +26,7 @@
 SpaceShip::SpaceShip(double mass, Ogre::Vector3 velocity, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
     :GravityObject(mass, velocity, pos, ori, parent, name, "SC_SpaceShip", engine)
 {
-    mParts.push_back(new SpaceShipPart(SpaceShipPart::PART_FLOOR, true, Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, name + "Part0", "SC_SpaceShipPartFloor", engine));
+    mParts.push_back(new SpaceShipPartFloor(Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, name + "Part0", engine));
     mNextPartID = 1;
 }
 
@@ -123,9 +124,9 @@ void SpaceShip::load(std::string fileName)
 
 
             if(type == "SC_SpaceShipPartFloor")
-                part = new SpaceShipPart(SpaceShipPart::PART_FLOOR, false, pos, ori, mNode, name, type, mEngine);
+                part = new SpaceShipPartFloor(pos, ori, mNode, name, mEngine);
             else if(type == "SC_SpaceShipPartWall")
-                part = new SpaceShipPart(SpaceShipPart::PART_WALL, false, pos, ori, mNode, name, type, mEngine);
+                part = new SpaceShipPartWall(pos, ori, mNode, name, mEngine);
             else if(type == "CPU")
             {
                 part = new CPU(pos, ori, mNode, name, mEngine);
@@ -172,7 +173,7 @@ void SpaceShip::load(std::string fileName)
         }
     }
     if(mParts.size() == 0)
-        mParts.push_back(new SpaceShipPart(SpaceShipPart::PART_FLOOR, true, Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, mName + "Part0", "SC_SpaceShipPartFloor", mEngine));
+        mParts.push_back(new SpaceShipPartFloor(Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, mName + "Part0", mEngine));
     mNextPartID = mParts.size();
 
     for(int i=0; i<cpus.size(); i++)

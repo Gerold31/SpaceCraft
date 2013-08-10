@@ -31,7 +31,7 @@ public:
     SpaceShipPart(SpaceShipPart *old, Ogre::String name);
     virtual ~SpaceShipPart();
     
-    virtual bool update(float elapsedTime){return true;}
+    virtual bool update(float elapsedTime) = 0;
 
     PART_TYPE getPartType() {return mPartType;}
     size_t getNumberNeighbors() {return mNeighbor.size();}
@@ -45,8 +45,6 @@ protected:
     Ogre::Entity *mEntity;
     std::vector<std::pair<SpaceShipPart *, SpaceShipPartInfo *> > mNeighbor;
     PART_TYPE mPartType;
-
-    static SpaceShipPartInfo mPartInfoFloor[14], mPartInfoWall[10];
 };
 
 #endif
