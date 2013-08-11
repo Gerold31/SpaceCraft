@@ -12,6 +12,7 @@
 #include "OIS/OIS.h"
 
 #include "ENGINE.hpp"
+#include "GUIManager.hpp"
 #include "KinoControl.hpp"
 #include "Kino.hpp"
 #include "SpaceShip.hpp"
@@ -19,7 +20,7 @@
 #include "SpaceShipPart.hpp"
 #include "SpaceShipPartDoor.hpp"
 #include "CPUKeyboard.hpp"
-#include "GUIManager.hpp"
+#include "Weapon.hpp"
 
 #include <stdio.h>
 
@@ -34,13 +35,14 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
 {
     mCamera = engine->getSceneMgr()->createCamera(name);
     mCamera->lookAt(0,0,-1);
-    mCamera->setPosition(0, 0.3, 0);
-    mCameraYawNode   = mNode->createChildSceneNode(name + "YawNode");
+    mCamera->setPosition(0, 0, 0);
+    mCameraYawNode   = mNode->createChildSceneNode(name + "YawNode", Ogre::Vector3(0,-0.1,-0.2));
     mCameraPitchNode = mCameraYawNode->createChildSceneNode(name + "PitchNode");
     mCameraRollNode  = mCameraPitchNode->createChildSceneNode(name + "RollNode");
     mCameraRollNode->attachObject(mCamera);
 
     mEntity->getParentSceneNode()->getParentSceneNode()->removeChild(mEntity->getParentSceneNode());
+    mEntity->getParentSceneNode()->setPosition(mEntity->getParentSceneNode()->getPosition() + Ogre::Vector3(0, 0.1, 0.2));
     mCameraYawNode->addChild(mEntity->getParentSceneNode());
 
     mViewport = window->addViewport(mCamera, 100, 0, 0, 1, 1);
@@ -70,6 +72,8 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     mTranslation = Ogre::Vector3::ZERO;
 
     mSpaceShipDesigner = new SpaceShipDesigner(engine);
+
+    mWeapon = new Weapon(this, Ogre::Vector3(0.1, 0, -0.45), Ogre::Quaternion(), mCameraRollNode, name + "Weapon", engine);
 }
 
 bool Player::update(float elapsedTime)
@@ -91,7 +95,7 @@ bool Player::update(float elapsedTime)
         translation.normalise();
 
         // collision detection
-        Ogre::Ray ray(mNode->getParentSceneNode()->getPosition() + mNode->getPosition(), translation);
+        Ogre::Ray ray(mNode->getParentSceneNode()->getPosition() + mNode->getPosition() + Ogre::Vector3(0, -0.5, 0), translation);
         mRaySceneQuery->setRay(ray);
         mRaySceneQuery->setSortByDistance(true);
 
@@ -107,8 +111,9 @@ bool Player::update(float elapsedTime)
                     if(i->movable->getMovableType() == "Entity" && i->movable->getName() != mNode->getName() + "Mesh")
                     {
                         Entity *ent = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
-                        if(!(ent && ent->getType() == "SC_SpaceShipPartDoor" && ((SpaceShipPartDoor *)ent)->isOpen()))
+                        if(!(ent && ent->getType() == "SC_SpaceShipPartDoor" && ((SpaceShipPartDoor *)ent)->isOpen()) && ent != (Entity *)mWeapon)
                         {
+                            printf("colliding with %s\n", ent->getName().c_str());
                             speed = i->distance - PLAYER_SIZE;
                             break;
                         }
@@ -177,6 +182,8 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
 
             mInput->addKeyListener(mSpaceShipDesigner, "SpaceShipDesigner");
             mInput->addMouseListener(mSpaceShipDesigner, "SpaceShipDesigner");
+
+            //mNode->setVisible(false);
         }else if(mMode == MODE_DESIGN)
         {
             mMode = MODE_DEFAULT;
@@ -187,6 +194,8 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
             mEngine->getSceneMgr()->setAmbientLight(Ogre::ColourValue(0.5,0.5,0.5));
             mInput->removeKeyListener("SpaceShipDesigner");
             mInput->removeMouseListener("SpaceShipDesigner");
+
+            mNode->setVisible(true);
         }
         return false;
     case OIS::KC_E:
@@ -323,6 +332,10 @@ bool Player::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
     switch(mMode)
     {
     case MODE_DEFAULT:
+        if(id == OIS::MB_Left)
+        {
+            mWeapon->shoot();
+        }
         break;
     case MODE_DESIGN:
         /*

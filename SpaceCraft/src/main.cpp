@@ -40,7 +40,7 @@ int main(int argc, char **argv)
         SpaceShip *ship = new SpaceShip(455e3, Ogre::Vector3(0, 0, 0), Ogre::Vector3(0, 0, 0), Ogre::Quaternion(), engine->getSceneMgr()->getRootSceneNode(), "Ship", engine);
         map->addGravityObject(ship);
         
-        Player *player = new Player(Ogre::Vector3(0,1.6,0), Ogre::Quaternion(), ship->getSceneNode(), engine->getWindow(), "Player", engine);
+        Player *player = new Player(Ogre::Vector3(0,1.67,0), Ogre::Quaternion(), ship->getSceneNode(), engine->getWindow(), "Player", engine);
         player->setSpaceShip(ship);
 
         /*

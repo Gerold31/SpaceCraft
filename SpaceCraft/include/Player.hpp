@@ -5,6 +5,7 @@ class Input;
 class SpaceShip;
 class SpaceShipDesigner;
 class SpaceShipPart;
+class Weapon;
 
 #include "OIS/OIS.h"
 
@@ -60,6 +61,8 @@ private:
 
     SpaceShip *mShip;
     SpaceShipDesigner *mSpaceShipDesigner;
+
+    Weapon *mWeapon;
 };
 
 #endif
