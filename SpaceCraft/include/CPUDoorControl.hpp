@@ -17,6 +17,8 @@ public:
     void interrupt();
 
     void addDoor(SpaceShipPartDoor *door);
+    int getNumberDoors() {return mDoors.size();}
+    SpaceShipPartDoor *getDoor(int i) {return mDoors.at(i).first;}
 
 private:
     std::vector<std::pair<SpaceShipPartDoor *, int> >mDoors;

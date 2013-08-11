@@ -8,6 +8,8 @@ namespace Ogre
     class Light;
 };
 
+class CPULightControl;
+
 class SpaceShipPartLight : public SpaceShipPart
 {
 public:
@@ -16,11 +18,16 @@ public:
     bool update(float elapsedTime);
 
     void setBrightness(int b);
+    
+    void connect(CPULightControl *ctrl) {mControl = ctrl;}
+    bool isConnected() {return mControl;}
 
 private:
     static SpaceShipPartInfo mPartInfo[1];
 
     Ogre::Light *mLight;
+
+    CPULightControl *mControl;
 };
 
 #endif

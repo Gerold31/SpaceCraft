@@ -22,6 +22,8 @@ SpaceShipPartDoor::SpaceShipPartDoor(Ogre::Vector3 pos, Ogre::Quaternion ori, Og
     mDoorNode = mNode->createChildSceneNode(name + "DoorNode");
     mDoorNode->attachObject(mDoor);
     mLocked = mOpened = false;
+    
+    mControl = NULL;
 }
 
 SpaceShipPartDoor::SpaceShipPartDoor(SpaceShipPart *old, Ogre::String name)

@@ -17,6 +17,8 @@ public:
     void interrupt();
 
     void addLight(SpaceShipPartLight *light);
+    int getNumberLights() {return mLights.size();}
+    SpaceShipPartLight *getLight(int i) {return mLights.at(i);}
 
 private:
     std::vector<SpaceShipPartLight *>mLights;

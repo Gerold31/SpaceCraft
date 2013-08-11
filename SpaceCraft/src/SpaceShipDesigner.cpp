@@ -160,6 +160,11 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
             {   
                 if(mMode == MODE_BUILD)
                 {
+                    if(obj == mSelectedPart)
+                    {
+                        ++i;
+                        continue;
+                    }
                     if(obj->getType() == "SC_SpaceShipPartFloor" || obj->getType() == "SC_SpaceShipPartWall")
                     {
                         SpaceShipPart *part = (SpaceShipPart *)obj;
@@ -255,70 +260,62 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                         }
                         break;
                     }
-                }else if(mMode == MODE_WIRE)
+                }else if(e.state.buttonDown(OIS::MB_Left))
                 {
-                    if(obj->getType().find("CPU") == 0)
+                    if(mMode == MODE_WIRE)
                     {
-                        SpaceShipPart *part = (SpaceShipPart *)obj;
-                        if(mLinkFirst && mLinkFirst != part)
+                        if(mLinkFirst)
                         {
-                            if(mLinkFirst->getType() == "CPU" && part->getType() != "CPU")
-                            {
-                                ((CPU *)mLinkFirst)->addDevice((Hardware *)part);
-                                ((Hardware *)part)->connect((CPU *)mLinkFirst);
+                            if(obj == mLinkFirst)
                                 mLinkFirst = NULL;
-                            }else if(mLinkFirst->getType() != "CPU" && part->getType() == "CPU")
+                            else
                             {
-                                ((CPU *)part)->addDevice((Hardware *)mLinkFirst);
-                                ((Hardware *)mLinkFirst)->connect((CPU *)part);
-                                mLinkFirst = NULL;
-                            }else
-                            {
-                                mLinkFirst = part;
+                                assert(obj->getType().find("CPU_") == 0);
+                                ((CPU *)mLinkFirst)->addDevice((Hardware *)obj);
+                                ((Hardware *)obj)->connect((CPU *)mLinkFirst);
                             }
                         }else
                         {
-                            mLinkFirst = part;
+                            assert(obj->getType() == "CPU");
+                            mLinkFirst = (CPU *)obj;
                         }
-                        break;
-                    }
-                }else if(mMode == MODE_WIRELIGHT)
-                {
-                    if(obj->getType() == "SC_SpaceShipPartLight")
+                        updateVisibleParts();
+                    }else if(mMode == MODE_WIRELIGHT)
                     {
-                        SpaceShipPartLight *light = (SpaceShipPartLight *)obj;
-                        if(mLinkFirst && mLinkFirst->getType() == "CPU_LightControl")
-                            ((CPULightControl *)mLinkFirst)->addLight(light);
-                        else
-                            mLinkFirst = light;
-                        break;
-                    }else if(obj->getType() == "CPU_LightControl")
+                        if(mLinkFirst)
+                        {
+                            if(obj == mLinkFirst)
+                                mLinkFirst = NULL;
+                            else
+                            {
+                                assert(obj->getType() == "SC_SpaceShipPartLight");
+                                ((CPULightControl *)mLinkFirst)->addLight((SpaceShipPartLight *)obj);
+                                ((SpaceShipPartLight *)obj)->connect((CPULightControl *)mLinkFirst);
+                            }
+                        }else
+                        {
+                            assert(obj->getType() == "CPU_LightControl");
+                            mLinkFirst = (CPULightControl *)obj;
+                        }
+                        updateVisibleParts();
+                    }else if(mMode == MODE_WIREDOOR)
                     {
-                        CPULightControl *lightControl = (CPULightControl *)obj;
-                        if(mLinkFirst && mLinkFirst->getType() == "SC_SpaceShipPartLight")
-                            lightControl->addLight((SpaceShipPartLight *)mLinkFirst);
-                        else
-                            mLinkFirst = lightControl;
-                        break;
-                    }
-                }else if(mMode == MODE_WIREDOOR)
-                {
-                    if(obj->getType() == "SC_SpaceShipPartDoor")
-                    {
-                        SpaceShipPartDoor *door = (SpaceShipPartDoor *)obj;
-                        if(mLinkFirst && mLinkFirst->getType() == "CPU_DoorControl")
-                            ((CPUDoorControl *)mLinkFirst)->addDoor(door);
-                        else
-                            mLinkFirst = door;
-                        break;
-                    }else if(obj->getType() == "CPU_DoorControl")
-                    {
-                        CPUDoorControl *doorControl = (CPUDoorControl *)obj;
-                        if(mLinkFirst && mLinkFirst->getType() == "SC_SpaceShipPartDoor")
-                            doorControl->addDoor((SpaceShipPartDoor *)mLinkFirst);
-                        else
-                            mLinkFirst = doorControl;
-                        break;
+                        if(mLinkFirst)
+                        {
+                            if(obj == mLinkFirst)
+                                mLinkFirst = NULL;
+                            else
+                            {
+                                assert(obj->getType() == "SC_SpaceShipPartDoor");
+                                ((CPUDoorControl *)mLinkFirst)->addDoor((SpaceShipPartDoor *)obj);
+                                ((SpaceShipPartDoor *)obj)->connect((CPUDoorControl *)mLinkFirst);
+                            }
+                        }else
+                        {
+                            assert(obj->getType() == "CPU_DoorControl");
+                            mLinkFirst = (CPUDoorControl *)obj;
+                        }
+                        updateVisibleParts();
                     }
                 }
                 break;
@@ -343,6 +340,7 @@ void SpaceShipDesigner::setMode(MODE mode)
     if(mMode != mode)
     {
         mMode = mode;
+        mLinkFirst = NULL;
         updateVisibleParts();
     }
 }
@@ -518,7 +516,10 @@ void SpaceShipDesigner::updateVisibleParts()
         for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
         {
             SpaceShipPart *part = mSpaceShip->getPart(i);
-            if(part->getType().find("CPU") == 0)
+            if(part->getType() == "CPU" && (!mLinkFirst || part == mLinkFirst))
+            {
+                    part->getSceneNode()->setVisible(true);
+            }else if(part->getType().find("CPU_") && mLinkFirst && !((Hardware *)part)->isConnected())
             {
                 part->getSceneNode()->setVisible(true);
             }else
@@ -535,7 +536,10 @@ void SpaceShipDesigner::updateVisibleParts()
         for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
         {
             SpaceShipPart *part = mSpaceShip->getPart(i);
-            if(part->getType() == "SC_SpaceShipPartLight" || part->getType() == "CPU_LightControl")
+            if(part->getType() == "CPU_LightControl" && (!mLinkFirst || part == mLinkFirst))
+            {
+                part->getSceneNode()->setVisible(true);
+            }else if(part->getType() == "SC_SpaceShipPartLight" && mLinkFirst && !((SpaceShipPartLight *)part)->isConnected())
             {
                 part->getSceneNode()->setVisible(true);
             }else
@@ -552,7 +556,10 @@ void SpaceShipDesigner::updateVisibleParts()
         for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
         {
             SpaceShipPart *part = mSpaceShip->getPart(i);
-            if(part->getType() == "SC_SpaceShipPartDoor" || part->getType() == "CPU_DoorControl")
+            if(part->getType() == "CPU_DoorControl" && (!mLinkFirst || part == mLinkFirst))
+            {
+                part->getSceneNode()->setVisible(true);
+            }else if(part->getType() == "SC_SpaceShipPartDoor" && mLinkFirst && !((SpaceShipPartDoor *)part)->isConnected())
             {
                 part->getSceneNode()->setVisible(true);
             }else

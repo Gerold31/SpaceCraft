@@ -58,6 +58,7 @@ private:
 
     SpaceShip *mSpaceShip;
     SpaceShipPart *mSelectedPart;
+    SpaceShipPart *mLinkFirst;
     SpaceShipDesignerGUI *mGUI;
 
     int mSelectedPartType;
@@ -75,8 +76,6 @@ private:
     std::vector<SpaceShipPart *> mPossibleParts;
     
     MODE mMode;
-
-    SpaceShipPart *mLinkFirst;
     
     void initPossibleParts();
     void removePossibleParts();

@@ -3,6 +3,8 @@
 
 #include "SpaceShipPartWall.hpp"
 
+class CPUDoorControl;
+
 class SpaceShipPartDoor : public SpaceShipPartWall
 {
 public:
@@ -17,9 +19,14 @@ public:
     void open(bool open);
     void lock(bool lock);
 
+    void connect(CPUDoorControl *ctrl) {mControl = ctrl;}
+    bool isConnected() {return mControl;}
+
 private:
     Ogre::SceneNode *mDoorNode;
     Ogre::Entity *mDoor;
+
+    CPUDoorControl *mControl;
 
     bool mOpened;
     bool mLocked;

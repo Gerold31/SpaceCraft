@@ -17,6 +17,7 @@ public:
     virtual ~Hardware(){}
 
     void connect(CPU *_CPU) {mCPU = _CPU;}
+    bool isConnected() {return mCPU;}
 
     virtual bool update(float elapsedTime) = 0;
 

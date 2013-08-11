@@ -20,6 +20,8 @@ SpaceShipPartLight::SpaceShipPartLight(Ogre::Vector3 pos, Ogre::Quaternion ori, 
         mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfo[i]));
     }
 
+    mControl = NULL;
+
     mLight = engine->getSceneMgr()->createLight(name + "Light");
     mLight->setType(Ogre::Light::LT_POINT);
     mLight->setPosition(0,-0.025,0);
