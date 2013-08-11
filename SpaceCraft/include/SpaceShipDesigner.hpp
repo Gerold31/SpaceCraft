@@ -27,7 +27,7 @@ public:
         MODE_WIREDOOR
     };
 
-    SpaceShipDesigner(ENGINE *engine);
+    SpaceShipDesigner(float aspectRatio, ENGINE *engine);
 
     void enterEditMode(SpaceShip *ship);
     void exitEditMode();
@@ -47,11 +47,12 @@ public:
     void enableSelectedFloorFrom(bool enabled);
     void enableSelectedFloorTo(bool enabled);
 
+    Ogre::Camera *getCamera(){return mCamera;}
+
 private:
     Ogre::SceneNode *mParentNode;
     Ogre::SceneNode *mNode;
     Ogre::Camera    *mCamera;
-    Ogre::Viewport  *mViewport;
 	Ogre::RaySceneQuery* mRaySceneQuery;
 
     ENGINE *mEngine;

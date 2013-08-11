@@ -9,6 +9,8 @@
 #include "OGRE/OgreEntity.h"
 #include "OGRE/OgreLight.h"
 
+#define LIGHT_RANGE (100)
+
 SpaceShipPart::SpaceShipPartInfo SpaceShipPartLight::mPartInfo[] = {SpaceShipPartInfo(PART_FLOOR, Ogre::Vector3(0, 0.05, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
 
 SpaceShipPartLight::SpaceShipPartLight(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
@@ -30,6 +32,7 @@ SpaceShipPartLight::SpaceShipPartLight(Ogre::Vector3 pos, Ogre::Quaternion ori, 
     mLight->setPosition(0,-0.025,0);
     mLight->setDiffuseColour(0.9, 0.8, 0.8);
     mLight->setSpecularColour(0.9, 0.8, 0.8);
+    mLight->setAttenuation(LIGHT_RANGE, 1.0, 4.5/LIGHT_RANGE, 75.0/(LIGHT_RANGE*LIGHT_RANGE));
     mLight->setCastShadows(true);
     mLight->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mLight);

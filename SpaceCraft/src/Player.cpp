@@ -37,14 +37,14 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     mCamera = engine->getSceneMgr()->createCamera(name);
     mCamera->lookAt(0,0,-1);
     mCamera->setPosition(0, 0, 0);
-    mCameraYawNode   = mNode->createChildSceneNode(name + "YawNode", Ogre::Vector3(0,-0.1,-0.2));
+    mCameraYawNode   = mNode->createChildSceneNode(name + "YawNode");
     mCameraPitchNode = mCameraYawNode->createChildSceneNode(name + "PitchNode");
     mCameraRollNode  = mCameraPitchNode->createChildSceneNode(name + "RollNode");
     mCameraRollNode->attachObject(mCamera);
 
     mEntity->getParentSceneNode()->getParentSceneNode()->removeChild(mEntity->getParentSceneNode());
-    mEntity->getParentSceneNode()->setPosition(mEntity->getParentSceneNode()->getPosition() + Ogre::Vector3(0, 0.1, 0.2));
-    mCameraYawNode->addChild(mEntity->getParentSceneNode());
+    mEntity->getParentSceneNode()->setPosition(mEntity->getParentSceneNode()->getPosition() + Ogre::Vector3(0, 0.1, 0.3));
+    //mCameraYawNode->addChild(mEntity->getParentSceneNode()); // causes shadow issues
 
     mViewport = window->addViewport(mCamera, 100, 0, 0, 1, 1);
 
@@ -64,15 +64,14 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     engine->initGUIManager();
     mInput->addKeyListener(engine->getGUIManager(), "GUIManager");
     mInput->addMouseListener(engine->getGUIManager(), "GUIManager");
-
-
+    
     mRaySceneQuery = engine->getSceneMgr()->createRayQuery(Ogre::Ray());
 
     mMode = MODE_DEFAULT;
 
     mTranslation = Ogre::Vector3::ZERO;
 
-    mSpaceShipDesigner = new SpaceShipDesigner(engine);
+    mSpaceShipDesigner = new SpaceShipDesigner(mCamera->getAspectRatio(), engine);
     
     mFlashlight = new Flashlight(Ogre::Vector3(-0.1, 0, -0.45), Ogre::Quaternion(), mCameraRollNode, name + "Flashlight", engine);
     mWeapon = new Weapon(this, Ogre::Vector3(0.1, 0, -0.45), Ogre::Quaternion(), mCameraRollNode, name + "Weapon", engine);
@@ -182,7 +181,11 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
         if(mMode == MODE_DEFAULT)
         {
             mMode = MODE_DESIGN;
-            mEngine->getWindow()->removeViewport(100);
+
+            mViewport->setCamera(mSpaceShipDesigner->getCamera());
+
+            
+            mViewport->setBackgroundColour(Ogre::ColourValue(0,0,.6));
             mSpaceShipDesigner->enterEditMode(mShip);
 
             mInput->addKeyListener(mSpaceShipDesigner, "SpaceShipDesigner");
@@ -193,8 +196,7 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
         {
             mMode = MODE_DEFAULT;
             mSpaceShipDesigner->exitEditMode();
-            mViewport = mEngine->getWindow()->addViewport(mCamera, 100, 0, 0, 1, 1);
-            mViewport->setAutoUpdated(true);
+            mViewport->setCamera(mCamera);
             mViewport->setBackgroundColour(Ogre::ColourValue(0,0,0));
             mEngine->getSceneMgr()->setAmbientLight(Ogre::ColourValue(0.5,0.5,0.5));
             mInput->removeKeyListener("SpaceShipDesigner");

@@ -30,7 +30,7 @@
 
 #define LENGTH_THRESHOLD (1e-6)
 
-SpaceShipDesigner::SpaceShipDesigner(ENGINE *engine)
+SpaceShipDesigner::SpaceShipDesigner(float aspectRatio, ENGINE *engine)
 {
     mEngine = engine;
     mParentNode = mEngine->getSceneMgr()->getRootSceneNode()->createChildSceneNode("SpaceShipDesignerParentNode");
@@ -43,6 +43,7 @@ SpaceShipDesigner::SpaceShipDesigner(ENGINE *engine)
     mCamera = mEngine->getSceneMgr()->createCamera("SpaceShipDesignerCamera");
     mCamera->setNearClipDistance(0.5);
     mCamera->setFarClipDistance(5000.0);
+    mCamera->setAspectRatio(aspectRatio);
 
     mNode->attachObject(mCamera);
     
