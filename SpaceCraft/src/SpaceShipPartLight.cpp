@@ -1,6 +1,9 @@
 #include "SpaceShipPartLight.hpp"
 
 #include "ENGINE.hpp"
+#include "Map.hpp"
+
+#include "CPULightControl.hpp"
 
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreEntity.h"
@@ -30,6 +33,13 @@ SpaceShipPartLight::SpaceShipPartLight(Ogre::Vector3 pos, Ogre::Quaternion ori, 
     mLight->setCastShadows(true);
     mLight->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mLight);
+
+    mHealth = 20;
+}
+
+SpaceShipPartLight::~SpaceShipPartLight()
+{
+    mEngine->getSceneMgr()->destroyLight(mLight);
 }
 
 bool SpaceShipPartLight::update(float elapsedTime)
@@ -41,4 +51,26 @@ void SpaceShipPartLight::setBrightness(int b)
 {
     mLight->setDiffuseColour(0.9*b/256, 0.8*b/256, 0.8*b/256);
     mLight->setSpecularColour(0.9*b/256, 0.8*b/256, 0.8*b/256);
+}
+
+int SpaceShipPartLight::onHit(int damage)
+{
+    mHealth -= damage;
+    if(mHealth <= 0)
+    {
+        if(mControl)
+        {
+            for(int i=0; i<mControl->getNumberLights(); i++)
+            {
+                if(mControl->getLight(i) == this)
+                {
+                    mControl->setLight(i, NULL);
+                    break;
+                }
+            }
+        }
+        mEngine->getMap()->destroyEntity(this);
+        return -mHealth;
+    }
+    return 0;
 }

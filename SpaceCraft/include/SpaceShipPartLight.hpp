@@ -14,6 +14,7 @@ class SpaceShipPartLight : public SpaceShipPart
 {
 public:
     SpaceShipPartLight(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    ~SpaceShipPartLight();
 
     bool update(float elapsedTime);
 
@@ -22,12 +23,16 @@ public:
     void connect(CPULightControl *ctrl) {mControl = ctrl;}
     bool isConnected() {return mControl;}
 
+    int onHit(int damage);
+
 private:
     static SpaceShipPartInfo mPartInfo[1];
 
     Ogre::Light *mLight;
 
     CPULightControl *mControl;
+
+    int mHealth;
 };
 
 #endif

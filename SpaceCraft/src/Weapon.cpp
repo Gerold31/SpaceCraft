@@ -33,6 +33,9 @@ void  Weapon::shoot()
     Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
     Ogre::RaySceneQueryResult::iterator i = result.begin();
 
+    int damage = 20;
+    float lastDist = 0;
+
     while(i!=result.end())
     {            
         if(i->movable && i->movable->getMovableType() == "Entity")
@@ -40,7 +43,12 @@ void  Weapon::shoot()
             Entity *obj = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
             if(obj && obj != this && obj != mHolder)
             {
-                printf("shot at %s\n", obj->getName().c_str());
+                damage -= i->distance - lastDist;
+                lastDist = i->distance;
+                if(damage > 0)
+                    damage = obj->onHit(damage);
+                else
+                    break;
             }
         }
         ++i;
