@@ -16,6 +16,8 @@ CPUDoorControl::CPUDoorControl(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::Sc
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPUDoorControl.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
+
+    mInterruptMsg = 0;
     
     for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)
     {

@@ -301,6 +301,25 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                             mLinkFirst = lightControl;
                         break;
                     }
+                }else if(mMode == MODE_WIREDOOR)
+                {
+                    if(obj->getType() == "SC_SpaceShipPartDoor")
+                    {
+                        SpaceShipPartDoor *door = (SpaceShipPartDoor *)obj;
+                        if(mLinkFirst && mLinkFirst->getType() == "CPU_DoorControl")
+                            ((CPUDoorControl *)mLinkFirst)->addDoor(door);
+                        else
+                            mLinkFirst = door;
+                        break;
+                    }else if(obj->getType() == "CPU_DoorControl")
+                    {
+                        CPUDoorControl *doorControl = (CPUDoorControl *)obj;
+                        if(mLinkFirst && mLinkFirst->getType() == "SC_SpaceShipPartDoor")
+                            doorControl->addDoor((SpaceShipPartDoor *)mLinkFirst);
+                        else
+                            mLinkFirst = doorControl;
+                        break;
+                    }
                 }
                 break;
             }
@@ -517,6 +536,23 @@ void SpaceShipDesigner::updateVisibleParts()
         {
             SpaceShipPart *part = mSpaceShip->getPart(i);
             if(part->getType() == "SC_SpaceShipPartLight" || part->getType() == "CPU_LightControl")
+            {
+                part->getSceneNode()->setVisible(true);
+            }else
+            {
+                part->getSceneNode()->setVisible(false);
+            }
+        }
+    }else if(mMode == MODE_WIREDOOR)
+    {
+        for(std::vector<SpaceShipPart *>::iterator i = mPossibleParts.begin(); i != mPossibleParts.end(); ++i)
+        {
+            (*i)->getSceneNode()->setVisible(false);
+        }
+        for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
+        {
+            SpaceShipPart *part = mSpaceShip->getPart(i);
+            if(part->getType() == "SC_SpaceShipPartDoor" || part->getType() == "CPU_DoorControl")
             {
                 part->getSceneNode()->setVisible(true);
             }else

@@ -15,6 +15,8 @@ CPUKeyboard::CPUKeyboard(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNod
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
     
+    mInterruptMsg = 0;
+
     for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)
     {
         mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfo[i]));
