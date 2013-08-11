@@ -20,6 +20,7 @@
 #include "SpaceShipPart.hpp"
 #include "SpaceShipPartDoor.hpp"
 #include "CPUKeyboard.hpp"
+#include "Flashlight.hpp"
 #include "Weapon.hpp"
 
 #include <stdio.h>
@@ -72,7 +73,8 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     mTranslation = Ogre::Vector3::ZERO;
 
     mSpaceShipDesigner = new SpaceShipDesigner(engine);
-
+    
+    mFlashlight = new Flashlight(Ogre::Vector3(-0.1, 0, -0.45), Ogre::Quaternion(), mCameraRollNode, name + "Flashlight", engine);
     mWeapon = new Weapon(this, Ogre::Vector3(0.1, 0, -0.45), Ogre::Quaternion(), mCameraRollNode, name + "Weapon", engine);
 }
 
@@ -111,7 +113,7 @@ bool Player::update(float elapsedTime)
                     if(i->movable->getMovableType() == "Entity" && i->movable->getName() != mNode->getName() + "Mesh")
                     {
                         Entity *ent = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
-                        if(!(ent && ent->getType() == "SC_SpaceShipPartDoor" && ((SpaceShipPartDoor *)ent)->isOpen()) && ent != (Entity *)mWeapon)
+                        if(!(ent && ent->getType() == "SC_SpaceShipPartDoor" && ((SpaceShipPartDoor *)ent)->isOpen()) && ent != mWeapon && ent != mFlashlight)
                         {
                             printf("colliding with %s\n", ent->getName().c_str());
                             speed = i->distance - PLAYER_SIZE;
@@ -173,6 +175,9 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
     case OIS::KC_D:
 		mTranslation.x = 1;
         break;
+    case OIS::KC_F:
+        mFlashlight->toggle();
+        break;
     case OIS::KC_F1:
         if(mMode == MODE_DEFAULT)
         {
@@ -183,7 +188,7 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
             mInput->addKeyListener(mSpaceShipDesigner, "SpaceShipDesigner");
             mInput->addMouseListener(mSpaceShipDesigner, "SpaceShipDesigner");
 
-            //mNode->setVisible(false);
+            mNode->setVisible(false);
         }else if(mMode == MODE_DESIGN)
         {
             mMode = MODE_DEFAULT;

@@ -24,7 +24,7 @@ bool Weapon::update(float elapsedTime)
     return true;
 }
 
-void  Weapon::shoot()
+void Weapon::shoot()
 {
     Ogre::Ray ray(mNode->_getDerivedPosition(), mNode->_getDerivedOrientation() * Ogre::Vector3(0, 0, -1));
     mRaySceneQuery->setRay(ray);
