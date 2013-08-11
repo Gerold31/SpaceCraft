@@ -55,5 +55,8 @@
         <Widget type="Button" skin="Button" position="340 80 150 50" name="ModeWireDoor">
             <Property key="Caption" value="WireDoor"/>
         </Widget>
+        <Widget type="Button" skin="Button" position="850 800 150 50" name="SelectWindow">
+            <Property key="Caption" value="Window"/>
+        </Widget>
     </Widget>
 </MyGUI>

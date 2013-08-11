@@ -10,6 +10,7 @@
 #include "SpaceShipPartDoor.hpp"
 #include "SpaceShipPartLight.hpp"
 #include "SpaceShipPartRotatingLight.hpp"
+#include "SpaceShipPartWindow.hpp"
 #include "CPU.hpp"
 #include "CPUDisplay.hpp"
 #include "CPUKeyboard.hpp"
@@ -57,12 +58,7 @@ SpaceShipDesigner::SpaceShipDesigner(ENGINE *engine)
 void SpaceShipDesigner::enterEditMode(SpaceShip *ship) 
 {
     mSpaceShip = ship;
-    mViewport = mEngine->getWindow()->addViewport(mCamera, 100, 0, 0, 1, 1);
     
-    mViewport->setAutoUpdated(true);
-    mViewport->setBackgroundColour(Ogre::ColourValue(0,0,.6));
-    mCamera->setAspectRatio(1.0f * mViewport->getActualWidth() / mViewport->getActualHeight());
-
     mEngine->getSceneMgr()->setAmbientLight(Ogre::ColourValue(1,1,1));
 
     mGUI->setVisible(true);
@@ -82,10 +78,6 @@ void SpaceShipDesigner::enterEditMode(SpaceShip *ship)
 
 void SpaceShipDesigner::exitEditMode()
 {
-    mEngine->getWindow()->removeViewport(100);
-
-    mEngine->getSceneMgr()->setAmbientLight(Ogre::ColourValue(0,0,0));
-
     removePossibleParts();
     
     mSelectedFloorFromEnabled = mSelectedFloorToEnabled = false;
@@ -232,6 +224,8 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                             case SpaceShipPart::PART_WALL:
                                 if(mSelectedPart && mSelectedPart->getType() == "SC_SpaceShipPartDoor")
                                     newPart = new SpaceShipPartDoor(part, name);
+                                else if(mSelectedPart && mSelectedPart->getType() == "SC_SpaceShipPartWindow")
+                                    newPart = new SpaceShipPartWindow(part, name);
                                 else
                                     newPart = new SpaceShipPartWall(part, name);
                                 break;
@@ -397,6 +391,8 @@ void SpaceShipDesigner::setSelectedPartName(std::string name)
         mSelectedPart = new CPULifeSupport(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
     else if(name == "LifeDetection")
         mSelectedPart = new CPULifeDetection(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+    else if(name == "Window")
+        mSelectedPart = new SpaceShipPartWindow(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
 
     if(!mSelectedPart)
         return;

@@ -1,0 +1,21 @@
+// Window genrated by blender2ogre 0.5.8
+
+material Window 
+{
+    receive_shadows on 
+
+    technique
+    {
+        pass Window
+        {
+			scene_blend alpha_blend
+			depth_write off
+
+			texture_unit
+			{
+				colour_op_ex source1 src_manual src_current 0.9 0.9 0.9
+				alpha_op_ex source1 src_manual src_current 0.9
+			}
+        }
+    }
+}

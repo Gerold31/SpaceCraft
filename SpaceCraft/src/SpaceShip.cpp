@@ -8,6 +8,7 @@
 #include "SpaceShipPartDoor.hpp"
 #include "SpaceShipPartLight.hpp"
 #include "SpaceShipPartRotatingLight.hpp"
+#include "SpaceShipPartWindow.hpp"
 #include "Memory.hpp"
 #include "CPU.hpp"
 #include "CPUDisplay.hpp"
@@ -182,6 +183,8 @@ void SpaceShip::load(std::string fileName)
                 part = new SpaceShipPartDoor(pos, ori, mNode, name, mEngine);
             else if(type == "SC_SpaceShipPartRotatingLight")
                 part = new SpaceShipPartRotatingLight(pos, ori, mNode, name, mEngine);
+            else if(type == "SC_SpaceShipPartWindow")
+                part = new SpaceShipPartWindow(pos, ori, mNode, name, mEngine);
             else
                 printf("Error loading %s: invalid type %s\n", fileName.c_str(), type.c_str());
             mParts.push_back(part);
