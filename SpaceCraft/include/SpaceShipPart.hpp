@@ -5,6 +5,8 @@
 
 #include <vector>
 
+#include "OGRE/OgreStaticGeometry.h"
+
 class SpaceShipPart : public Entity
 {
 public:
@@ -28,6 +30,7 @@ public:
     };
 
     SpaceShipPart(PART_TYPE partType, bool castShadows, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, Ogre::String type, ENGINE *engine);
+    SpaceShipPart(PART_TYPE partType, bool castShadows, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, Ogre::String type, ENGINE *engine);
     SpaceShipPart(SpaceShipPart *old, Ogre::String name);
     SpaceShipPart(SpaceShipPart *old, Ogre::String name, Ogre::String type);
     virtual ~SpaceShipPart();
@@ -42,10 +45,19 @@ public:
 
     void setMaterial(Ogre::String name);
 
+    Ogre::Entity *getEntity() {return mEntity;}
+
 protected:
     Ogre::Entity *mEntity;
+    Ogre::StaticGeometry *mStaticGeometry;
+
     std::vector<std::pair<SpaceShipPart *, SpaceShipPartInfo *> > mNeighbor;
     PART_TYPE mPartType;
+
+    void commonConstructor();
+
+    //void setupInstancedMaterialToEntity(Ogre::Entity *ent);
+    //Ogre::String buildMaterial(const Ogre::String &originalMaterialName);
 };
 
 #endif

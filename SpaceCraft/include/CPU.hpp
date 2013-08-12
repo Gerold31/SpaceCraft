@@ -20,6 +20,7 @@ class CPU : public SpaceShipPart
 {
 public:
     CPU(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    CPU(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine);
     ~CPU();
 
     bool update(float elapsedTime);
@@ -61,10 +62,12 @@ private:
 
     boost::thread mThread;
     boost::mutex mMutex;
+    
+    static SpaceShipPartInfo mPartInfo[1];
+
+    void commonConstructor();
 
     std::string disas(WORD i);
-
-    static SpaceShipPartInfo mPartInfo[1];
 };
 
 #endif

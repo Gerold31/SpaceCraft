@@ -33,6 +33,26 @@ SpaceShipPartWall::SpaceShipPartWall(Ogre::Vector3 pos, Ogre::Quaternion ori, Og
     }else
         mEntity = NULL;
 
+    commonConstructor();
+}
+
+SpaceShipPartWall::SpaceShipPartWall(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine, Ogre::String type)
+    : SpaceShipPart(PART_WALL, true, pos, ori, parent, staticGeometry, name, type, engine)
+{
+    if(type == "SC_SpaceShipPartWall")
+    {
+        mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "SpaceShip/Part_Wall.mesh");
+        mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
+	    //setupInstancedMaterialToEntity(mEntity);
+        staticGeometry->addEntity(mEntity, pos, ori);
+    }else
+        mEntity = NULL;
+
+    commonConstructor();
+}
+
+void SpaceShipPartWall::commonConstructor()
+{
     for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)
     {
         mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfo[i]));

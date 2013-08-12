@@ -20,6 +20,22 @@ CPULifeDetection::CPULifeDetection(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
     
+    commonConstructor();
+}
+
+CPULifeDetection::CPULifeDetection(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
+    :Hardware(0x11F3DE7C, 0x1C6C8B36, 0x0001, PART_CEILMOUNT, pos, ori, parent, staticGeometry, name, "CPU_LifeDetection", engine)
+{
+    mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPULifeDetection.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
+	//setupInstancedMaterialToEntity(mEntity);
+    staticGeometry->addEntity(mEntity, pos, ori);
+    
+    commonConstructor();
+}
+
+void CPULifeDetection::commonConstructor()
+{
     mInterruptMsg = 0;
     mLastDistance = -1;
 

@@ -11,6 +11,7 @@ class CPULightControl : public Hardware
 {
 public:
     CPULightControl(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    CPULightControl(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine);
 
     bool update(float elapsedTime);
     
@@ -25,6 +26,8 @@ private:
     std::vector<SpaceShipPartLight *>mLights;
 
     static SpaceShipPartInfo mPartInfo[1];
+
+    void commonConstructor();
 };
 
 #endif

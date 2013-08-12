@@ -28,7 +28,7 @@
 #include "OGRE/OgreUserObjectBindings.h"
 #include "OGRE/OgreAny.h"
 
-#define LENGTH_THRESHOLD (1e-6)
+#define LENGTH_THRESHOLD (1e-5)
 
 SpaceShipDesigner::SpaceShipDesigner(float aspectRatio, ENGINE *engine)
 {
@@ -93,6 +93,12 @@ bool SpaceShipDesigner::keyPressed(const OIS::KeyEvent &e)
     switch(e.key)
     {
     case OIS::KC_S:
+        if(mSelectedPart)
+        {
+            mSpaceShip->removePart(mSelectedPart);
+            mEngine->getMap()->destroyEntity(mSelectedPart);
+            mSelectedPart = NULL;
+        }
         mSpaceShip->save("Ship.ship");
         break;
     case OIS::KC_L:
@@ -584,7 +590,7 @@ void SpaceShipDesigner::addPossibleParts(SpaceShipPart *part)
             for(std::vector<SpaceShipPart *>::iterator j = mPossibleParts.begin(); j != mPossibleParts.end(); ++j)
             {
                 SpaceShipPart *part = *j;
-                if(part && part->getPartType() == info->mPartType && (part->getSceneNode()->getPosition() - pos).length() < LENGTH_THRESHOLD)
+                if(part && part->getPartType() == info->mPartType && part->getSceneNode()->getPosition().distance(pos) < LENGTH_THRESHOLD)
                 {
                     other = part;
                     //printf("\t\tpart %s is new neighbor\n", other->getName().c_str());

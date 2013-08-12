@@ -17,6 +17,23 @@ SpaceShipPartWindow::SpaceShipPartWindow(Ogre::Vector3 pos, Ogre::Quaternion ori
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "Window.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
+
+    commonConstructor();
+}
+
+SpaceShipPartWindow::SpaceShipPartWindow(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
+    : SpaceShipPartWall(pos, ori, parent, staticGeometry, name, engine, "SC_SpaceShipPartWindow")
+{
+    mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "Window.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
+	//setupInstancedMaterialToEntity(mEntity);
+    staticGeometry->addEntity(mEntity, pos, ori);
+
+    commonConstructor();
+}
+
+void SpaceShipPartWindow::commonConstructor()
+{
 }
 
 SpaceShipPartWindow::SpaceShipPartWindow(SpaceShipPart *old, Ogre::String name)

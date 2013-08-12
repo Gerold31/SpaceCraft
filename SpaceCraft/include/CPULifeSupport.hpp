@@ -7,6 +7,7 @@ class CPULifeSupport : public Hardware
 {
 public:
     CPULifeSupport(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    CPULifeSupport(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine);
 
     bool update(float elapsedTime);
     
@@ -14,6 +15,8 @@ public:
 
 private:
     static SpaceShipPartInfo mPartInfo[1];
+
+    void commonConstructor();
 };
 
 #endif

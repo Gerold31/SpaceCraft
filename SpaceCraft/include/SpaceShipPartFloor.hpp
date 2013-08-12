@@ -11,12 +11,16 @@ class SpaceShipPartFloor : public SpaceShipPart
 {
 public:
     SpaceShipPartFloor(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    SpaceShipPartFloor(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine);
     SpaceShipPartFloor(SpaceShipPart *old, Ogre::String name);
 
     bool update(float elapsedTime);
 
 private:
     static SpaceShipPartInfo mPartInfo[14];
+    static Ogre::Entity *mStaticEntity;
+
+    void commonConstructor();
 };
 
 #endif

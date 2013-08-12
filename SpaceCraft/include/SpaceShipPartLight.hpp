@@ -14,6 +14,7 @@ class SpaceShipPartLight : public SpaceShipPart
 {
 public:
     SpaceShipPartLight(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    SpaceShipPartLight(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine);
     ~SpaceShipPartLight();
 
     bool update(float elapsedTime);
@@ -33,6 +34,8 @@ private:
     CPULightControl *mControl;
 
     int mHealth;
+
+    void commonConstructor();
 };
 
 #endif

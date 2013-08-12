@@ -20,17 +20,20 @@ CPU::CPU(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre:
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPU.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
-    
-    for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)
-    {
-        mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfo[i]));
-    }
 
-    mRunning = false;
-    mInterrupQueuing = false;
-    mInstructionsSinceInterrupt = 0;
-    mInterrupts = 0;
-    reset();
+    commonConstructor();
+}
+
+CPU::CPU(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
+    : SpaceShipPart(PART_FLOORMOUNT, true, pos, ori, parent, staticGeometry, name, "CPU", engine),
+    mFrequency(1000000.0)
+{
+    mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPU.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
+	//setupInstancedMaterialToEntity(mEntity);
+    staticGeometry->addEntity(mEntity, pos, ori);
+    
+    commonConstructor();
 }
 
 CPU::~CPU()
@@ -48,6 +51,20 @@ bool CPU::update(float elapsedTime)
         mTime = 0;
     }*/
     return true;
+}
+
+void CPU::commonConstructor()
+{
+    for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)
+    {
+        mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfo[i]));
+    }
+
+    mRunning = false;
+    mInterrupQueuing = false;
+    mInstructionsSinceInterrupt = 0;
+    mInterrupts = 0;
+    reset();
 }
 
 void CPU::interrupt(WORD msg)

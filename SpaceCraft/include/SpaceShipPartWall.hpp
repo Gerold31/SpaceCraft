@@ -11,12 +11,15 @@ class SpaceShipPartWall : public SpaceShipPart
 {
 public:
     SpaceShipPartWall(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine, Ogre::String type = "SC_SpaceShipPartWall");
-    SpaceShipPartWall(SpaceShipPart *old, Ogre::String name, Ogre::String type = "");
+    SpaceShipPartWall(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine, Ogre::String type = "SC_SpaceShipPartWall");
+    SpaceShipPartWall(SpaceShipPart *old, Ogre::String name, Ogre::String type = "SC_SpaceShipPartWall");
 
     bool update(float elapsedTime);
 
 private:
     static SpaceShipPartInfo mPartInfo[10];
+
+    void commonConstructor();
 };
 
 #endif

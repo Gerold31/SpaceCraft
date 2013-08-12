@@ -19,7 +19,24 @@ SpaceShipPartLight::SpaceShipPartLight(Ogre::Vector3 pos, Ogre::Quaternion ori, 
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "Light.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
+
+    commonConstructor();
     
+}
+
+SpaceShipPartLight::SpaceShipPartLight(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
+    : SpaceShipPart(PART_CEILMOUNT, true, pos, ori, parent, staticGeometry, name, "SC_SpaceShipPartLight", engine)
+{
+    mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "Light.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
+	//setupInstancedMaterialToEntity(mEntity);
+    staticGeometry->addEntity(mEntity, pos, ori);
+
+    commonConstructor();
+}
+
+void SpaceShipPartLight::commonConstructor()
+{
     for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)
     {
         mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfo[i]));
@@ -27,7 +44,7 @@ SpaceShipPartLight::SpaceShipPartLight(Ogre::Vector3 pos, Ogre::Quaternion ori, 
 
     mControl = NULL;
 
-    mLight = engine->getSceneMgr()->createLight(name + "Light");
+    mLight = mEngine->getSceneMgr()->createLight(mName + "Light");
     mLight->setType(Ogre::Light::LT_POINT);
     mLight->setPosition(0,-0.025,0);
     mLight->setDiffuseColour(0.9, 0.8, 0.8);
@@ -52,8 +69,11 @@ bool SpaceShipPartLight::update(float elapsedTime)
 
 void SpaceShipPartLight::setBrightness(int b)
 {
-    mLight->setDiffuseColour(0.9*b/256, 0.8*b/256, 0.8*b/256);
-    mLight->setSpecularColour(0.9*b/256, 0.8*b/256, 0.8*b/256);
+    if(mHealth > 0)
+    {
+        mLight->setDiffuseColour(0.9*b/256, 0.8*b/256, 0.8*b/256);
+        mLight->setSpecularColour(0.9*b/256, 0.8*b/256, 0.8*b/256);
+    }
 }
 
 int SpaceShipPartLight::onHit(int damage)
@@ -72,7 +92,7 @@ int SpaceShipPartLight::onHit(int damage)
                 }
             }
         }
-        mEngine->getMap()->destroyEntity(this);
+        mLight->setVisible(false);
         return -mHealth;
     }
     return 0;

@@ -11,6 +11,7 @@ class CPUDoorControl : public Hardware
 {
 public:
     CPUDoorControl(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    CPUDoorControl(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine);
 
     bool update(float elapsedTime);
     
@@ -25,6 +26,8 @@ private:
     WORD mInterruptMsg;
 
     static SpaceShipPartInfo mPartInfo[1];
+
+    void commonConstructor();
 };
 
 #endif

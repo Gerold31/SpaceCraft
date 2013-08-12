@@ -17,6 +17,24 @@ CPUDoorControl::CPUDoorControl(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::Sc
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
 
+    commonConstructor();
+}
+
+
+CPUDoorControl::CPUDoorControl(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
+    :Hardware(0xD0012C7l, 0x1C6C8B36, 0x1802, PART_FLOORMOUNT, pos, ori, parent, staticGeometry, name, "CPU_DoorControl", engine)
+{
+    mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPUDoorControl.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
+	//setupInstancedMaterialToEntity(mEntity);
+    staticGeometry->addEntity(mEntity, pos, ori);
+
+    commonConstructor();
+}
+
+void CPUDoorControl::commonConstructor()
+{
+    
     mInterruptMsg = 0;
     
     for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)

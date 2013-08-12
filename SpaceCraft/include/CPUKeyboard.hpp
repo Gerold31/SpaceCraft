@@ -19,6 +19,7 @@ class CPUKeyboard : public Hardware, public OIS::KeyListener
 {
 public:
     CPUKeyboard(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    CPUKeyboard(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine);
 
     void setInput(Input *input) {mInput = input;}
 
@@ -39,6 +40,8 @@ private:
     WORD codeToKey(OIS::KeyCode code);
 
     static SpaceShipPartInfo mPartInfo[1];
+
+    void commonConstructor();
 };
 
 #endif

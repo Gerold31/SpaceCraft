@@ -122,7 +122,7 @@ bool ENGINE::init(Map *map)
         */
         
         mSceneMgr->setAmbientLight(Ogre::ColourValue(0,0,0));
-        mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
+        mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
         mSceneMgr->setShadowFarDistance(500);
         
         if(!map)

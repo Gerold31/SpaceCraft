@@ -15,6 +15,7 @@ class CPUDisplay : public Hardware
 {
 public:
     CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine);
     ~CPUDisplay();
 
     bool update(float elapsedTime);
@@ -31,6 +32,8 @@ private:
     unsigned short *mPalette;
     unsigned int *mDefaultFont;         // @todo static?
     unsigned short *mDefaultPalette;    // @todo static?
+    
+    void commonConstructor();
 
     void draw();
     

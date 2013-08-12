@@ -3,12 +3,18 @@
 
 #include "GravityObject.hpp"
 
+namespace Ogre
+{
+    class StaticGeometry;
+}
+
 class SpaceShipPart;
 
 class SpaceShip : public GravityObject
 {
 public:
     SpaceShip(double mass, Ogre::Vector3 velocity, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    ~SpaceShip();
     
     void addPart(SpaceShipPart *newPart);
     void removePart(SpaceShipPart *part);
@@ -20,6 +26,8 @@ public:
     void load(std::string fileName);
 
 private:
+    Ogre::StaticGeometry *mStaticGeometry;
+
     std::vector<SpaceShipPart *>mParts;
     int mNextPartID;
 };

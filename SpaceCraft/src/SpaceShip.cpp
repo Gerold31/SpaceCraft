@@ -21,6 +21,7 @@
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreRenderWindow.h"
 #include "OGRE/OgreEntity.h"
+#include "OGRE/OgreStaticGeometry.h"
 
 #include <fstream>
 
@@ -29,6 +30,12 @@ SpaceShip::SpaceShip(double mass, Ogre::Vector3 velocity, Ogre::Vector3 pos, Ogr
 {
     mParts.push_back(new SpaceShipPartFloor(Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, name + "Part0", engine));
     mNextPartID = 1;
+    mStaticGeometry = engine->getSceneMgr()->createStaticGeometry(name + "Geometry");
+}
+
+SpaceShip::~SpaceShip()
+{
+    mEngine->getSceneMgr()->destroyStaticGeometry(mStaticGeometry);
 }
 
 void SpaceShip::addPart(SpaceShipPart *newPart)
@@ -128,6 +135,11 @@ void SpaceShip::save(std::string fileName)
 
 void SpaceShip::load(std::string fileName)
 {
+    mStaticGeometry->destroy();
+    mStaticGeometry->reset();
+    mStaticGeometry->setRegionDimensions(Ogre::Vector3(100, 100, 100));
+    mStaticGeometry->setOrigin(Ogre::Vector3(-50, -50, -50));
+    mStaticGeometry->setCastShadows(false);
     while(mParts.size())
     {
         mEngine->getMap()->destroyEntity(mParts.back());
@@ -156,7 +168,7 @@ void SpaceShip::load(std::string fileName)
             ori = Ogre::StringConverter::parseQuaternion(line);
 
             if(type == "SC_SpaceShipPartFloor")
-                part = new SpaceShipPartFloor(pos, ori, mNode, name, mEngine);
+                part = new SpaceShipPartFloor(pos, ori, mNode, mStaticGeometry, name, mEngine);
             else if(type == "SC_SpaceShipPartWall")
                 part = new SpaceShipPartWall(pos, ori, mNode, name, mEngine);
             else if(type == "CPU")
@@ -230,7 +242,12 @@ void SpaceShip::load(std::string fileName)
             ((SpaceShipPartDoor *)mParts.at(data.y))->connect((CPUDoorControl *)mParts.at(data.x));
         }
     }
+    
+
+    mStaticGeometry->build();
+
     if(mParts.size() == 0)
         mParts.push_back(new SpaceShipPartFloor(Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, mName + "Part0", mEngine));
     mNextPartID = mParts.size();
+
 }

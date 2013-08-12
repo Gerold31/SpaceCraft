@@ -14,13 +14,29 @@ SpaceShipPartRotatingLight::SpaceShipPartRotatingLight(Ogre::Vector3 pos, Ogre::
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "RotatingLight.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
-    
+
+    commonConstructor();
+}
+
+SpaceShipPartRotatingLight::SpaceShipPartRotatingLight(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
+    : SpaceShipPart(PART_CEILMOUNT, true, pos, ori, parent, staticGeometry, name, "SC_SpaceShipPartRotatingLight", engine)
+{
+    mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "RotatingLight.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
+	//setupInstancedMaterialToEntity(mEntity);
+    staticGeometry->addEntity(mEntity, pos, ori);
+
+    commonConstructor();
+}
+
+void SpaceShipPartRotatingLight::commonConstructor()
+{
     for(int i=0; i<sizeof(mPartInfo)/sizeof(SpaceShipPartInfo); i++)
     {
         mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfo[i]));
     }
 
-    mLight = engine->getSceneMgr()->createLight(name + "Light");
+    mLight = mEngine->getSceneMgr()->createLight(mName + "Light");
     mLight->setType(Ogre::Light::LT_SPOTLIGHT);
     mLight->setPosition(0,-0.025,0);
     mLight->setDiffuseColour(1, 0.2, 0);

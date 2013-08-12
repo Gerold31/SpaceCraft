@@ -16,11 +16,29 @@ SpaceShipPartDoor::SpaceShipPartDoor(Ogre::Vector3 pos, Ogre::Quaternion ori, Og
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "DoorFrame.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
-    mDoor   = engine->getSceneMgr()->createEntity(name + "DoorMesh", "Door.mesh");
-    mDoor->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
-    mDoorNode = mNode->createChildSceneNode(name + "DoorNode");
+    
+    commonConstructor();
+}
+
+SpaceShipPartDoor::SpaceShipPartDoor(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
+    : SpaceShipPartWall(pos, ori, parent, staticGeometry, name, engine, "SC_SpaceShipPartDoor")
+{
+    mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "DoorFrame.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));    
+	//setupInstancedMaterialToEntity(mEntity);
+    staticGeometry->addEntity(mEntity, pos, ori);
+
+    commonConstructor();
+}
+
+void SpaceShipPartDoor::commonConstructor()
+{
+    mDoor   = mEngine->getSceneMgr()->createEntity(mName + "DoorMesh", "Door.mesh");
+    mDoor->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
+    mDoorNode = mNode->createChildSceneNode(mName + "DoorNode");
     mDoorNode->attachObject(mDoor);
+
     mLocked = mOpened = false;
     
     mControl = NULL;
@@ -39,6 +57,12 @@ SpaceShipPartDoor::SpaceShipPartDoor(SpaceShipPart *old, Ogre::String name)
     mDoorNode = mNode->createChildSceneNode(name + "DoorNode");
     mDoorNode->attachObject(mDoor);
     mLocked = mOpened = false;
+}
+
+SpaceShipPartDoor::~SpaceShipPartDoor()
+{
+    mEngine->getSceneMgr()->destroyEntity(mDoor);
+    mEngine->getSceneMgr()->destroySceneNode(mDoorNode);
 }
 
 bool SpaceShipPartDoor::update(float elapsedTime)

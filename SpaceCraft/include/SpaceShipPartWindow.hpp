@@ -9,11 +9,13 @@ class SpaceShipPartWindow : public SpaceShipPartWall
 {
 public:
     SpaceShipPartWindow(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
+    SpaceShipPartWindow(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine);
     SpaceShipPartWindow(SpaceShipPart *old, Ogre::String name);
 
     bool update(float elapsedTime);
 
 private:
+    void commonConstructor();
 };
 
 #endif

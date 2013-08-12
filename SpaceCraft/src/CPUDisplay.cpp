@@ -24,9 +24,25 @@ CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode 
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
 
+    commonConstructor();
+}
+
+CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
+    :Hardware(0x7349F615, 0x1C6C8B36, 0x1802, PART_WALLMOUNT, pos, ori, parent, staticGeometry, name, "CPU_Display", engine)
+{
+    mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPUDisplay.mesh");
+    mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
+	//setupInstancedMaterialToEntity(mEntity);
+    staticGeometry->addEntity(mEntity, pos, ori);
+
+    commonConstructor();
+}
+
+void CPUDisplay::commonConstructor()
+{
     for(int i=0; i<4; i++)
     {
-        mLight[i] = engine->getSceneMgr()->createLight(name + "Light" + Ogre::StringConverter::toString(i));
+        mLight[i] = mEngine->getSceneMgr()->createLight(mName + "Light" + Ogre::StringConverter::toString(i));
         mLight[i]->setPosition(-SIZE_X/4, (i/2)*SIZE_Y/2-SIZE_Y/4, (i%2)*SIZE_Z/2-SIZE_Z/4);
         mLight[i]->setType(Ogre::Light::LT_POINT);
         mLight[i]->setAttenuation(LIGHT_RANGE, 1.0, 4.5/LIGHT_RANGE, 75.0/(LIGHT_RANGE*LIGHT_RANGE));
@@ -35,7 +51,7 @@ CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode 
     }
 
     Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
-	Ogre::String textureName = name + "Texture";
+	Ogre::String textureName = mName + "Texture";
 
     mTexture = textureManager.createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
 		Ogre::TEX_TYPE_2D, 128, 96, 0,
@@ -43,7 +59,7 @@ CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode 
 
     
     Ogre::MaterialManager& materialManager = Ogre::MaterialManager::getSingleton();
-    Ogre::MaterialPtr material = materialManager.create(name + "Material", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
+    Ogre::MaterialPtr material = materialManager.create(mName + "Material", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
             
     Ogre::Technique *technique = material->getTechnique(0);
     Ogre::Pass *pass = technique->getPass(0);
@@ -68,6 +84,7 @@ CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode 
         mNeighbor.push_back(std::pair<SpaceShipPart *, SpaceShipPartInfo *>(NULL, &mPartInfo[i]));
     }
 }
+
 
 CPUDisplay::~CPUDisplay()
 {
