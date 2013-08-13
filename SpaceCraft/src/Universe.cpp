@@ -23,7 +23,7 @@ bool Universe::update(float elapsedTime)
     for(;i!=mGravityObjects.end(); ++i)
     {
         GravityObject *g1 = *i, *g2;
-        Ogre::Vector3 pos1 = g1->getSceneNode()->getPosition(), pos2;
+        Ogre::Vector3 pos1 = g1->getParentSceneNode()->getPosition(), pos2;
         Ogre::Vector3 netForce = Ogre::Vector3::ZERO;
 
         std::vector<GravityObject *>::iterator j = mGravityObjects.begin();
@@ -33,7 +33,7 @@ bool Universe::update(float elapsedTime)
                 continue;
             
             g2 = (*j);
-            pos2 = g2->getSceneNode()->getPosition();
+            pos2 = g2->getParentSceneNode()->getPosition();
             
             double r = pos1.distance(pos2);
             double f = G * g1->getMass() * g2->getMass() / (r * r);

@@ -53,7 +53,7 @@ bool CPULifeDetection::update(float elapsedTime)
         Entity *ent = mEngine->getMap()->getEntity(i);
         if(ent && ent->getType() == "SC_Human")
         {
-            float dist = ent->getSceneNode()->getPosition().distance(mNode->getPosition());
+            float dist = ent->getParentSceneNode()->getPosition().distance(mNode->getPosition());
             if(dist < minDist || minDist < 0)
                 minDist = dist;
         }

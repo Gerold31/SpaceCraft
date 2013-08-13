@@ -65,8 +65,8 @@ void SpaceShip::save(std::string fileName)
     for(int i=0; i<mParts.size(); i++)
     {
         file << mParts.at(i)->getType() << std::endl;
-        file << Ogre::StringConverter::toString(mParts.at(i)->getSceneNode()->getPosition()) << std::endl;
-        file << Ogre::StringConverter::toString(mParts.at(i)->getSceneNode()->getOrientation()) << std::endl;
+        file << Ogre::StringConverter::toString(mParts.at(i)->getParentSceneNode()->getPosition()) << std::endl;
+        file << Ogre::StringConverter::toString(mParts.at(i)->getParentSceneNode()->getOrientation()) << std::endl;
         if(mParts.at(i)->getType() == "CPU")
             cpus.push_back(std::pair<CPU *, int>((CPU *)mParts.at(i), i));
         else if(mParts.at(i)->getType() == "CPU_LightControl")
@@ -168,7 +168,7 @@ void SpaceShip::load(std::string fileName)
             ori = Ogre::StringConverter::parseQuaternion(line);
 
             if(type == "SC_SpaceShipPartFloor")
-                part = new SpaceShipPartFloor(pos, ori, mNode, mStaticGeometry, name, mEngine);
+                part = new SpaceShipPartFloor(pos, ori, mNode, /*mStaticGeometry,*/ name, mEngine);
             else if(type == "SC_SpaceShipPartWall")
                 part = new SpaceShipPartWall(pos, ori, mNode, name, mEngine);
             else if(type == "CPU")
@@ -176,7 +176,6 @@ void SpaceShip::load(std::string fileName)
                 part = new CPU(pos, ori, mNode, name, mEngine);
                 Memory *mem = new Memory("program.a", Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, "Memory", mEngine);
                 ((CPU *)part)->setMemory(mem);
-                ((CPU *)part)->start();
             }else if(type == "CPU_Display")
                 part = new CPUDisplay(pos, ori, mNode, name, mEngine);
             else if(type == "CPU_Keyboard")
@@ -210,7 +209,6 @@ void SpaceShip::load(std::string fileName)
             data = Ogre::StringConverter::parseVector3(line);
             mParts.at(data.x)->setNeighbor(mParts.at(data.z), data.y);
         }
-        
         while(!file.eof())
         {
             Ogre::Vector2 data;
@@ -243,8 +241,13 @@ void SpaceShip::load(std::string fileName)
         }
     }
     
+    for(int i=0; i<mParts.size(); i++)
+    {
+        if(mParts.at(i)->getType() == "CPU")
+            ((CPU *)mParts.at(i))->start();
+    }
 
-    mStaticGeometry->build();
+    //mStaticGeometry->build();
 
     if(mParts.size() == 0)
         mParts.push_back(new SpaceShipPartFloor(Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, mName + "Part0", mEngine));

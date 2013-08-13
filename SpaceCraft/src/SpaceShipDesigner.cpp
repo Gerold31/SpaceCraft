@@ -74,7 +74,7 @@ void SpaceShipDesigner::enterEditMode(SpaceShip *ship)
     mLinkFirst = mSelectedPart = NULL;
 
     initPossibleParts();
-    //mNode->setPosition(mSpaceShip->getSceneNode()->getPosition() + Ogre::Vector3(0, 10, 0));
+    //mNode->setPosition(mSpaceShip->getParentSceneNode()->getPosition() + Ogre::Vector3(0, 10, 0));
 }
 
 void SpaceShipDesigner::exitEditMode()
@@ -203,12 +203,12 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                             if(info)
                             {
                                 assert(mSelectedPart->getNumberNeighbors() == 1); // @todo deal with "big" parts
-                                Ogre::Quaternion ori = part->getSceneNode()->getOrientation() * info->mRot;
-                                Ogre::Vector3 pos = part->getSceneNode()->getPosition() + ori * info->mPos;
+                                Ogre::Quaternion ori = part->getParentSceneNode()->getOrientation() * info->mRot;
+                                Ogre::Vector3 pos = part->getParentSceneNode()->getPosition() + ori * info->mPos;
                                 ori = ori * mSelectedPart->getNeighborInfo(0)->mRot.Inverse() * rot;
                                 pos = pos - mSelectedPart->getNeighborInfo(0)->mRot.Inverse() * rot * mSelectedPart->getNeighborInfo(0)->mPos;
-                                mSelectedPart->getSceneNode()->setPosition(pos);
-                                mSelectedPart->getSceneNode()->setOrientation(ori);
+                                mSelectedPart->getParentSceneNode()->setPosition(pos);
+                                mSelectedPart->getParentSceneNode()->setOrientation(ori);
                                 hit = true;
                                 if(e.state.buttonDown(OIS::MB_Left))
                                 {
@@ -221,7 +221,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                         }else if(e.state.buttonDown(OIS::MB_Left) && type == mSelectedPartType && part->getName().find("Designer") == 0)
                         {
                             char name[32];
-                            sprintf(name, "%sPart%d", mSpaceShip->getSceneNode()->getName().c_str(), mSpaceShip->getNextPartID());
+                            sprintf(name, "%sPart%d", mSpaceShip->getParentSceneNode()->getName().c_str(), mSpaceShip->getNextPartID());
                             SpaceShipPart *newPart = NULL;
                             switch(part->getPartType())
                             {
@@ -326,7 +326,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
 	}	
 
     if(!hit && mSelectedPart)
-        mSelectedPart->getSceneNode()->setPosition(0, -1e38, 0);
+        mSelectedPart->getParentSceneNode()->setPosition(0, -1e38, 0);
 
     return true;
 }
@@ -376,30 +376,30 @@ void SpaceShipDesigner::setSelectedPartName(std::string name)
     }
     
     char partName[32];
-    sprintf(partName, "%sPart%d", mSpaceShip->getSceneNode()->getName().c_str(), mSpaceShip->getNextPartID());
+    sprintf(partName, "%sPart%d", mSpaceShip->getParentSceneNode()->getName().c_str(), mSpaceShip->getNextPartID());
     
     if(name == "CPU")
-        mSelectedPart = new CPU(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new CPU(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getParentSceneNode(), partName, mEngine);
     else if(name == "Display")
-        mSelectedPart = new CPUDisplay(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new CPUDisplay(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getParentSceneNode(), partName, mEngine);
     else if(name == "Keyboard")
-        mSelectedPart = new CPUKeyboard(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new CPUKeyboard(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getParentSceneNode(), partName, mEngine);
     else if(name == "RotatingLight")
-        mSelectedPart = new SpaceShipPartRotatingLight(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new SpaceShipPartRotatingLight(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getParentSceneNode(), partName, mEngine);
     else if(name == "Light")
-        mSelectedPart = new SpaceShipPartLight(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new SpaceShipPartLight(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getParentSceneNode(), partName, mEngine);
     else if(name == "LightControl")
-        mSelectedPart = new CPULightControl(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new CPULightControl(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getParentSceneNode(), partName, mEngine);
     else if(name == "Door")
-        mSelectedPart = new SpaceShipPartDoor(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new SpaceShipPartDoor(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getParentSceneNode(), partName, mEngine);
     else if(name == "DoorControl")
-        mSelectedPart = new CPUDoorControl(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new CPUDoorControl(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getParentSceneNode(), partName, mEngine);
     else if(name == "LifeSupport")
-        mSelectedPart = new CPULifeSupport(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new CPULifeSupport(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getParentSceneNode(), partName, mEngine);
     else if(name == "LifeDetection")
-        mSelectedPart = new CPULifeDetection(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new CPULifeDetection(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getParentSceneNode(), partName, mEngine);
     else if(name == "Window")
-        mSelectedPart = new SpaceShipPartWindow(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getSceneNode(), partName, mEngine);
+        mSelectedPart = new SpaceShipPartWindow(Ogre::Vector3(0, -1e38, 0), Ogre::Quaternion(), mSpaceShip->getParentSceneNode(), partName, mEngine);
 
     if(!mSelectedPart)
         return;
@@ -490,24 +490,24 @@ void SpaceShipDesigner::updateVisibleParts()
     {
         for(std::vector<SpaceShipPart *>::iterator i = mPossibleParts.begin(); i != mPossibleParts.end(); ++i)
         {
-            if((*i)->getPartType() == mSelectedPartType && (!mSelectedFloorFromEnabled || (*i)->getSceneNode()->getPosition().y >= mSelectedFloorFrom*2) && (!mSelectedFloorToEnabled || (*i)->getSceneNode()->getPosition().y <= mSelectedFloorTo*2))
+            if((*i)->getPartType() == mSelectedPartType && (!mSelectedFloorFromEnabled || (*i)->getParentSceneNode()->getPosition().y >= mSelectedFloorFrom*2) && (!mSelectedFloorToEnabled || (*i)->getParentSceneNode()->getPosition().y <= mSelectedFloorTo*2))
             {
-                (*i)->getSceneNode()->setVisible(true);
+                (*i)->getParentSceneNode()->setVisible(true);
             }else
             {
-                (*i)->getSceneNode()->setVisible(false);
+                (*i)->getParentSceneNode()->setVisible(false);
             }
 
         }
         for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
         {
             SpaceShipPart *part = mSpaceShip->getPart(i);
-            if((!mSelectedFloorFromEnabled || part->getSceneNode()->getPosition().y >= mSelectedFloorFrom*2) && (!mSelectedFloorToEnabled || part->getSceneNode()->getPosition().y <= mSelectedFloorTo*2))
+            if((!mSelectedFloorFromEnabled || part->getParentSceneNode()->getPosition().y >= mSelectedFloorFrom*2) && (!mSelectedFloorToEnabled || part->getParentSceneNode()->getPosition().y <= mSelectedFloorTo*2))
             {
-                part->getSceneNode()->setVisible(true);
+                part->getParentSceneNode()->setVisible(true);
             }else
             {
-                part->getSceneNode()->setVisible(false);
+                part->getParentSceneNode()->setVisible(false);
             }
         }
     }else if(mMode == MODE_WIRE)
@@ -515,7 +515,7 @@ void SpaceShipDesigner::updateVisibleParts()
         printf("Wiremode\n");
         for(std::vector<SpaceShipPart *>::iterator i = mPossibleParts.begin(); i != mPossibleParts.end(); ++i)
         {
-            (*i)->getSceneNode()->setVisible(false);
+            (*i)->getParentSceneNode()->setVisible(false);
         }
         for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
         {
@@ -535,40 +535,40 @@ void SpaceShipDesigner::updateVisibleParts()
     {
         for(std::vector<SpaceShipPart *>::iterator i = mPossibleParts.begin(); i != mPossibleParts.end(); ++i)
         {
-            (*i)->getSceneNode()->setVisible(false);
+            (*i)->getParentSceneNode()->setVisible(false);
         }
         for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
         {
             SpaceShipPart *part = mSpaceShip->getPart(i);
             if(part->getType() == "CPU_LightControl" && (!mLinkFirst || part == mLinkFirst))
             {
-                part->getSceneNode()->setVisible(true);
+                part->getParentSceneNode()->setVisible(true);
             }else if(part->getType() == "SC_SpaceShipPartLight" && mLinkFirst && !((SpaceShipPartLight *)part)->isConnected())
             {
-                part->getSceneNode()->setVisible(true);
+                part->getParentSceneNode()->setVisible(true);
             }else
             {
-                part->getSceneNode()->setVisible(false);
+                part->getParentSceneNode()->setVisible(false);
             }
         }
     }else if(mMode == MODE_WIREDOOR)
     {
         for(std::vector<SpaceShipPart *>::iterator i = mPossibleParts.begin(); i != mPossibleParts.end(); ++i)
         {
-            (*i)->getSceneNode()->setVisible(false);
+            (*i)->getParentSceneNode()->setVisible(false);
         }
         for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
         {
             SpaceShipPart *part = mSpaceShip->getPart(i);
             if(part->getType() == "CPU_DoorControl" && (!mLinkFirst || part == mLinkFirst))
             {
-                part->getSceneNode()->setVisible(true);
+                part->getParentSceneNode()->setVisible(true);
             }else if(part->getType() == "SC_SpaceShipPartDoor" && mLinkFirst && !((SpaceShipPartDoor *)part)->isConnected())
             {
-                part->getSceneNode()->setVisible(true);
+                part->getParentSceneNode()->setVisible(true);
             }else
             {
-                part->getSceneNode()->setVisible(false);
+                part->getParentSceneNode()->setVisible(false);
             }
         }
     }
@@ -584,14 +584,14 @@ void SpaceShipDesigner::addPossibleParts(SpaceShipPart *part)
         {
             //printf("\tneighbor %d is null\n", i);
             SpaceShipPart::SpaceShipPartInfo *info = part->getNeighborInfo(i);
-            Ogre::Quaternion rot = part->getSceneNode()->getOrientation() * info->mRot;
-            Ogre::Vector3 pos = part->getSceneNode()->getPosition() + rot * info->mPos;
+            Ogre::Quaternion rot = part->getParentSceneNode()->getOrientation() * info->mRot;
+            Ogre::Vector3 pos = part->getParentSceneNode()->getPosition() + rot * info->mPos;
 
             SpaceShipPart *other = NULL;
             for(std::vector<SpaceShipPart *>::iterator j = mPossibleParts.begin(); j != mPossibleParts.end(); ++j)
             {
                 SpaceShipPart *part = *j;
-                if(part && part->getPartType() == info->mPartType && part->getSceneNode()->getPosition().distance(pos) < LENGTH_THRESHOLD)
+                if(part && part->getPartType() == info->mPartType && part->getParentSceneNode()->getPosition().distance(pos) < LENGTH_THRESHOLD)
                 {
                     other = part;
                     //printf("\t\tpart %s is new neighbor\n", other->getName().c_str());
@@ -607,17 +607,17 @@ void SpaceShipDesigner::addPossibleParts(SpaceShipPart *part)
                 switch(info->mPartType)
                 {
                 case SpaceShipPart::PART_FLOOR:
-                    other = new SpaceShipPartFloor(pos, rot, mSpaceShip->getSceneNode(), name, mEngine);
+                    other = new SpaceShipPartFloor(pos, rot, mSpaceShip->getParentSceneNode(), name, mEngine);
                     break;
                 case SpaceShipPart::PART_WALL:
-                    other = new SpaceShipPartWall(pos, rot, mSpaceShip->getSceneNode(), name, mEngine);
+                    other = new SpaceShipPartWall(pos, rot, mSpaceShip->getParentSceneNode(), name, mEngine);
                     break;
                 default:
                     printf("invalid part type\n");
                 }
                 
                 if(info->mPartType != mSelectedPartType || (mSelectedFloorFromEnabled && pos.y < mSelectedFloorFrom*2) || (mSelectedFloorToEnabled && pos.y > mSelectedFloorTo*2))
-                    other->getSceneNode()->setVisible(false);
+                    other->getParentSceneNode()->setVisible(false);
                 other->setMaterial("DesignerPart");
                 //printf("\t\tnew part %s is new neighbor\n", other->getName().c_str());
                 mPossibleParts.push_back(other);
@@ -630,7 +630,7 @@ void SpaceShipDesigner::addPossibleParts(SpaceShipPart *part)
                     SpaceShipPart::SpaceShipPartInfo *nInfo = other->getNeighborInfo(k);
                     if(nInfo->mPartType == part->getPartType())
                     {
-                        if((other->getSceneNode()->getPosition() + other->getSceneNode()->getOrientation() * nInfo->mRot * nInfo->mPos - part->getSceneNode()->getPosition()).length() < LENGTH_THRESHOLD)
+                        if((other->getParentSceneNode()->getPosition() + other->getParentSceneNode()->getOrientation() * nInfo->mRot * nInfo->mPos - part->getParentSceneNode()->getPosition()).length() < LENGTH_THRESHOLD)
                         {
                             other->setNeighbor(part, k);
                             //break;
@@ -679,7 +679,7 @@ void SpaceShipDesigner::debugShip(int partType)
 void SpaceShipDesigner::debugPart(SpaceShipPart *part, int partType)
 {
     printf("\t\tName: %s\n", part->getName().c_str());
-    printf("\t\tPos:  %s\n", Ogre::StringConverter::toString(part->getSceneNode()->getPosition()).c_str());
+    printf("\t\tPos:  %s\n", Ogre::StringConverter::toString(part->getParentSceneNode()->getPosition()).c_str());
     for(size_t i=0; i<part->getNumberNeighbors(); i++)
     {
         SpaceShipPart *neighbor = part->getNeighbor(i);
@@ -689,7 +689,7 @@ void SpaceShipDesigner::debugPart(SpaceShipPart *part, int partType)
             {
                 printf("\t\t\tNeighbor %d:\n", i);
                 printf("\t\t\t\tName: %s\n", neighbor->getName().c_str());
-                printf("\t\t\t\tPos:  %s\n", Ogre::StringConverter::toString(neighbor->getSceneNode()->getPosition()).c_str());
+                printf("\t\t\t\tPos:  %s\n", Ogre::StringConverter::toString(neighbor->getParentSceneNode()->getPosition()).c_str());
             }
         }
     }

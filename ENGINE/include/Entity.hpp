@@ -26,7 +26,6 @@ public:
     virtual void init(){}
     virtual bool update(float elapsedTime){return true;}
     Ogre::String getType() {return mType;}
-    Ogre::SceneNode *getSceneNode(){return mNode;}
 
     virtual int onHit(int damage){return 0;}
 

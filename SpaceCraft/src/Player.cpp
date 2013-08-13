@@ -354,8 +354,8 @@ bool Player::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
                 char nextName[128];
                 snprintf(nextName, 128, "%sPart%d",  mShip->getName().c_str(), mShip->getNumberOfParts());
                 printf("createing part %s\n", nextName);
-                mNextPart = new SpaceShipPart(SpaceShipPart::PART_FLOOR, Ogre::Vector3(0, -2, 0), Ogre::Quaternion(), mShip->getSceneNode(), std::string(nextName), mEngine);
-                mNextPart->getSceneNode()->setVisible(false);
+                mNextPart = new SpaceShipPart(SpaceShipPart::PART_FLOOR, Ogre::Vector3(0, -2, 0), Ogre::Quaternion(), mShip->getParentSceneNode(), std::string(nextName), mEngine);
+                mNextPart->getParentSceneNode()->setVisible(false);
             }
         }
         */
