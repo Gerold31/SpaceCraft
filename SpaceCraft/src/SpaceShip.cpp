@@ -58,7 +58,7 @@ void SpaceShip::removePart(SpaceShipPart *part)
 
 void SpaceShip::save(std::string fileName)
 {
-    std::ofstream file(fileName);
+    std::ofstream file(fileName.c_str());
     std::vector<std::pair<CPU *, int> >cpus;
     std::vector<std::pair<CPULightControl *, int> >lightControls;
     std::vector<std::pair<CPUDoorControl *, int> >doorControls;
@@ -145,7 +145,7 @@ void SpaceShip::load(std::string fileName)
         mEngine->getMap()->destroyEntity(mParts.back());
         mParts.pop_back();
     }
-    std::ifstream file(fileName);
+    std::ifstream file(fileName.c_str());
 
     if(file.is_open())
     {
