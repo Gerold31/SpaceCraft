@@ -512,6 +512,7 @@ void SpaceShipDesigner::updateVisibleParts()
         }
     }else if(mMode == MODE_WIRE)
     {
+        printf("Wiremode\n");
         for(std::vector<SpaceShipPart *>::iterator i = mPossibleParts.begin(); i != mPossibleParts.end(); ++i)
         {
             (*i)->getSceneNode()->setVisible(false);
@@ -521,13 +522,13 @@ void SpaceShipDesigner::updateVisibleParts()
             SpaceShipPart *part = mSpaceShip->getPart(i);
             if(part->getType() == "CPU" && (!mLinkFirst || part == mLinkFirst))
             {
-                    part->getSceneNode()->setVisible(true);
-            }else if(part->getType().find("CPU_") && mLinkFirst && !((Hardware *)part)->isConnected())
+                part->getParentSceneNode()->setVisible(true);
+            }else if(part->getType().find("CPU_") == 0 && mLinkFirst && !((Hardware *)part)->isConnected())
             {
-                part->getSceneNode()->setVisible(true);
+                part->getParentSceneNode()->setVisible(true);
             }else
             {
-                part->getSceneNode()->setVisible(false);
+                part->getParentSceneNode()->setVisible(false);
             }
         }
     }else if(mMode == MODE_WIRELIGHT)
