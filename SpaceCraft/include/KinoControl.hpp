@@ -19,7 +19,11 @@ public:
     bool update(float elapsedTime);
     Kino *getKino() {return mKino;}
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     Ogre::Entity* mEntity;
     Kino *mKino;
 };

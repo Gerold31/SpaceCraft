@@ -11,8 +11,10 @@
 
 #define DOOR_SPEED (2.0)
 
+std::string SpaceShipPartDoor::mType = "SC_SpaceShipPartDoor";
+
 SpaceShipPartDoor::SpaceShipPartDoor(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    : SpaceShipPartWall(pos, ori, parent, name, engine, "SC_SpaceShipPartDoor")
+    : SpaceShipPartWall(pos, ori, parent, name, engine, mType)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "DoorFrame.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
@@ -22,7 +24,7 @@ SpaceShipPartDoor::SpaceShipPartDoor(Ogre::Vector3 pos, Ogre::Quaternion ori, Og
 }
 
 SpaceShipPartDoor::SpaceShipPartDoor(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
-    : SpaceShipPartWall(pos, ori, parent, staticGeometry, name, engine, "SC_SpaceShipPartDoor")
+    : SpaceShipPartWall(pos, ori, parent, staticGeometry, name, engine, mType)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "DoorFrame.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));    
@@ -45,7 +47,7 @@ void SpaceShipPartDoor::commonConstructor()
 }
 
 SpaceShipPartDoor::SpaceShipPartDoor(SpaceShipPart *old, Ogre::String name)
-    : SpaceShipPartWall(old, name, "SC_SpaceShipPartDoor")
+    : SpaceShipPartWall(old, name, mType)
 {
     if(mEntity)
         mEngine->getSceneMgr()->destroyEntity(mEntity);

@@ -24,7 +24,11 @@ public:
     void connect(CPUDoorControl *ctrl) {mControl = ctrl;}
     bool isConnected() {return mControl;}
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     Ogre::SceneNode *mDoorNode;
     Ogre::Entity *mDoor;
 

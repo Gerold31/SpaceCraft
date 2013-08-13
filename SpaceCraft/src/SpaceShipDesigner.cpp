@@ -164,7 +164,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                         ++i;
                         continue;
                     }
-                    if(obj->getType() == "SC_SpaceShipPartFloor" || obj->getType() == "SC_SpaceShipPartWall")
+                    if(obj->getType() == SpaceShipPartFloor::getType() || obj->getType() == SpaceShipPartWall::getType())
                     {
                         SpaceShipPart *part = (SpaceShipPart *)obj;
                         SpaceShipPart::PART_TYPE type = part->getPartType();
@@ -229,9 +229,9 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                                 newPart = new SpaceShipPartFloor(part, name);
                                 break;
                             case SpaceShipPart::PART_WALL:
-                                if(mSelectedPart && mSelectedPart->getType() == "SC_SpaceShipPartDoor")
+                                if(mSelectedPart && mSelectedPart->getType() == SpaceShipPartDoor::getType())
                                     newPart = new SpaceShipPartDoor(part, name);
-                                else if(mSelectedPart && mSelectedPart->getType() == "SC_SpaceShipPartWindow")
+                                else if(mSelectedPart && mSelectedPart->getType() == SpaceShipPartWindow::getType())
                                     newPart = new SpaceShipPartWindow(part, name);
                                 else
                                     newPart = new SpaceShipPartWall(part, name);
@@ -277,7 +277,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                             }
                         }else
                         {
-                            assert(obj->getType() == "CPU");
+                            assert(obj->getType() == CPU::getType());
                             mLinkFirst = (CPU *)obj;
                         }
                         updateVisibleParts();
@@ -289,13 +289,13 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                                 mLinkFirst = NULL;
                             else
                             {
-                                assert(obj->getType() == "SC_SpaceShipPartLight");
+                                assert(obj->getType() == SpaceShipPartLight::getType());
                                 ((CPULightControl *)mLinkFirst)->addLight((SpaceShipPartLight *)obj);
                                 ((SpaceShipPartLight *)obj)->connect((CPULightControl *)mLinkFirst);
                             }
                         }else
                         {
-                            assert(obj->getType() == "CPU_LightControl");
+                            assert(obj->getType() == LightControl::getType());
                             mLinkFirst = (CPULightControl *)obj;
                         }
                         updateVisibleParts();
@@ -307,13 +307,13 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                                 mLinkFirst = NULL;
                             else
                             {
-                                assert(obj->getType() == "SC_SpaceShipPartDoor");
+                                assert(obj->getType() == SpaceShipPartDoor::getType());
                                 ((CPUDoorControl *)mLinkFirst)->addDoor((SpaceShipPartDoor *)obj);
                                 ((SpaceShipPartDoor *)obj)->connect((CPUDoorControl *)mLinkFirst);
                             }
                         }else
                         {
-                            assert(obj->getType() == "CPU_DoorControl");
+                            assert(obj->getType() == DoorControl::getType());
                             mLinkFirst = (CPUDoorControl *)obj;
                         }
                         updateVisibleParts();
@@ -520,7 +520,7 @@ void SpaceShipDesigner::updateVisibleParts()
         for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
         {
             SpaceShipPart *part = mSpaceShip->getPart(i);
-            if(part->getType() == "CPU" && (!mLinkFirst || part == mLinkFirst))
+            if(part->getType() == CPU::getType() && (!mLinkFirst || part == mLinkFirst))
             {
                 part->getParentSceneNode()->setVisible(true);
             }else if(part->getType().find("CPU_") == 0 && mLinkFirst && !((Hardware *)part)->isConnected())
@@ -540,10 +540,10 @@ void SpaceShipDesigner::updateVisibleParts()
         for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
         {
             SpaceShipPart *part = mSpaceShip->getPart(i);
-            if(part->getType() == "CPU_LightControl" && (!mLinkFirst || part == mLinkFirst))
+            if(part->getType() == CPULightControl::getType() && (!mLinkFirst || part == mLinkFirst))
             {
                 part->getParentSceneNode()->setVisible(true);
-            }else if(part->getType() == "SC_SpaceShipPartLight" && mLinkFirst && !((SpaceShipPartLight *)part)->isConnected())
+            }else if(part->getType() == SpaceShipPartLight::getType() && mLinkFirst && !((SpaceShipPartLight *)part)->isConnected())
             {
                 part->getParentSceneNode()->setVisible(true);
             }else
@@ -560,10 +560,10 @@ void SpaceShipDesigner::updateVisibleParts()
         for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
         {
             SpaceShipPart *part = mSpaceShip->getPart(i);
-            if(part->getType() == "CPU_DoorControl" && (!mLinkFirst || part == mLinkFirst))
+            if(part->getType() == CPUDoorControl::getType() && (!mLinkFirst || part == mLinkFirst))
             {
                 part->getParentSceneNode()->setVisible(true);
-            }else if(part->getType() == "SC_SpaceShipPartDoor" && mLinkFirst && !((SpaceShipPartDoor *)part)->isConnected())
+            }else if(part->getType() == SpaceShipPartDoor::getType() && mLinkFirst && !((SpaceShipPartDoor *)part)->isConnected())
             {
                 part->getParentSceneNode()->setVisible(true);
             }else

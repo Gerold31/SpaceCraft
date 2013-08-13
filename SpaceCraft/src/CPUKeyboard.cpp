@@ -8,8 +8,10 @@
 
 SpaceShipPart::SpaceShipPartInfo CPUKeyboard::mPartInfo[] = {SpaceShipPartInfo(PART_FLOOR, Ogre::Vector3(0, -0.5, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
 
+std::string CPUKeyboard::mType = "CPU_Keyboard";
+
 CPUKeyboard::CPUKeyboard(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    :Hardware(0x30cf7406, 0x1C6C8B36, 0x1802, PART_FLOORMOUNT, pos, ori, parent, name, "CPU_Keyboard", engine)
+    :Hardware(0x30cf7406, 0x1C6C8B36, 0x1802, PART_FLOORMOUNT, pos, ori, parent, name, mType, engine)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPUKeyboard.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
@@ -19,7 +21,7 @@ CPUKeyboard::CPUKeyboard(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNod
 }
 
 CPUKeyboard::CPUKeyboard(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
-    :Hardware(0x30cf7406, 0x1C6C8B36, 0x1802, PART_FLOORMOUNT, pos, ori, parent, staticGeometry, name, "CPU_Keyboard", engine)
+    :Hardware(0x30cf7406, 0x1C6C8B36, 0x1802, PART_FLOORMOUNT, pos, ori, parent, staticGeometry, name, mType, engine)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPUKeyboard.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));

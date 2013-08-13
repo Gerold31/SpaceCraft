@@ -17,8 +17,3 @@ void GravityObject::applyForce(Ogre::Vector3 force, double time)
     mVelocity += acceleration * time;
     mNode->setPosition(mNode->getPosition() + mVelocity * time);
 }
-
-bool GravityObject::update(float elapsedTime)
-{
-    return true;
-}

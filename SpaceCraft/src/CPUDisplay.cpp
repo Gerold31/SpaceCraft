@@ -17,8 +17,10 @@
 
 SpaceShipPart::SpaceShipPartInfo CPUDisplay::mPartInfo[] = {SpaceShipPartInfo(PART_WALL, Ogre::Vector3(0, 0, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
 
+std::string CPUDisplay::mType = "CPU_Display";
+
 CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    :Hardware(0x7349F615, 0x1C6C8B36, 0x1802, PART_WALLMOUNT, pos, ori, parent, name, "CPU_Display", engine)
+    :Hardware(0x7349F615, 0x1C6C8B36, 0x1802, PART_WALLMOUNT, pos, ori, parent, name, mType, engine)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPUDisplay.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
@@ -28,7 +30,7 @@ CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode 
 }
 
 CPUDisplay::CPUDisplay(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
-    :Hardware(0x7349F615, 0x1C6C8B36, 0x1802, PART_WALLMOUNT, pos, ori, parent, staticGeometry, name, "CPU_Display", engine)
+    :Hardware(0x7349F615, 0x1C6C8B36, 0x1802, PART_WALLMOUNT, pos, ori, parent, staticGeometry, name, mType, engine)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPUDisplay.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));

@@ -25,8 +25,10 @@
 
 #include <fstream>
 
+std::string SpaceShip::mType = "SC_SpaceShip";
+
 SpaceShip::SpaceShip(double mass, Ogre::Vector3 velocity, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    :GravityObject(mass, velocity, pos, ori, parent, name, "SC_SpaceShip", engine)
+    :GravityObject(mass, velocity, pos, ori, parent, name, mType, engine)
 {
     mParts.push_back(new SpaceShipPartFloor(Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, name + "Part0", engine));
     mNextPartID = 1;
@@ -67,11 +69,11 @@ void SpaceShip::save(std::string fileName)
         file << mParts.at(i)->getType() << std::endl;
         file << Ogre::StringConverter::toString(mParts.at(i)->getParentSceneNode()->getPosition()) << std::endl;
         file << Ogre::StringConverter::toString(mParts.at(i)->getParentSceneNode()->getOrientation()) << std::endl;
-        if(mParts.at(i)->getType() == "CPU")
+        if(mParts.at(i)->getType() == CPU::getType())
             cpus.push_back(std::pair<CPU *, int>((CPU *)mParts.at(i), i));
-        else if(mParts.at(i)->getType() == "CPU_LightControl")
+        else if(mParts.at(i)->getType() == CPULightControl::getType())
             lightControls.push_back(std::pair<CPULightControl *, int>((CPULightControl *)mParts.at(i), i));
-        else if(mParts.at(i)->getType() == "CPU_DoorControl")
+        else if(mParts.at(i)->getType() == CPUDoorControl::getType())
             doorControls.push_back(std::pair<CPUDoorControl *, int>((CPUDoorControl *)mParts.at(i), i));
     }
     file << std::endl;
@@ -167,34 +169,34 @@ void SpaceShip::load(std::string fileName)
             std::getline(file, line);
             ori = Ogre::StringConverter::parseQuaternion(line);
 
-            if(type == "SC_SpaceShipPartFloor")
+            if(type == SpaceShipPartFloor::getType())
                 part = new SpaceShipPartFloor(pos, ori, mNode, /*mStaticGeometry,*/ name, mEngine);
-            else if(type == "SC_SpaceShipPartWall")
+            else if(type == SpaceShipPartWall::getType())
                 part = new SpaceShipPartWall(pos, ori, mNode, name, mEngine);
-            else if(type == "CPU")
+            else if(type == CPU::getType())
             {
                 part = new CPU(pos, ori, mNode, name, mEngine);
                 Memory *mem = new Memory("program.a", Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, "Memory", mEngine);
                 ((CPU *)part)->setMemory(mem);
-            }else if(type == "CPU_Display")
+            }else if(type == CPUDisplay::getType())
                 part = new CPUDisplay(pos, ori, mNode, name, mEngine);
-            else if(type == "CPU_Keyboard")
+            else if(type == CPUKeyboard::getType())
                 part = new CPUKeyboard(pos, ori, mNode, name, mEngine);
-            else if(type == "CPU_DoorControl")
+            else if(type == CPUDoorControl::getType())
                 part = new CPUDoorControl(pos, ori, mNode, name, mEngine);
-            else if(type == "CPU_LifeSupport")
+            else if(type == CPULifeSupport::getType())
                 part = new CPULifeSupport(pos, ori, mNode, name, mEngine);
-            else if(type == "CPU_LifeDetection")
+            else if(type == CPULifeDetection::getType())
                 part = new CPULifeDetection(pos, ori, mNode, name, mEngine);
-            else if(type == "CPU_LightControl")
+            else if(type == CPULightControl::getType())
                 part = new CPULightControl(pos, ori, mNode, name, mEngine);
-            else if(type == "SC_SpaceShipPartLight")
+            else if(type == SpaceShipPartLight::getType())
                 part = new SpaceShipPartLight(pos, ori, mNode, name, mEngine);
-            else if(type == "SC_SpaceShipPartDoor")
+            else if(type == SpaceShipPartDoor::getType())
                 part = new SpaceShipPartDoor(pos, ori, mNode, name, mEngine);
-            else if(type == "SC_SpaceShipPartRotatingLight")
+            else if(type == SpaceShipPartRotatingLight::getType())
                 part = new SpaceShipPartRotatingLight(pos, ori, mNode, name, mEngine);
-            else if(type == "SC_SpaceShipPartWindow")
+            else if(type == SpaceShipPartWindow::getType())
                 part = new SpaceShipPartWindow(pos, ori, mNode, name, mEngine);
             else
                 printf("Error loading %s: invalid type %s\n", fileName.c_str(), type.c_str());

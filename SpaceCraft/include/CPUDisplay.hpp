@@ -22,7 +22,11 @@ public:
     
     void interrupt();
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     Ogre::Entity *mEntity;
     Ogre::TexturePtr mTexture;
     Ogre::Light *mLight[4];

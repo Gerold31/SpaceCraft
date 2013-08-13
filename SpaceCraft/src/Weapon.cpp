@@ -7,8 +7,10 @@
 
 #include "Human.hpp"
 
+std::string Weapon::mType = "SC_Weapon";
+
 Weapon::Weapon(Human *holder, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    : Entity(pos, ori, parent, name, "SC_Weapon", engine)
+    : Entity(pos, ori, parent, name, mType, engine)
 {
     mEntity = engine->getSceneMgr()->createEntity("Handgun.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));

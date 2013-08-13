@@ -16,7 +16,11 @@ public:
 
     bool update(float elapsedTime);
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     static SpaceShipPartInfo mPartInfo[14];
     static Ogre::Entity *mStaticEntity;
 

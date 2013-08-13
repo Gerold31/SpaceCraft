@@ -10,8 +10,10 @@
 
 SpaceShipPart::SpaceShipPartInfo CPULightControl::mPartInfo[] = {SpaceShipPartInfo(PART_FLOOR, Ogre::Vector3(0, -0.5, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
 
+std::string CPULightControl::mType = "CPU_LightControl";
+
 CPULightControl::CPULightControl(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    :Hardware(0x11647C71, 0x1C6C8B36, 0x0001, PART_FLOORMOUNT, pos, ori, parent, name, "CPU_LightControl", engine)
+    :Hardware(0x11647C71, 0x1C6C8B36, 0x0001, PART_FLOORMOUNT, pos, ori, parent, name, mType, engine)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPULightControl.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
@@ -21,7 +23,7 @@ CPULightControl::CPULightControl(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::
 }
 
 CPULightControl::CPULightControl(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
-    :Hardware(0x11647C71, 0x1C6C8B36, 0x0001, PART_FLOORMOUNT, pos, ori, parent, staticGeometry, name, "CPU_LightControl", engine)
+    :Hardware(0x11647C71, 0x1C6C8B36, 0x0001, PART_FLOORMOUNT, pos, ori, parent, staticGeometry, name, mType, engine)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPULightControl.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));

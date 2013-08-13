@@ -18,7 +18,11 @@ public:
 
     bool update(float elapsedTime);
 
+    static std::string getType(){return mType;}
+
 protected:
+    static std::string mType;
+
     Ogre::Entity *mEntity;
 };
 

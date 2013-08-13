@@ -42,7 +42,11 @@ public:
     WORD *getMemory() {return mRam;}
     void setMemory(Memory *mem);
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     const double mFrequency;
     WORD *mRam;
     WORD mRegister[8];

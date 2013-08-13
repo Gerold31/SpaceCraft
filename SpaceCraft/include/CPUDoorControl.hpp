@@ -21,7 +21,11 @@ public:
     int getNumberDoors() {return mDoors.size();}
     SpaceShipPartDoor *getDoor(int i) {return mDoors.at(i).first;}
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     std::vector<std::pair<SpaceShipPartDoor *, int> >mDoors;
     WORD mInterruptMsg;
 

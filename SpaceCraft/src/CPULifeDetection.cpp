@@ -3,6 +3,7 @@
 #include "ENGINE.hpp"
 #include "Map.hpp"
 #include "CPU.hpp"
+#include "Human.hpp"
 
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreEntity.h"
@@ -13,8 +14,10 @@
 
 SpaceShipPart::SpaceShipPartInfo CPULifeDetection::mPartInfo[] = {SpaceShipPartInfo(PART_FLOOR, Ogre::Vector3(0, 0.05, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
 
+std::string CPULifeDetection::mType = "CPU_LifeDetection";
+
 CPULifeDetection::CPULifeDetection(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    :Hardware(0x11F3DE7C, 0x1C6C8B36, 0x0001, PART_CEILMOUNT, pos, ori, parent, name, "CPU_LifeDetection", engine)
+    :Hardware(0x11F3DE7C, 0x1C6C8B36, 0x0001, PART_CEILMOUNT, pos, ori, parent, name, mType, engine)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPULifeDetection.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
@@ -24,7 +27,7 @@ CPULifeDetection::CPULifeDetection(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre
 }
 
 CPULifeDetection::CPULifeDetection(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
-    :Hardware(0x11F3DE7C, 0x1C6C8B36, 0x0001, PART_CEILMOUNT, pos, ori, parent, staticGeometry, name, "CPU_LifeDetection", engine)
+    :Hardware(0x11F3DE7C, 0x1C6C8B36, 0x0001, PART_CEILMOUNT, pos, ori, parent, staticGeometry, name, mType, engine)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPULifeDetection.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
@@ -51,7 +54,7 @@ bool CPULifeDetection::update(float elapsedTime)
     for(int i=0; i<mEngine->getMap()->getNumberEntities(); i++)
     {
         Entity *ent = mEngine->getMap()->getEntity(i);
-        if(ent && ent->getType() == "SC_Human")
+        if(ent && ent->getType() == Human::getType())
         {
             float dist = ent->getParentSceneNode()->getPosition().distance(mNode->getPosition());
             if(dist < minDist || minDist < 0)

@@ -112,7 +112,7 @@ bool Player::update(float elapsedTime)
                     if(i->movable->getMovableType() == "Entity" && i->movable->getName() != mNode->getName() + "Mesh")
                     {
                         Entity *ent = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
-                        if(!(ent && ent->getType() == "SC_SpaceShipPartDoor" && ((SpaceShipPartDoor *)ent)->isOpen()) && ent != mWeapon && ent != mFlashlight)
+                        if(!(ent && ent->getType() == SpaceShipPartDoor::getType() && ((SpaceShipPartDoor *)ent)->isOpen()) && ent != mWeapon && ent != mFlashlight)
                         {
                             printf("colliding with %s\n", ent->getName().c_str());
                             speed = i->distance - PLAYER_SIZE;
@@ -225,7 +225,7 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
                     Entity *obj = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
                     if(obj)
                     {
-                        if(obj->getType() == "SC_KinoControl")
+                        if(obj->getType() == KinoControl::getType())
                         {
                             Kino *kino = ((KinoControl *)obj)->getKino();
                             if(mMode == MODE_DEFAULT)
@@ -241,7 +241,7 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
                                 mInput->removeMouseListener(kino->getName());
                             }
                             return false; // stop iterating the Input->mKeyListeners map since we changed it
-                        }else if(obj->getType() == "CPU_Keyboard")
+                        }else if(obj->getType() == CPUKeyboard::getType())
                         {
                             CPUKeyboard *keyboard = ((CPUKeyboard *)obj);
                             if(mMode == MODE_DEFAULT)
@@ -254,7 +254,7 @@ bool Player::keyPressed(const OIS::KeyEvent &e)
                                 mInput->removeKeyListener(keyboard->getName());
                             }
                             return false; // stop iterating the Input->mKeyListeners map since we changed it
-                        }else if(obj->getType() == "SC_SpaceShipPartDoor")
+                        }else if(obj->getType() == SpaceShipPartDoor::getType())
                         {
                             if(mMode == MODE_DEFAULT)
                             {

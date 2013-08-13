@@ -18,7 +18,11 @@ public:
 
     WORD *getMemory() {return mMem;}
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     WORD mMem[1<<16];
 };
 

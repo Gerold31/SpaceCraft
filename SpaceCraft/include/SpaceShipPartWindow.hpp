@@ -14,7 +14,11 @@ public:
 
     bool update(float elapsedTime);
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     void commonConstructor();
 };
 

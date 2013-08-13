@@ -22,7 +22,11 @@ public:
     SpaceShipPartLight *getLight(int i) {return mLights.at(i);}
     void setLight(int i, SpaceShipPartLight *light) {mLights.at(i) = light;}
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     std::vector<SpaceShipPartLight *>mLights;
 
     static SpaceShipPartInfo mPartInfo[1];

@@ -14,7 +14,11 @@ public:
     
     void shoot();
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     Ogre::Entity *mEntity;
 	Ogre::RaySceneQuery* mRaySceneQuery;
 

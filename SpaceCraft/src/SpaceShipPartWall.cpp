@@ -22,10 +22,12 @@ SpaceShipPart::SpaceShipPartInfo SpaceShipPartWall::mPartInfo[]     = {SpaceShip
                                                                        SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3(-FLOOR_SIZE_X/2,-WALL_SIZE_Y/2, 0), Ogre::Quaternion(1, 0, 0, 0), true),
                                                                        SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3( FLOOR_SIZE_X/2,-WALL_SIZE_Y/2, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
 
+std::string SpaceShipPartWall::mType = "SC_SpaceShipPartWall";
+
 SpaceShipPartWall::SpaceShipPartWall(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine, Ogre::String type)
     : SpaceShipPart(PART_WALL, true, pos, ori, parent, name, type, engine)
 {
-    if(type == "SC_SpaceShipPartWall")
+    if(type == mType)
     {
         mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "SpaceShip/Part_Wall.mesh");
         mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
@@ -39,7 +41,7 @@ SpaceShipPartWall::SpaceShipPartWall(Ogre::Vector3 pos, Ogre::Quaternion ori, Og
 SpaceShipPartWall::SpaceShipPartWall(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine, Ogre::String type)
     : SpaceShipPart(PART_WALL, true, pos, ori, parent, staticGeometry, name, type, engine)
 {
-    if(type == "SC_SpaceShipPartWall")
+    if(type == mType)
     {
         mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "SpaceShip/Part_Wall.mesh");
         mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));

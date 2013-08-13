@@ -6,8 +6,10 @@
 
 #include "ENGINE.hpp"
 
+std::string Human::mType = "SC_Human";
+
 Human::Human(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    : Entity(pos, ori, parent, name, "SC_Human", engine)
+    : Entity(pos, ori, parent, name, mType, engine)
 {
     Ogre::SceneNode *node = mNode->createChildSceneNode(name + "HumanNode");
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "Human/Human.mesh");

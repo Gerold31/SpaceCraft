@@ -14,7 +14,11 @@ public:
     void toggle();
     void toggle(bool toggle);
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     Ogre::Entity *mEntity;
     Ogre::Light *mLight;
 };

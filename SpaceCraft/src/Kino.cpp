@@ -6,9 +6,10 @@
 #include "OGRE/OgreRenderWindow.h"
 #include "OGRE/OgreEntity.h"
 
+std::string Kino::mType = "SC_Kino";
 
 Kino::Kino(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    : Entity(pos, ori, parent, name, "SC_Kino", engine)
+    : Entity(pos, ori, parent, name, mType, engine)
 {
     mEntity = engine->getSceneMgr()->createEntity("Kino.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));

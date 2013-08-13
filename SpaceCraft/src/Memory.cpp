@@ -2,8 +2,10 @@
 
 #include <fstream>
 
+std::string Memory::mType = "SC_Memory";
+
 Memory::Memory(std::string fileName, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    :Entity(pos, ori, parent, name, "SC_Memory", engine)
+    :Entity(pos, ori, parent, name, mType, engine)
 {
     std::fstream file(fileName.c_str(), std::fstream::in | std::fstream::out | std::fstream::app | std::fstream::binary);
     int memSize = sizeof(mMem)/sizeof(mMem[0]);

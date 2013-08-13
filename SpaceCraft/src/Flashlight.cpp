@@ -8,8 +8,10 @@
 #define LIGHT_COLOR Ogre::ColourValue(0.9, 0.9, 0.9)
 #define LIGHT_RANGE (100.0)
 
+std::string Flashlight::mType = "SC_Flashlight";
+
 Flashlight::Flashlight(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
-    : Entity(pos, ori, parent, name, "SC_Flashlight", engine)
+    : Entity(pos, ori, parent, name, mType, engine)
 {
     mEntity = engine->getSceneMgr()->createEntity("Flashlight.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));

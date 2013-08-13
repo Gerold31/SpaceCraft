@@ -30,7 +30,11 @@ public:
     bool keyPressed(const OIS::KeyEvent &e);
     bool keyReleased(const OIS::KeyEvent &e);
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     Input *mInput;
 
     std::queue<WORD > mKeyBuffer;

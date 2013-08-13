@@ -16,6 +16,8 @@ public:
     SpaceShip(double mass, Ogre::Vector3 velocity, Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine);
     ~SpaceShip();
     
+    bool update(float elapsedTime){return true;}
+
     void addPart(SpaceShipPart *newPart);
     void removePart(SpaceShipPart *part);
     size_t getNumberOfParts() {return mParts.size();}
@@ -25,7 +27,11 @@ public:
     void save(std::string fileName);
     void load(std::string fileName);
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     Ogre::StaticGeometry *mStaticGeometry;
 
     std::vector<SpaceShipPart *>mParts;

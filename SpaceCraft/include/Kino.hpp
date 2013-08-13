@@ -30,7 +30,11 @@ public:
 
     Ogre::Camera *getCamera() {return mCamera;}
 
+    static std::string getType(){return mType;}
+
 private:
+    static std::string mType;
+
     Ogre::Entity *mEntity;
 
     Ogre::SceneNode *mCameraYawNode;
