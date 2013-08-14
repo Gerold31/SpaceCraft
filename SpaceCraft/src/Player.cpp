@@ -71,8 +71,8 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
 
     mSpaceShipDesigner = new SpaceShipDesigner(mCamera->getAspectRatio(), engine);
     
-    mFlashlight = new Flashlight(Ogre::Vector3(-0.1, -0.1, -0.45), Ogre::Quaternion(), mCameraRollNode, name + "Flashlight", engine);
-    mWeapon = new Weapon(this, Ogre::Vector3(0.1, -0.1, -0.45), Ogre::Quaternion(), mCameraRollNode, name + "Weapon", engine);
+    mFlashlight = new Flashlight(Ogre::Vector3(-0.2, -0.15, -0.45), Ogre::Quaternion(), mCameraRollNode, name + "Flashlight", engine);
+    mWeapon = new Weapon(this, Ogre::Vector3(0.2, -0.15, -0.45), Ogre::Quaternion(), mCameraRollNode, name + "Weapon", engine);
 }
 
 bool Player::update(float elapsedTime)

@@ -18,8 +18,8 @@ Bot::Bot(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre:
 {
     mTask = NULL;
     
-    mFlashlight = new Flashlight(Ogre::Vector3(-0.1, -0.1, -0.45), Ogre::Quaternion(), mNode, name + "Flashlight", engine);
-    mWeapon = new Weapon(this, Ogre::Vector3(0.1, -0.1, -0.45), Ogre::Quaternion(), mNode, name + "Weapon", engine);
+    mFlashlight = new Flashlight(Ogre::Vector3(-0.2, -0.15, -0.45), Ogre::Quaternion(), mNode, name + "Flashlight", engine);
+    mWeapon = new Weapon(this, Ogre::Vector3(0.2, -0.15, -0.45), Ogre::Quaternion(), mNode, name + "Weapon", engine);
 }
 
 Bot::~Bot()
