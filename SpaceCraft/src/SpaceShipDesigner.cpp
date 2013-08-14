@@ -295,7 +295,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                             }
                         }else
                         {
-                            assert(obj->getType() == LightControl::getType());
+                            assert(obj->getType() == CPULightControl::getType());
                             mLinkFirst = (CPULightControl *)obj;
                         }
                         updateVisibleParts();
@@ -313,7 +313,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                             }
                         }else
                         {
-                            assert(obj->getType() == DoorControl::getType());
+                            assert(obj->getType() == CPUDoorControl::getType());
                             mLinkFirst = (CPUDoorControl *)obj;
                         }
                         updateVisibleParts();

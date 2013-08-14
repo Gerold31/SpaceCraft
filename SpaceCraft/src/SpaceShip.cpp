@@ -245,7 +245,7 @@ void SpaceShip::load(std::string fileName)
     
     for(int i=0; i<mParts.size(); i++)
     {
-        if(mParts.at(i)->getType() == "CPU")
+		if(mParts.at(i)->getType() == CPU::getType())
             ((CPU *)mParts.at(i))->start();
     }
 

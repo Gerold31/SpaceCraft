@@ -27,7 +27,7 @@ CPU::CPU(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre:
 }
 
 CPU::CPU(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine)
-    : SpaceShipPart(PART_FLOORMOUNT, true, pos, ori, parent, staticGeometry, name, "CPU", engine),
+    : SpaceShipPart(PART_FLOORMOUNT, true, pos, ori, parent, staticGeometry, name, mType, engine),
     mFrequency(1000000.0)
 {
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "CPU.mesh");
