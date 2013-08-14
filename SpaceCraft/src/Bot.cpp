@@ -6,10 +6,13 @@
 
 #include "ENGINE.hpp"
 #include "SpaceShipPart.hpp"
+#include "SpaceShipPartDoor.hpp"
 #include "Flashlight.hpp"
 #include "Weapon.hpp"
 
-#define WAYPOINT_THRESHOLD (1.0)
+#define WAYPOINT_THRESHOLD (0.2)
+
+#define MIN(x, y) (x < y ? x : y)
 
 std::vector<Bot::Task *>Bot::mTaskPool;
 
@@ -63,11 +66,12 @@ bool Bot::update(float elapsedTime)
     {
         if(mPath->mWaypoints->size() == 0)
             return true;
-        Ogre::Vector3 target = mPath->mWaypoints->front()->getParentSceneNode()->getPosition(); 
-        target.y = mNode->getPosition().y;
+        Ogre::Vector3 target = mPath->mWaypoints->front()->getParentSceneNode()->_getDerivedPosition();
+        Ogre::Vector3 pos = mNode->_getDerivedPosition();
+        target.y = pos.y;
         if(mPath->mWaypoints->size() > 1)
         {
-            if(target.distance(mNode->getPosition()) < WAYPOINT_THRESHOLD)
+            if(target.distance(pos) < WAYPOINT_THRESHOLD)
             {
                 mPath->mWaypoints->erase(mPath->mWaypoints->begin());
             }
@@ -75,7 +79,7 @@ bool Bot::update(float elapsedTime)
 
         bool isInSight = false;
 
-        Ogre::Ray ray(mNode->getParentSceneNode()->getPosition() + mNode->getPosition() + Ogre::Vector3(0, -0.5, 0), mTask->mTarget->getParentNode()->getPosition() - mNode->getPosition());
+        Ogre::Ray ray(pos + Ogre::Vector3(0, -0.5, 0), mTask->mTarget->getParentSceneNode()->_getDerivedPosition() - pos);
         mRaySceneQuery->setRay(ray);
         mRaySceneQuery->setSortByDistance(true);
 
@@ -88,7 +92,7 @@ bool Bot::update(float elapsedTime)
             {
                 Entity *ent = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
                 if(ent == mTask->mTarget)
-                isInSight = true;
+                    isInSight = true;
                 break;
             }
             ++i;
@@ -99,18 +103,52 @@ bool Bot::update(float elapsedTime)
             switch(mTask->mType)
             {
             case Task::TASK_TYPE_DESTROY:
-                // shoot
+                // @todo shoot
                 break;
             case Task::TASK_TYPE_KILL:
-                // shoot (& move)
+                // @todo shoot (& move?)
                 break;
             }
         }else
         {
-            // @todo collision detection
-            float speed = 3.0;
+            //collision detection
+            Ogre::Vector3 dir = mPath->mWaypoints->at(MIN(1, mPath->mWaypoints->size() - 1))->getParentSceneNode()->_getDerivedPosition();
+            dir.y = pos.y;
+            dir = dir - pos;
+            Ogre::Ray ray(pos + Ogre::Vector3(0, -0.5, 0), dir.normalisedCopy());
+            mRaySceneQuery->setRay(ray);
+            mRaySceneQuery->setSortByDistance(true);
+
+            Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
+            Ogre::RaySceneQueryResult::iterator i = result.begin();
+
+            bool collision = false;
+            while(i!=result.end())
+            {
+                if(i->distance > dir.length())
+                    break;
+                if(i->movable && i->movable->getMovableType() == "Entity" && i->movable->getName() != mNode->getName() + "Mesh")
+                {
+                    /*
+                    Entity *ent = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
+                    if(ent->getType() == SpaceShipPartDoor::getType())
+                    {
+                    }*/
+                    collision = true;
+                    break;
+                }
+                ++i;
+            }
+            if(!collision)
+            {
+                if(mPath->mWaypoints->size() > 1)
+                    mPath->mWaypoints->erase(mPath->mWaypoints->begin());
+                target = mPath->mWaypoints->front()->getParentSceneNode()->_getDerivedPosition();
+                target.y = pos.y;
+            }
+            float speed = 1.0;
             mNode->lookAt(target, Ogre::Node::TS_WORLD);
-            mNode->translate((target - mNode->getPosition()).normalisedCopy() * elapsedTime * speed);
+            mNode->translate((target - pos).normalisedCopy() * elapsedTime * speed);
         }
     }
     return true;
