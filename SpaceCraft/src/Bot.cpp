@@ -56,6 +56,8 @@ bool Bot::update(float elapsedTime)
 	
 	if(mTask && mPath)
 	{
+		if(mPath->mWaypoints->size() == 0)
+			return true;
 		Ogre::Vector3 target = mPath->mWaypoints->front()->getParentSceneNode()->getPosition(); 
 		target.y = mNode->getPosition().y;
 		if(mPath->mWaypoints->size() > 1)
@@ -81,7 +83,7 @@ bool Bot::update(float elapsedTime)
 		{
 			// @todo collision detection
 			float speed = 3.0;
-			mNode->lookAt(target, Ogre::Node::TS_LOCAL);
+			mNode->lookAt(target, Ogre::Node::TS_WORLD);
 			mNode->translate((target - mNode->getPosition()).normalisedCopy() * elapsedTime * speed);
 		}
 	}
