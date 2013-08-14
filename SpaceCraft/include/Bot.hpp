@@ -2,8 +2,10 @@
 #define _BOT_HPP_
 
 #include "Pathfinding.hpp"
-
 #include "Human.hpp"
+
+class Flashlight;
+class Weapon;
 
 class Bot : public Human
 {
@@ -36,6 +38,9 @@ protected:
     static std::vector<Task *>mTaskPool;
     Task *mTask;
 	Pathfinding::Path *mPath;
+
+    Flashlight *mFlashlight;
+    Weapon *mWeapon;
 };
 
 #endif
