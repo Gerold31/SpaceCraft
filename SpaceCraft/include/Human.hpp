@@ -4,7 +4,10 @@
 namespace Ogre
 {
     class Entity;
+	class RaySceneQuery;
 };
+
+class SpaceShipPart;
 
 #include "OGRE/OgreString.h"
 
@@ -20,10 +23,13 @@ public:
 
     static std::string getType(){return mType;}
 
+	SpaceShipPart *getStandOn();
+
 protected:
     static std::string mType;
 
     Ogre::Entity *mEntity;
+	Ogre::RaySceneQuery *mRaySceneQuery;
 };
 
 #endif

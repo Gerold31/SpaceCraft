@@ -48,8 +48,6 @@ private:
     Ogre::SceneNode *mCameraRollNode;
     Ogre::Camera    *mCamera;
     Ogre::Viewport  *mViewport;
-    
-	Ogre::RaySceneQuery* mRaySceneQuery;
 
     enum MODE
     {

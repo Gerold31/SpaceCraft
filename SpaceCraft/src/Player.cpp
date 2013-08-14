@@ -64,8 +64,6 @@ Player::Player(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     engine->initGUIManager();
     mInput->addKeyListener(engine->getGUIManager(), "GUIManager");
     mInput->addMouseListener(engine->getGUIManager(), "GUIManager");
-    
-    mRaySceneQuery = engine->getSceneMgr()->createRayQuery(Ogre::Ray());
 
     mMode = MODE_DEFAULT;
 
@@ -85,6 +83,14 @@ bool Player::update(float elapsedTime)
 	{
         return false;
 	}
+
+	/*
+	SpaceShipPart *standOn = getStandOn();
+	if(!standOn)
+	{
+		// @todo float in space
+	}
+	*/
 
     //movement
     if(mTranslation != Ogre::Vector3::ZERO && mMode == MODE_DEFAULT)
