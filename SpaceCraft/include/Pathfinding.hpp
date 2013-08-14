@@ -17,7 +17,8 @@ public:
         double mLength;
         std::vector<SpaceShipPart *> *mWaypoints;
     };
-
+    
+    static Path *findHumanPath(SpaceShip *ship, SpaceShipPart *from, SpaceShipPart *to);
     static Path *findPath(SpaceShip *ship, SpaceShipPart *from, SpaceShipPart *to);
 
 private:

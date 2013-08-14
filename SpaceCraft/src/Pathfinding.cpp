@@ -2,6 +2,9 @@
 
 #include "SpaceShip.hpp"
 #include "SpaceShipPart.hpp"
+#include "SpaceShipPartFloor.hpp"
+#include "SpaceShipPartWall.hpp"
+#include "SpaceShipPartDoor.hpp"
 
 #include "OGRE/OgreSceneNode.h"
 
@@ -16,6 +19,62 @@ std::map<SpaceShipPart *, double>::iterator Pathfinding::getSmallest(std::map<Sp
         ++begin;
     }
     return smallest;
+}
+
+Pathfinding::Path *Pathfinding::findHumanPath(SpaceShip *ship, SpaceShipPart *from, SpaceShipPart *to)
+{
+    std::vector<SpaceShipPart *> closedList;
+    std::map<SpaceShipPart *, double> openList; // fScore
+    std::map<SpaceShipPart *, double> gScore;
+    std::map<SpaceShipPart *, SpaceShipPart*> cameFrom;
+
+    gScore[from] = 0;
+    openList[from] = gScore[from] + heuristic(from, to);
+
+    while(!openList.empty())
+    {
+        std::map<SpaceShipPart *, double>::iterator current = getSmallest(openList.begin(), openList.end());
+
+        assert(current->first->getType() == SpaceShipPartFloor::getType());
+
+        std::map<SpaceShipPart *, double> links;
+		for(int i=0; i<current->first->getNumberNeighbors(); i++)
+		{
+            if(current->first->getNeighbor(i) && current->first->getNeighbor(i)->getType() == SpaceShipPartFloor::getType())
+            {
+                if(!current->first->getNeighbor(i)->getNeighbor(i+4) || current->first->getNeighbor(i)->getNeighbor(i+4)->getType() == SpaceShipPartDoor::getType())
+                {
+                    links[current->first->getNeighbor(i)] = current->first->getNeighborInfo(i)->mPos.length();
+                }
+            }
+		}
+
+        for(std::map<SpaceShipPart *, double>::iterator i=links.begin(); i!=links.end(); ++i)
+        {
+            SpaceShipPart *neighbor = i->first;
+
+            if(find(closedList.begin(), closedList.end(), neighbor) != closedList.end())
+                continue;
+
+            double tentativeG = gScore[current->first] + cost(current->first, neighbor);
+
+            if(openList.count(neighbor) > 0 && tentativeG >= gScore[neighbor])
+                continue;
+
+            cameFrom[neighbor] = current->first;
+            gScore[neighbor] = tentativeG;
+            double f = tentativeG + heuristic(neighbor, to);
+            openList[neighbor] = f;
+        }
+
+        if(current->first == to)
+            return reconstructPath(cameFrom, to, new Path(new std::vector<SpaceShipPart *>(), 0));
+
+        closedList.push_back(current->first);
+        openList.erase(current);
+    }
+
+    return NULL;
 }
 
 Pathfinding::Path *Pathfinding::findPath(SpaceShip *ship, SpaceShipPart *from, SpaceShipPart *to)

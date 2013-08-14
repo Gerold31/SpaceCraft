@@ -47,10 +47,10 @@ bool Bot::update(float elapsedTime)
         switch (mTask->mType)
         {
         case Bot::Task::TASK_TYPE_DESTROY:
-            mPath = Pathfinding::findPath(NULL, getStandOn(), (SpaceShipPart *)mTask->mTarget);
+            mPath = Pathfinding::findHumanPath(NULL, getStandOn(), ((SpaceShipPart *)mTask->mTarget)->getNeighbor(0));
             break;
         case Bot::Task::TASK_TYPE_KILL:
-            mPath = Pathfinding::findPath(NULL, getStandOn(), ((Human *)mTask->mTarget)->getStandOn());
+            mPath = Pathfinding::findHumanPath(NULL, getStandOn(), ((Human *)mTask->mTarget)->getStandOn());
             break;
         default:
             break;
