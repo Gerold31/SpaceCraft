@@ -20,6 +20,8 @@ Bot::Bot(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre:
     : Human(pos, ori, parent, name, engine)
 {
     mTask = NULL;
+
+    mDelay = 15.0;
     
     mFlashlight = new Flashlight(Ogre::Vector3(-0.2, -0.15, -0.45), Ogre::Quaternion(), mNode, name + "Flashlight", engine);
     mWeapon = new Weapon(this, Ogre::Vector3(0.2, -0.15, -0.45), Ogre::Quaternion(), mNode, name + "Weapon", engine);
@@ -36,6 +38,9 @@ Bot::~Bot()
 
 bool Bot::update(float elapsedTime)
 {
+    if((mDelay -= elapsedTime) > 0)
+        return true;
+    mDelay = 0;
     if(!mTask && mTaskPool.size() > 0)
     {
         // @todo check if task is already assigned
@@ -123,17 +128,36 @@ bool Bot::update(float elapsedTime)
             Ogre::RaySceneQueryResult::iterator i = result.begin();
 
             bool collision = false;
+            bool blocked = false;
             while(i!=result.end())
             {
                 if(i->distance > dir.length())
                     break;
                 if(i->movable && i->movable->getMovableType() == "Entity" && i->movable->getName() != mNode->getName() + "Mesh")
                 {
-                    /*
                     Entity *ent = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
                     if(ent->getType() == SpaceShipPartDoor::getType())
                     {
-                    }*/
+                        SpaceShipPartDoor *door = (SpaceShipPartDoor *)ent;
+                        if(!door->isOpen())
+                        {
+                            if(door->isLocked())
+                            {
+                                // @todo shoot
+                                if(i->distance < 1.5)
+                                {
+                                    blocked = true;
+                                }
+                            }else
+                            {
+                                if(i->distance < 1.5)
+                                {
+                                    mDelay = 0.5;
+                                    door->open(true);
+                                }
+                            }
+                        }
+                    }
                     collision = true;
                     break;
                 }
@@ -146,9 +170,12 @@ bool Bot::update(float elapsedTime)
                 target = mPath->mWaypoints->front()->getParentSceneNode()->_getDerivedPosition();
                 target.y = pos.y;
             }
-            float speed = 1.0;
+            if(!blocked)
+            {
+                float speed = 1.0;
+                mNode->translate((target - pos).normalisedCopy() * elapsedTime * speed);
+            }
             mNode->lookAt(target, Ogre::Node::TS_WORLD);
-            mNode->translate((target - pos).normalisedCopy() * elapsedTime * speed);
         }
     }
     return true;

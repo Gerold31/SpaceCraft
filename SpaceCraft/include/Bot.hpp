@@ -39,6 +39,8 @@ protected:
     Task *mTask;
 	Pathfinding::Path *mPath;
 
+    float mDelay;
+
     Flashlight *mFlashlight;
     Weapon *mWeapon;
 };
