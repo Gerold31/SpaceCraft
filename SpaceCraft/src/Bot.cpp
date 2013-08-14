@@ -67,8 +67,29 @@ bool Bot::update(float elapsedTime)
 				mPath->mWaypoints->erase(mPath->mWaypoints->begin());
 			}
 		}
+
+		bool isInSight = false;
+
+        Ogre::Ray ray(mNode->getParentSceneNode()->getPosition() + mNode->getPosition() + Ogre::Vector3(0, -0.5, 0), mTask->mTarget->getParentNode()->getPosition() - mNode->getPosition());
+        mRaySceneQuery->setRay(ray);
+        mRaySceneQuery->setSortByDistance(true);
+
+        Ogre::RaySceneQueryResult &result = mRaySceneQuery->execute();
+        Ogre::RaySceneQueryResult::iterator i = result.begin();
+
+        while(i!=result.end())
+        {
+            if(i->movable && i->movable->getMovableType() == "Entity" && i->movable->getName() != mNode->getName() + "Mesh")
+            {
+                Entity *ent = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
+                if(ent == mTask->mTarget)
+                isInSight = true;
+                break;
+            }
+            ++i;
+        }
 		
-		if(mPath->mWaypoints->size() == 1) // change to "is in sight"
+		if(isInSight)
 		{
 			switch(mTask->mType)
 			{
