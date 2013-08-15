@@ -171,9 +171,15 @@ void SpaceShip::load(std::string fileName)
             ori = Ogre::StringConverter::parseQuaternion(line);
 
             if(type == SpaceShipPartFloor::getType())
-                part = new SpaceShipPartFloor(pos, ori, mNode, /*mStaticGeometry,*/ name, mEngine);
+                if(pos.y > 2)
+                    part = new SpaceShipPartFloor(pos, ori, mNode, mStaticGeometry, name, mEngine);
+                else
+                    part = new SpaceShipPartFloor(pos, ori, mNode, name, mEngine);
             else if(type == SpaceShipPartWall::getType())
-                part = new SpaceShipPartWall(pos, ori, mNode, name, mEngine);
+                if(pos.y > 2)
+                    part = new SpaceShipPartWall(pos, ori, mNode, mStaticGeometry, name, mEngine);
+                else
+                    part = new SpaceShipPartWall(pos, ori, mNode, name, mEngine);
             else if(type == CPU::getType())
             {
                 part = new CPU(pos, ori, mNode, name, mEngine);
@@ -243,6 +249,8 @@ void SpaceShip::load(std::string fileName)
             ((SpaceShipPartDoor *)mParts.at(data.y))->connect((CPUDoorControl *)mParts.at(data.x));
         }
     }
+
+    mStaticGeometry->build();
     
 /*    for(int i=0; i<mParts.size(); i++)
     {
@@ -250,8 +258,6 @@ void SpaceShip::load(std::string fileName)
             ((CPU *)mParts.at(i))->start();
     }
 */
-
-    //mStaticGeometry->build();
 
     if(mParts.size() == 0)
         mParts.push_back(new SpaceShipPartFloor(Ogre::Vector3(0,0,0), Ogre::Quaternion(), mNode, mName + "Part0", mEngine));

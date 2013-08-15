@@ -3,6 +3,12 @@
 
 #include "SpaceShipPart.hpp"
 
+namespace Ogre
+{
+    class InstanceManager;
+    class InstancedEntity;
+}
+
 #define FLOOR_SIZE_X (1.2)
 #define FLOOR_SIZE_Y (0.2)
 #define FLOOR_SIZE_Z (1.2)
@@ -23,6 +29,9 @@ private:
 
     static SpaceShipPartInfo mPartInfo[14];
     static Ogre::Entity *mStaticEntity;
+    static Ogre::InstanceManager *mInstanceManager;
+
+    Ogre::InstancedEntity *mInstancedEntity;
 
     void commonConstructor();
 };

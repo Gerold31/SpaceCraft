@@ -6,6 +6,8 @@
 
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreEntity.h"
+#include "OGRE/OgreInstanceManager.h"
+#include "OGRE/OgreInstancedEntity.h"
 
 SpaceShipPart::SpaceShipPartInfo SpaceShipPartFloor::mPartInfo[]    = {SpaceShipPartInfo(PART_FLOORMOUNT,Ogre::Vector3(0, FLOOR_SIZE_Y/2, 0), Ogre::Quaternion(1, 0, 0, 0), false),
                                                                        SpaceShipPartInfo(PART_CEILMOUNT, Ogre::Vector3(0,-FLOOR_SIZE_Y/2, 0), Ogre::Quaternion(1, 0, 0, 0), false),
@@ -25,16 +27,26 @@ SpaceShipPart::SpaceShipPartInfo SpaceShipPartFloor::mPartInfo[]    = {SpaceShip
                                                                        SpaceShipPartInfo(PART_WALL,      Ogre::Vector3(FLOOR_SIZE_X/2,-WALL_SIZE_Y/2, 0), Ogre::Quaternion(sqrt(0.5), 0,  sqrt(0.5), 0), true)};
 
 Ogre::Entity *SpaceShipPartFloor::mStaticEntity = NULL;
+Ogre::InstanceManager *SpaceShipPartFloor::mInstanceManager = NULL;
 
 std::string SpaceShipPartFloor::mType = "SC_SpaceShipPartFloor";
 
 SpaceShipPartFloor::SpaceShipPartFloor(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, ENGINE *engine)
     : SpaceShipPart(PART_FLOOR, true, pos, ori, parent, name, mType, engine)
 {
+    /*
+    if(!mInstanceManager)
+        mInstanceManager = engine->getSceneMgr()->createInstanceManager("SpaceShipPartFloorInstanceManager", "SpaceShip/Part_Floor.mesh", Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME, Ogre::InstanceManager::TextureVTF, 100, Ogre::IM_USEALL);
+    mInstancedEntity = mInstanceManager->createInstancedEntity("Part/Metal_VTF");
+    mInstancedEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
+    //mInstancedEntity->setPosition(pos);
+    //mInstancedEntity->setOrientation(ori);
+    mNode->attachObject(mInstancedEntity);
+    */
     mEntity = engine->getSceneMgr()->createEntity(name + "Mesh", "SpaceShip/Part_Floor.mesh");
     mEntity->getUserObjectBindings().setUserAny("Entity", Ogre::Any((Entity *)this));
     mNode->attachObject(mEntity);
-
+    
     commonConstructor();
 }
 
