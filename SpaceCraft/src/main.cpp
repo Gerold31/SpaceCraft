@@ -1,21 +1,7 @@
 #include "ENGINE.hpp"
+#include "Game.hpp"
 
-#include "OGRE/OgreVector3.h"
-#include "OGRE/OgreQuaternion.h"
-#include "OGRE/OgreSceneManager.h"
-#include "OGRE/OgreEntity.h"
-#include "OGRE/OgreSceneNode.h"
-
-#include "Player.hpp"
-#include "KinoControl.hpp"
-#include "CPU.hpp"
-#include "Memory.hpp"
-#include "CPUDisplay.hpp"
-#include "CPUKeyboard.hpp"
-#include "Star.hpp"
-#include "SpaceShip.hpp"
-#include "Map.hpp"
-#include "Universe.hpp"
+#include "OGRE/OgreException.h"
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -29,28 +15,13 @@ int main(int argc, char **argv)
 {
     try{
         ENGINE *engine = new ENGINE();
-        Universe *map = new Universe(engine);
+        Game *map = new Game(Game::DIFFICULTY_NORMAL, engine);
 
         if(!engine->init(map))
         {
             ENGINE_ERROR("failed to initialize ENGINE");
             return -1;
         }
-        
-        SpaceShip *ship = new SpaceShip(455e3, Ogre::Vector3(0, 0, 0), Ogre::Vector3(0, 0, 0), Ogre::Quaternion(), engine->getSceneMgr()->getRootSceneNode(), "Ship", engine);
-        map->addGravityObject(ship);
-        
-        Player *player = new Player(Ogre::Vector3(0,1.67,0), Ogre::Quaternion(), ship->getParentSceneNode(), engine->getWindow(), "Player", engine);
-        player->setSpaceShip(ship);
-
-        /*
-        Ogre::Light *light = engine->getSceneMgr()->createLight("Light0");
-        light->setType(Ogre::Light::LT_DIRECTIONAL);
-        light->setDiffuseColour(0.8, 0.8, 0.8);
-        light->setSpecularColour(0.8, 0.8, 0.8);
-        light->setDirection(1, -2, 1);
-        light->setCastShadows(true);
-        */
 
         engine->run();
 

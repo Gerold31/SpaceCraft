@@ -17,6 +17,7 @@
 #include "CPUDoorControl.hpp"
 #include "CPULifeSupport.hpp"
 #include "CPULifeDetection.hpp"
+#include "Bot.hpp"
 
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreRenderWindow.h"
@@ -184,9 +185,9 @@ void SpaceShip::load(std::string fileName)
                 part = new CPUKeyboard(pos, ori, mNode, name, mEngine);
             else if(type == CPUDoorControl::getType())
                 part = new CPUDoorControl(pos, ori, mNode, name, mEngine);
-            else if(type == CPULifeSupport::getType())
+			else if(type == CPULifeSupport::getType())
                 part = new CPULifeSupport(pos, ori, mNode, name, mEngine);
-            else if(type == CPULifeDetection::getType())
+			else if(type == CPULifeDetection::getType())
                 part = new CPULifeDetection(pos, ori, mNode, name, mEngine);
             else if(type == CPULightControl::getType())
                 part = new CPULightControl(pos, ori, mNode, name, mEngine);
@@ -243,11 +244,12 @@ void SpaceShip::load(std::string fileName)
         }
     }
     
-    for(int i=0; i<mParts.size(); i++)
+/*    for(int i=0; i<mParts.size(); i++)
     {
 		if(mParts.at(i)->getType() == CPU::getType())
             ((CPU *)mParts.at(i))->start();
     }
+*/
 
     //mStaticGeometry->build();
 

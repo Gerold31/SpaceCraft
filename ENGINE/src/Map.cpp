@@ -11,6 +11,22 @@ Map::Map(ENGINE *engine)
     mEngine = engine;
 }
 
+Map::~Map()
+{
+    for(std::vector<Entity *>::iterator i=mEntitiesToRegister.begin(); i!=mEntitiesToRegister.end(); ++i)
+    {
+        if(*i)
+            delete *i;
+    }
+    mEntitiesToRegister.clear();
+    for(std::vector<Entity *>::iterator i=mEntities.begin(); i!=mEntities.end(); ++i)
+    {
+        if(*i)
+            delete *i;
+    }
+    mEntities.clear();
+}
+
 void Map::init()
 {
 }

@@ -10,6 +10,7 @@ class Map
 {
 public:
     Map(ENGINE *engine);
+    virtual ~Map();
     
     virtual void init();
     virtual bool update(float elapsedTime);
