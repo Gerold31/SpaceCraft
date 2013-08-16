@@ -23,6 +23,9 @@ std::map<SpaceShipPart *, double>::iterator Pathfinding::getSmallest(std::map<Sp
 
 Pathfinding::Path *Pathfinding::findHumanPath(SpaceShip *ship, SpaceShipPart *from, SpaceShipPart *to)
 {
+    if(!from || !to)
+        return NULL;
+
     std::vector<SpaceShipPart *> closedList;
     std::map<SpaceShipPart *, double> openList; // fScore
     std::map<SpaceShipPart *, double> gScore;

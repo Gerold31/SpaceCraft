@@ -6,7 +6,7 @@
 #include "OGRE/OgreRay.h"
 
 #include "ENGINE.hpp"
-#include "SpaceShipPart.hpp"
+#include "SpaceShipPartFloor.hpp"
 
 std::string Human::mType = "SC_Human";
 
@@ -47,9 +47,15 @@ SpaceShipPart *Human::getStandOn()
     {
 		if(i->distance > 2)
 			return NULL;
-		if(i->movable && i->movable->getMovableType() == "Entity" && i->movable->getName() != mNode->getName() + "Mesh")
-			return (SpaceShipPart *)Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
-		++i;
+		if(i->movable && i->movable->getMovableType() == "Entity")
+        {
+			Entity *ent = Ogre::any_cast<Entity *>(i->movable->getUserObjectBindings().getUserAny("Entity"));
+            if(ent->getType() == SpaceShipPartFloor::getType())
+            {
+                return (SpaceShipPart *)ent;
+            }
+        }
+        ++i;
 	}
 	return NULL;
 }
