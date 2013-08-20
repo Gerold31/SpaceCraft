@@ -5,6 +5,8 @@
 #include "SpaceShipDesigner.hpp"
 #include "SpaceShipPart.hpp"
 
+#include "OGRE/OgreRenderWindow.h"
+
 #include <stdlib.h>
 
 SpaceShipDesigner *SpaceShipDesignerGUI::mParent = NULL;
@@ -20,6 +22,7 @@ SpaceShipDesignerGUI::SpaceShipDesignerGUI(ENGINE *engine, SpaceShipDesigner *pa
         if(w->getName() == "Root")
         {
             mRoot = w;
+            mRoot->setSize(mEngine->getWindow()->getWidth(), mEngine->getWindow()->getHeight());
             for(size_t j=0; j<mRoot->getChildCount(); j++)
             {
                 if(w->getChildAt(j)->getTypeName() == "Button")

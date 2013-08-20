@@ -82,7 +82,7 @@ bool ENGINE::init(Map *map)
         Ogre::NameValuePairList params;
         params["FSAA"] = "0"; 
         params["vsync"] = "true";
-        mWindow = mRoot->createRenderWindow("ENGINE", 1024, 1024, false, &params);
+        mWindow = mRoot->createRenderWindow("ENGINE", 800, 600, false, &params);
 
         mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC, "SceneMgr");
         mRootSceneNode = mSceneMgr->getRootSceneNode();

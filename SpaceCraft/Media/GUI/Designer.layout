@@ -1,64 +1,64 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <MyGUI type="Layout" version="3.2.0">
     <Widget type="Widget" skin="skin_Default" position="0 0 1024 1024" layer="Main" name="Root">
-        <Widget type="Button" skin="Button" position="850 80 150 50" name="SelectFloor">
+        <Widget type="Button" skin="Button" position="850 80 150 25" align="Right Top" name="SelectFloor">
             <Property key="Caption" value="Floor"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 140 150 50" name="SelectWall">
+        <Widget type="Button" skin="Button" position="850 110 150 25" align="Right Top" name="SelectWall">
             <Property key="Caption" value="Wall"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 200 150 50" name="SelectCPU">
+        <Widget type="Button" skin="Button" position="850 200 150 25" align="Right Top" name="SelectCPU">
             <Property key="Caption" value="CPU"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 260 150 50" name="SelectDisplay">
+        <Widget type="Button" skin="Button" position="850 260 150 25" align="Right Top" name="SelectDisplay">
             <Property key="Caption" value="Display"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 320 150 50" name="SelectKeyboard">
+        <Widget type="Button" skin="Button" position="850 230 150 25" align="Right Top" name="SelectKeyboard">
             <Property key="Caption" value="Keyboard"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 380 150 50" name="SelectRotatingLight">
+        <Widget type="Button" skin="Button" position="850 380 150 25" align="Right Top" name="SelectRotatingLight">
             <Property key="Caption" value="RotatingLight"/>
         </Widget>
-        <Widget type="TextBox" skin="TextBox" position="850 960 150 55">
+        <Widget type="TextBox" skin="TextBox" position="850 960 150 55" align="Right Bottom">
             <Property key="Caption" value="Show Floors:\n\nFrom              To"/>
             <Property key="TextColour" value="1 1 1"/>
         </Widget>
-        <Widget type="EditBox" skin="EditBox" position="895 980 30 30" name="SelectFloorFrom"/>
-        <Widget type="EditBox" skin="EditBox" position="965 980 30 30" name="SelectFloorTo"/>
-        <Widget type="Button" skin="Button" position="20 20 150 50" name="ModeBuild">
+        <Widget type="EditBox" skin="EditBox" position="895 980 30 30" align="Right Bottom" name="SelectFloorFrom"/>
+        <Widget type="EditBox" skin="EditBox" position="965 980 30 30" align="Right Bottom" name="SelectFloorTo"/>
+        <Widget type="Button" skin="Button" position="20 20 150 50" align="Left Top" name="ModeBuild">
             <Property key="Caption" value="Build"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="180 20 150 50" name="ModeWire">
+        <Widget type="Button" skin="Button" position="180 20 150 50" align="Left Top" name="ModeWire">
             <Property key="Caption" value="Wire"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 680 150 50" name="SelectLightControl">
+        <Widget type="Button" skin="Button" position="850 320 150 25" align="Right Top" name="SelectLightControl">
             <Property key="Caption" value="LightControl"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 620 150 50" name="SelectDoorControl">
+        <Widget type="Button" skin="Button" position="850 290 150 25" align="Right Top" name="SelectDoorControl">
             <Property key="Caption" value="DoorControl"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 740 150 50" name="SelectLifeSupport">
+        <Widget type="Button" skin="Button" position="850 440 150 25" align="Right Top" name="SelectLifeSupport">
             <Property key="Caption" value="LifeSupport"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 560 150 50" name="SelectLifeDetection">
+        <Widget type="Button" skin="Button" position="850 410 150 25" align="Right Top" name="SelectLifeDetection">
             <Property key="Caption" value="LifeDetection"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 500 150 50" name="SelectDoor">
+        <Widget type="Button" skin="Button" position="850 170 150 25" align="Right Top" name="SelectDoor">
             <Property key="Caption" value="Door"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 440 150 50" name="SelectLight">
+        <Widget type="Button" skin="Button" position="850 350 150 25" align="Right Top" name="SelectLight">
             <Property key="Caption" value="Light"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="180 80 150 50" name="ModeWireLight">
+        <Widget type="Button" skin="Button" position="180 80 150 50" align="Left Top" name="ModeWireLight">
             <Property key="Caption" value="Wire Light"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="340 80 150 50" name="ModeWireDoor">
+        <Widget type="Button" skin="Button" position="340 80 150 50" align="Left Top" name="ModeWireDoor">
             <Property key="Caption" value="WireDoor"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="850 800 150 50" name="SelectWindow">
+        <Widget type="Button" skin="Button" position="850 140 150 25" align="Right Top" name="SelectWindow">
             <Property key="Caption" value="Window"/>
         </Widget>
-        <Widget type="Button" skin="Button" position="340 20 150 50" name="ModeDelete">
+        <Widget type="Button" skin="Button" position="340 20 150 50" align="Left Top" name="ModeDelete">
             <Property key="Caption" value="Delete"/>
         </Widget>
     </Widget>
