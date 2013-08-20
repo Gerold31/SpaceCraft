@@ -171,14 +171,14 @@ void SpaceShip::load(std::string fileName)
             ori = Ogre::StringConverter::parseQuaternion(line);
 
             if(type == SpaceShipPartFloor::getType())
-                if(pos.y > 2)
-                    part = new SpaceShipPartFloor(pos, ori, mNode, mStaticGeometry, name, mEngine);
-                else
+                //if(pos.y > 2)
+                //    part = new SpaceShipPartFloor(pos, ori, mNode, mStaticGeometry, name, mEngine);
+                //else
                     part = new SpaceShipPartFloor(pos, ori, mNode, name, mEngine);
             else if(type == SpaceShipPartWall::getType())
-                if(pos.y > 2)
-                    part = new SpaceShipPartWall(pos, ori, mNode, mStaticGeometry, name, mEngine);
-                else
+                //if(pos.y > 2)
+                //    part = new SpaceShipPartWall(pos, ori, mNode, mStaticGeometry, name, mEngine);
+                //else
                     part = new SpaceShipPartWall(pos, ori, mNode, name, mEngine);
             else if(type == CPU::getType())
             {

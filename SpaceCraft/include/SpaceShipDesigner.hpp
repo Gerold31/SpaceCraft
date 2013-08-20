@@ -24,7 +24,8 @@ public:
         MODE_BUILD,
         MODE_WIRE,
         MODE_WIRELIGHT,
-        MODE_WIREDOOR
+        MODE_WIREDOOR,
+        MODE_DELETE
     };
 
     SpaceShipDesigner(float aspectRatio, ENGINE *engine);

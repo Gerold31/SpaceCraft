@@ -18,6 +18,7 @@
 #include "CPUDoorControl.hpp"
 #include "CPULifeSupport.hpp"
 #include "CPULifeDetection.hpp"
+#include "Pathfinding.hpp"
 
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreSceneNode.h"
@@ -261,7 +262,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                         }
                         break;
                     }
-                }else if(e.state.buttonDown(OIS::MB_Left))
+                }else if(e.state.buttonDown(OIS::MB_Left) && mMode != MODE_DELETE)
                 {
                     if(mMode == MODE_WIRE)
                     {
@@ -318,6 +319,60 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                         }
                         updateVisibleParts();
                     }
+                }else if(mMode == MODE_DELETE)
+                {
+                    SpaceShipPart *part = (SpaceShipPart *)obj;
+                    assert(part);
+                    hit = true;
+                    if(part != mLinkFirst)
+                    {
+                        part->setMaterial("DesignerPartDelete");
+                        if(mLinkFirst)
+                            mLinkFirst->setMaterial("Part/Metal"); // @todo fix this for monitor etc.
+                        mLinkFirst = part;
+                    }
+                    if(e.state.buttonDown(OIS::MB_Left))
+                    {
+                        SpaceShipPart *neighbor[2] = {NULL, NULL};
+                        int i=0;
+                        for(; i<mLinkFirst->getNumberNeighbors(); i++)
+                        {
+                            if(!neighbor[0])
+                                neighbor[0] = mLinkFirst->getNeighbor(i);
+                            else 
+                                neighbor[1] = mLinkFirst->getNeighbor(i);
+
+                            if(neighbor[0] && neighbor[1])
+                            {
+                                if(!Pathfinding::findPathWithout(mLinkFirst, neighbor[0], neighbor[1]))
+                                    break;
+                                neighbor[0] = neighbor[1];
+                                neighbor[1] = NULL;
+                            }
+                        }
+                        if(i == mLinkFirst->getNumberNeighbors() && neighbor[0])
+                        {
+                            // delete part
+                            for(int i=0; i<mLinkFirst->getNumberNeighbors(); i++)
+                            {
+                                SpaceShipPart *neighbor = mLinkFirst->getNeighbor(i);
+                                if(neighbor)
+                                {
+                                    for(int j=0; j<neighbor->getNumberNeighbors(); j++)
+                                    {
+                                        if(neighbor->getNeighbor(j) == mLinkFirst)
+                                        {
+                                            neighbor->setNeighbor(NULL, j);
+                                            break; // only 1 connection per part, right?
+                                        }
+                                    }
+                                }
+                            }
+                            mSpaceShip->removePart(mLinkFirst);
+                            mEngine->getMap()->destroyEntity(mLinkFirst);
+                            mLinkFirst = NULL;
+                        }
+                    }
                 }
                 break;
             }
@@ -327,6 +382,9 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
 
     if(!hit && mSelectedPart)
         mSelectedPart->getParentSceneNode()->setPosition(0, -1e38, 0);
+
+    if(!hit && mMode == MODE_DELETE && mLinkFirst)
+        mLinkFirst->setMaterial("Part/Metal");
 
     return true;
 }
@@ -340,6 +398,12 @@ void SpaceShipDesigner::setMode(MODE mode)
 {
     if(mMode != mode)
     {
+        if(mMode == MODE_DELETE)
+        {
+            initPossibleParts();
+            if(mLinkFirst)
+                mLinkFirst->setMaterial("Part/Metal"); // @todo fix this for monitor etc.
+        }
         mMode = mode;
         mLinkFirst = NULL;
         updateVisibleParts();
@@ -570,6 +634,17 @@ void SpaceShipDesigner::updateVisibleParts()
             {
                 part->getParentSceneNode()->setVisible(false);
             }
+        }
+    }else if(mMode == MODE_DELETE)
+    {
+        removePossibleParts();
+        for(std::vector<SpaceShipPart *>::iterator i = mPossibleParts.begin(); i != mPossibleParts.end(); ++i)
+        {
+            (*i)->getParentSceneNode()->setVisible(false);
+        }
+        for(size_t i=0; i<mSpaceShip->getNumberOfParts(); i++)
+        {
+            mSpaceShip->getPart(i)->getParentSceneNode()->setVisible(true);
         }
     }
 }

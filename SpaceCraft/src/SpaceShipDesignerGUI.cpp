@@ -56,6 +56,8 @@ void SpaceShipDesignerGUI::buttonClicked(MyGUI::Widget *widget)
         mParent->setMode(SpaceShipDesigner::MODE_WIRELIGHT);
     else if(widget->getName() == "ModeWireDoor")
         mParent->setMode(SpaceShipDesigner::MODE_WIREDOOR);
+    else if(widget->getName() == "ModeDelete")
+        mParent->setMode(SpaceShipDesigner::MODE_DELETE);
     else
         mParent->setSelectedPartName(((MyGUI::ButtonPtr)widget)->getCaption().asUTF8());
 }

@@ -58,5 +58,8 @@
         <Widget type="Button" skin="Button" position="850 800 150 50" name="SelectWindow">
             <Property key="Caption" value="Window"/>
         </Widget>
+        <Widget type="Button" skin="Button" position="340 20 150 50" name="ModeDelete">
+            <Property key="Caption" value="Delete"/>
+        </Widget>
     </Widget>
 </MyGUI>

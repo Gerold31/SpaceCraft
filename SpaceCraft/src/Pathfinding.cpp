@@ -129,6 +129,55 @@ Pathfinding::Path *Pathfinding::findPath(SpaceShip *ship, SpaceShipPart *from, S
     return NULL;
 }
 
+Pathfinding::Path *Pathfinding::findPathWithout(SpaceShipPart *part, SpaceShipPart *from, SpaceShipPart *to)
+{
+    std::vector<SpaceShipPart *> closedList;
+    std::map<SpaceShipPart *, double> openList; // fScore
+    std::map<SpaceShipPart *, double> gScore;
+    std::map<SpaceShipPart *, SpaceShipPart*> cameFrom;
+
+    gScore[from] = 0;
+    openList[from] = gScore[from] + heuristic(from, to);
+
+    while(!openList.empty())
+    {
+        std::map<SpaceShipPart *, double>::iterator current = getSmallest(openList.begin(), openList.end());
+
+        std::map<SpaceShipPart *, double> links;
+		for(int i=0; i<current->first->getNumberNeighbors(); i++)
+		{
+			if(current->first->getNeighbor(i) && current->first->getNeighbor(i) != part)
+				links[current->first->getNeighbor(i)] = current->first->getNeighborInfo(i)->mPos.length();
+		}
+
+        for(std::map<SpaceShipPart *, double>::iterator i=links.begin(); i!=links.end(); ++i)
+        {
+            SpaceShipPart *neighbor = i->first;
+
+            if(find(closedList.begin(), closedList.end(), neighbor) != closedList.end())
+                continue;
+
+            double tentativeG = gScore[current->first] + cost(current->first, neighbor);
+
+            if(openList.count(neighbor) > 0 && tentativeG >= gScore[neighbor])
+                continue;
+
+            cameFrom[neighbor] = current->first;
+            gScore[neighbor] = tentativeG;
+            double f = tentativeG + heuristic(neighbor, to);
+            openList[neighbor] = f;
+        }
+
+        if(current->first == to)
+            return reconstructPath(cameFrom, to, new Path(new std::vector<SpaceShipPart *>(), 0));
+
+        closedList.push_back(current->first);
+        openList.erase(current);
+    }
+
+    return NULL;
+}
+
 double Pathfinding::cost(SpaceShipPart *n1, SpaceShipPart *n2)
 {
 	return n1->getParentSceneNode()->getPosition().distance(n2->getParentSceneNode()->getPosition());

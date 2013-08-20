@@ -20,6 +20,7 @@ public:
     
     static Path *findHumanPath(SpaceShip *ship, SpaceShipPart *from, SpaceShipPart *to);
     static Path *findPath(SpaceShip *ship, SpaceShipPart *from, SpaceShipPart *to);
+    static Path *findPathWithout(SpaceShipPart *part, SpaceShipPart *from, SpaceShipPart *to);
 
 private:
     static double cost(SpaceShipPart *p1, SpaceShipPart *p2);

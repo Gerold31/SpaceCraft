@@ -28,16 +28,17 @@ void Game::init()
 
     SpaceShip *ship = new SpaceShip(455e3, Ogre::Vector3(0, 0, 0), Ogre::Vector3(0, 0, 0), Ogre::Quaternion(), mEngine->getSceneMgr()->getRootSceneNode(), "Ship", mEngine);
     
-    ship->load("Ship.ship");
+    //ship->load("Ship.ship");
 
     Player *player = new Player(Ogre::Vector3(0,1.67,0), Ogre::Quaternion(), ship->getParentSceneNode(), mEngine->getWindow(), "Player", mEngine);
     player->setSpaceShip(ship);
 
+    /*
     Ogre::Vector2 spawnZones[5][2] = {{Ogre::Vector2(-27.6, 15.6), Ogre::Vector2(3.6, 2.4)},{Ogre::Vector2(24.0, 15.6), Ogre::Vector2(3.6, 2.4)},
                                       {Ogre::Vector2(-27.6, -4.8), Ogre::Vector2(3.6, 2.4)},{Ogre::Vector2(24.0, -4.8), Ogre::Vector2(3.6, 2.4)},
                                       {Ogre::Vector2(-1.2, 33.6), Ogre::Vector2(2.4, 3.6)}};
 
-    int numberBots = 1;//5 + rand()%5;
+    int numberBots = 5 + rand()%5;
     for(int i=0; i<numberBots; i++)
     {
         int zone = rand()%5;
@@ -69,6 +70,7 @@ void Game::init()
                 Bot::addTask(new Bot::Task(Bot::Task::TASK_TYPE_DESTROY, 1, part));
         }
     }
+    */
 }
 
 bool Game::update(float elapsedTime)
