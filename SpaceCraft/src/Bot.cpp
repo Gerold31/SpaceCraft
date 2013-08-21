@@ -194,9 +194,9 @@ Pathfinding::Path *Bot::Task::getPath(Bot *bot)
     switch (mType)
     {
     case Bot::Task::TASK_TYPE_DESTROY:
-        return Pathfinding::findHumanPath(NULL, bot->getStandOn(), ((SpaceShipPart *)mTarget)->getNeighbor(0));
+        return Pathfinding::findHumanPath(bot->getStandOn(), ((SpaceShipPart *)mTarget)->getNeighbor(0));
     case Bot::Task::TASK_TYPE_KILL:
-        return Pathfinding::findHumanPath(NULL, bot->getStandOn(), ((Human *)mTarget)->getStandOn());
+        return Pathfinding::findHumanPath(bot->getStandOn(), ((Human *)mTarget)->getStandOn());
     default:
         return NULL;
     }

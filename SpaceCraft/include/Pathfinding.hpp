@@ -18,8 +18,8 @@ public:
         std::vector<SpaceShipPart *> *mWaypoints;
     };
     
-    static Path *findHumanPath(SpaceShip *ship, SpaceShipPart *from, SpaceShipPart *to);
-    static Path *findPath(SpaceShip *ship, SpaceShipPart *from, SpaceShipPart *to);
+    static Path *findHumanPath(SpaceShipPart *from, SpaceShipPart *to);
+    static Path *findPath(SpaceShipPart *from, SpaceShipPart *to);
     static Path *findPathWithout(SpaceShipPart *part, SpaceShipPart *from, SpaceShipPart *to);
 
 private:
