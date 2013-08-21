@@ -24,6 +24,8 @@ public:
     ~CPU();
 
     bool update(float elapsedTime);
+    void setMaterial();
+
     void interrupt(WORD msg);
 
     void halt(int cycles){mCycles += cycles;}

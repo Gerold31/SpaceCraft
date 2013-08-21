@@ -19,6 +19,7 @@ public:
     ~CPUDisplay();
 
     bool update(float elapsedTime);
+    void setMaterial();
     
     void interrupt();
 

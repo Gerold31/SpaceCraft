@@ -287,3 +287,8 @@ void CPUDisplay::draw()
     
     delete[] data;
 }
+
+void CPUDisplay::setMaterial()
+{
+    SpaceShipPart::setMaterial("Base/Black");
+}

@@ -129,3 +129,8 @@ void CPUDoorControl::addDoor(SpaceShipPartDoor *door)
 {
     mDoors.push_back(std::pair<SpaceShipPartDoor *, int>(door, -1));
 }
+
+void CPUDoorControl::setMaterial()
+{
+    SpaceShipPart::setMaterial("Base/Black");
+}

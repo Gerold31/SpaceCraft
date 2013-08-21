@@ -54,3 +54,8 @@ bool SpaceShipPartRotatingLight::update(float elapsedTime)
     mLight->setDirection(Ogre::Quaternion(Ogre::Radian(Ogre::Math::PI*5*elapsedTime), Ogre::Vector3::UNIT_Y) * mLight->getDirection());
     return true;
 }
+
+void SpaceShipPartRotatingLight::setMaterial()
+{
+    SpaceShipPart::setMaterial("Base/Red");
+}

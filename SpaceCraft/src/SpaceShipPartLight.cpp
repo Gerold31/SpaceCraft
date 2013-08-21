@@ -99,3 +99,8 @@ int SpaceShipPartLight::onHit(int damage)
     }
     return 0;
 }
+
+void SpaceShipPartLight::setMaterial()
+{
+    SpaceShipPart::setMaterial("Base/White");
+}

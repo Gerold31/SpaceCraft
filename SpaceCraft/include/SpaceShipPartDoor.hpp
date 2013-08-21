@@ -14,6 +14,7 @@ public:
     ~SpaceShipPartDoor();
 
     bool update(float elapsedTime);
+    void setMaterial();
 
     bool isOpen() {return mOpened;}
     bool isLocked() {return mLocked;}

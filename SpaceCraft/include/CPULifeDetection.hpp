@@ -10,6 +10,7 @@ public:
     CPULifeDetection(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine);
 
     bool update(float elapsedTime);
+    void setMaterial();
     
     void interrupt();
 

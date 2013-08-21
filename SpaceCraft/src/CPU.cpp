@@ -1038,3 +1038,8 @@ Hardware *CPU::getDevice(int i)
 {
     return mDevices.at(i);
 }
+
+void CPU::setMaterial()
+{
+    SpaceShipPart::setMaterial("Base/Black");
+}

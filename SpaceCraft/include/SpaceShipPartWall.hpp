@@ -15,6 +15,7 @@ public:
     SpaceShipPartWall(SpaceShipPart *old, Ogre::String name, Ogre::String type = mType);
 
     bool update(float elapsedTime);
+    virtual void setMaterial();
 
     static std::string getType(){return mType;}
 

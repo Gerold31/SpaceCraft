@@ -361,3 +361,8 @@ WORD CPUKeyboard::codeToKey(OIS::KeyCode code)
         return 0;
     }
 }
+
+void CPUKeyboard::setMaterial()
+{
+    SpaceShipPart::setMaterial("Base/Black");
+}

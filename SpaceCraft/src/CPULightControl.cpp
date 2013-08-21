@@ -76,3 +76,8 @@ void CPULightControl::addLight(SpaceShipPartLight *light)
 {
     mLights.push_back(light);
 }
+
+void CPULightControl::setMaterial()
+{
+    SpaceShipPart::setMaterial("Base/Black");
+}

@@ -13,6 +13,7 @@ public:
     SpaceShipPartWindow(SpaceShipPart *old, Ogre::String name);
 
     bool update(float elapsedTime);
+    void setMaterial();
 
     static std::string getType(){return mType;}
 

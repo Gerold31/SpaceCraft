@@ -75,3 +75,8 @@ bool SpaceShipPartWall::update(float elapsedTime)
 {
     return true;
 }
+
+void SpaceShipPartWall::setMaterial()
+{
+    SpaceShipPart::setMaterial("Part/Metal");
+}

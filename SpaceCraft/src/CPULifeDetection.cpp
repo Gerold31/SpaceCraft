@@ -84,3 +84,8 @@ void CPULifeDetection::interrupt()
         break;
     }
 }
+
+void CPULifeDetection::setMaterial()
+{
+    SpaceShipPart::setMaterial("Base/Black");
+}

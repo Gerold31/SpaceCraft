@@ -24,6 +24,7 @@ public:
     void setInput(Input *input) {mInput = input;}
 
     bool update(float elapsedTime);
+    void setMaterial();
     
     void interrupt();
 

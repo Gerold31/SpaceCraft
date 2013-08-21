@@ -98,3 +98,8 @@ void SpaceShipPartDoor::lock(bool lock)
 {
     mLocked = lock;
 }
+
+void SpaceShipPartDoor::setMaterial()
+{
+    SpaceShipPart::setMaterial("Part/Metal");
+}

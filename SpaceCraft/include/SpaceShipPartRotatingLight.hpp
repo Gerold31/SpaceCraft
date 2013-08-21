@@ -15,6 +15,7 @@ public:
     SpaceShipPartRotatingLight(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::StaticGeometry *staticGeometry, Ogre::String name, ENGINE *engine);
 
     bool update(float elapsedTime);
+    void setMaterial();
 
     static std::string getType(){return mType;}
 

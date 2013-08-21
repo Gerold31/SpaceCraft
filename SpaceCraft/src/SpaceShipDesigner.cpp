@@ -328,7 +328,7 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
                     {
                         part->setMaterial("DesignerPartDelete");
                         if(mLinkFirst)
-                            mLinkFirst->setMaterial("Part/Metal"); // @todo fix this for monitor etc.
+                            mLinkFirst->setMaterial();
                         mLinkFirst = part;
                     }
                     if(e.state.buttonDown(OIS::MB_Left))
@@ -384,7 +384,10 @@ bool SpaceShipDesigner::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonI
         mSelectedPart->getParentSceneNode()->setPosition(0, -1e38, 0);
 
     if(!hit && mMode == MODE_DELETE && mLinkFirst)
-        mLinkFirst->setMaterial("Part/Metal");
+    {
+        mLinkFirst->setMaterial();
+        mLinkFirst = NULL;
+    }
 
     return true;
 }
@@ -402,7 +405,7 @@ void SpaceShipDesigner::setMode(MODE mode)
         {
             initPossibleParts();
             if(mLinkFirst)
-                mLinkFirst->setMaterial("Part/Metal"); // @todo fix this for monitor etc.
+                mLinkFirst->setMaterial();
         }
         mMode = mode;
         mLinkFirst = NULL;

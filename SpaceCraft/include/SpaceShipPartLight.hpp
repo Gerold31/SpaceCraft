@@ -18,6 +18,7 @@ public:
     ~SpaceShipPartLight();
 
     bool update(float elapsedTime);
+    void setMaterial();
 
     void setBrightness(int b);
     

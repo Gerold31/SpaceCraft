@@ -42,7 +42,8 @@ public:
     SpaceShipPart *getNeighbor(size_t i) {return mNeighbor.at(i).first;}
     SpaceShipPartInfo *getNeighborInfo(size_t i) {return mNeighbor.at(i).second;}
     void setNeighbor(SpaceShipPart *p, size_t i) {mNeighbor.at(i).first = p;}
-
+    
+    virtual void setMaterial() = 0;
     void setMaterial(Ogre::String name);
 
     Ogre::Entity *getEntity() {return mEntity;}

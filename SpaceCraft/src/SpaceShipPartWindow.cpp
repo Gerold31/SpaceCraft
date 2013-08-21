@@ -4,6 +4,7 @@
 
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreEntity.h"
+#include "OGRE/OgreSubEntity.h"
 #include "OGRE/OgreLight.h"
 
 #define OPEN_Z (1.0)
@@ -51,4 +52,10 @@ SpaceShipPartWindow::SpaceShipPartWindow(SpaceShipPart *old, Ogre::String name)
 bool SpaceShipPartWindow::update(float elapsedTime)
 {
     return true;
+}
+
+void SpaceShipPartWindow::setMaterial()
+{
+    mEntity->getSubEntity(0)->setMaterialName("Window");
+    mEntity->getSubEntity(1)->setMaterialName("Part/Metal");
 }
