@@ -20,7 +20,12 @@ SpaceShipPart::SpaceShipPartInfo SpaceShipPartWall::mPartInfo[]     = {SpaceShip
                                                                        SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3(-FLOOR_SIZE_X/2, WALL_SIZE_Y/2, 0), Ogre::Quaternion(1, 0, 0, 0), true),
                                                                        SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3( FLOOR_SIZE_X/2, WALL_SIZE_Y/2, 0), Ogre::Quaternion(1, 0, 0, 0), true),
                                                                        SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3(-FLOOR_SIZE_X/2,-WALL_SIZE_Y/2, 0), Ogre::Quaternion(1, 0, 0, 0), true),
-                                                                       SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3( FLOOR_SIZE_X/2,-WALL_SIZE_Y/2, 0), Ogre::Quaternion(1, 0, 0, 0), true)};
+                                                                       SpaceShipPartInfo(PART_FLOOR,     Ogre::Vector3( FLOOR_SIZE_X/2,-WALL_SIZE_Y/2, 0), Ogre::Quaternion(1, 0, 0, 0), true),
+                                                                       
+                                                                       SpaceShipPartInfo(PART_WALL,      Ogre::Vector3( WALL_SIZE_Z/2, 0, WALL_SIZE_Z/2), Ogre::Quaternion(sqrt(0.5), 0, -sqrt(0.5), 0), false),
+                                                                       SpaceShipPartInfo(PART_WALL,      Ogre::Vector3( WALL_SIZE_Z/2, 0,-WALL_SIZE_Z/2), Ogre::Quaternion(sqrt(0.5), 0, -sqrt(0.5), 0), false),
+                                                                       SpaceShipPartInfo(PART_WALL,      Ogre::Vector3( WALL_SIZE_Z/2, 0, WALL_SIZE_Z/2), Ogre::Quaternion(sqrt(0.5), 0,  sqrt(0.5), 0), false),
+                                                                       SpaceShipPartInfo(PART_WALL,      Ogre::Vector3( WALL_SIZE_Z/2, 0,-WALL_SIZE_Z/2), Ogre::Quaternion(sqrt(0.5), 0,  sqrt(0.5), 0), false)};
 
 std::string SpaceShipPartWall::mType = "SC_SpaceShipPartWall";
 

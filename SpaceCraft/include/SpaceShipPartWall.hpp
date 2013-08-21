@@ -21,7 +21,7 @@ public:
 private:
     static std::string mType;
 
-    static SpaceShipPartInfo mPartInfo[10];
+    static SpaceShipPartInfo mPartInfo[14];
 
     void commonConstructor();
 };
