@@ -19,6 +19,7 @@ public:
         };
 
         Task(TaskType type, int priority, Entity *target);
+        Pathfinding::Path *getPath(Bot *bot);
 
         TaskType mType;
         int mPriority;
@@ -36,6 +37,9 @@ public:
 
 protected:
     static std::vector<Task *>mTaskPool;
+    static Human *mPlayer;
+    static float mPlayerLastSeen;
+
     Task *mTask;
 	Pathfinding::Path *mPath;
 

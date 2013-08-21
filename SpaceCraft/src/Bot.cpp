@@ -41,30 +41,18 @@ bool Bot::update(float elapsedTime)
     if((mDelay -= elapsedTime) > 0)
         return true;
     mDelay = 0;
-    if(!mTask && mTaskPool.size() > 0)
+    if(mTaskPool.size() > 0 && (!mTask || !!mPath))
     {
-        // @todo check if task is already assigned
-        // @todo first check path, then assign
-        mTask = mTaskPool.at(rand()%mTaskPool.size()); 
-        mTask->mAssignedTo = this;
-        mPath = NULL;
-    }
-
-    if(!mPath)
-    {
-        switch (mTask->mType)
+        Task *task = mTaskPool.at(rand()%mTaskPool.size());
+        Pathfinding::Path *path = task->getPath(this);
+        if(!task->mAssignedTo && path)
         {
-        case Bot::Task::TASK_TYPE_DESTROY:
-            mPath = Pathfinding::findHumanPath(NULL, getStandOn(), ((SpaceShipPart *)mTask->mTarget)->getNeighbor(0));
-            break;
-        case Bot::Task::TASK_TYPE_KILL:
-            mPath = Pathfinding::findHumanPath(NULL, getStandOn(), ((Human *)mTask->mTarget)->getStandOn());
-            break;
-        default:
-            break;
+            if(mTask)
+                mTask->mAssignedTo = NULL;
+            mTask = task;
+            mPath = path;
+            mTask->mAssignedTo = this;
         }
-        if(!mPath)
-            printf("found no path\n");
     }
     
     if(mTask && mPath)
@@ -117,6 +105,7 @@ bool Bot::update(float elapsedTime)
         }else
         {
             //collision detection
+            float speed = 1.0;
             Ogre::Vector3 dir = mPath->mWaypoints->at(MIN(1, mPath->mWaypoints->size() - 1))->getParentSceneNode()->_getDerivedPosition();
             dir.y = pos.y;
             dir = dir - pos;
@@ -158,6 +147,13 @@ bool Bot::update(float elapsedTime)
                             }
                         }
                     }
+                    if(ent->getType() == Bot::getType())
+                    {
+                        if((pos + dir).distance(ent->getParentSceneNode()->getPosition()) > dir.length())
+                            speed *= 1.1;
+                        else
+                            speed /= 1.1;
+                    }
                     collision = true;
                     break;
                 }
@@ -172,7 +168,6 @@ bool Bot::update(float elapsedTime)
             }
             if(!blocked)
             {
-                float speed = 1.0;
                 mNode->translate((target - pos).normalisedCopy() * elapsedTime * speed);
             }
             mNode->lookAt(target, Ogre::Node::TS_WORLD);
@@ -192,4 +187,17 @@ Bot::Task::Task(TaskType type, int priority, Entity *target)
     mPriority = priority;
     mTarget = target;
     mAssignedTo = NULL;
+}
+
+Pathfinding::Path *Bot::Task::getPath(Bot *bot)
+{
+    switch (mType)
+    {
+    case Bot::Task::TASK_TYPE_DESTROY:
+        return Pathfinding::findHumanPath(NULL, bot->getStandOn(), ((SpaceShipPart *)mTarget)->getNeighbor(0));
+    case Bot::Task::TASK_TYPE_KILL:
+        return Pathfinding::findHumanPath(NULL, bot->getStandOn(), ((Human *)mTarget)->getStandOn());
+    default:
+        return NULL;
+    }
 }
