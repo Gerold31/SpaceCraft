@@ -26,6 +26,10 @@ void *ComponentRenderable::createInstance(Object *object, std::map<std::string, 
 {
     return new ComponentRenderable(object, params);
 }
+
+void ComponentRenderable::init()
+{
+}
     
 void ComponentRenderable::update(float elapsedTime)
 {

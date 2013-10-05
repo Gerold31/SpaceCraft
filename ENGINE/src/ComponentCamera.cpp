@@ -29,6 +29,10 @@ void *ComponentCamera::createInstance(Object *object, std::map<std::string, std:
 {
     return new ComponentCamera(object, params);
 }
+
+void ComponentCamera::init()
+{
+}
     
 void ComponentCamera::update(float elapsedTime)
 {

@@ -20,6 +20,10 @@ void *ComponentMouseListener::createInstance(Object *object, std::map<std::strin
 {
     return new ComponentMouseListener(object, params);
 }
+
+void ComponentMouseListener::init()
+{
+}
     
 void ComponentMouseListener::update(float elapsedTime)
 {

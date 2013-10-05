@@ -20,6 +20,10 @@ void *ComponentJoystickListener::createInstance(Object *object, std::map<std::st
 {
     return new ComponentJoystickListener(object, params);
 }
+
+void ComponentJoystickListener::init()
+{
+}
     
 void ComponentJoystickListener::update(float elapsedTime)
 {

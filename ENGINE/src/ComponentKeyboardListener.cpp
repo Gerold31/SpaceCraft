@@ -20,6 +20,10 @@ void *ComponentKeyboardListener::createInstance(Object *object, std::map<std::st
 {
     return new ComponentKeyboardListener(object, params);
 }
+
+void ComponentKeyboardListener::init()
+{
+}
     
 void ComponentKeyboardListener::update(float elapsedTime)
 {

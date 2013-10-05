@@ -18,7 +18,7 @@ Object::~Object()
     for(std::vector<Component *>::iterator i = mComponents.begin(); i!=mComponents.end(); ++i)
     {
         delete (*i);
-        (*i) = NULL;
+        (*i) = nullptr;
     }
     mComponents.clear();
 }
@@ -26,6 +26,14 @@ Object::~Object()
 void Object::addComponent(Component *component)
 {
     mComponents.push_back(component);
+}
+
+void Object::init()
+{
+    for(std::vector<Component *>::iterator i = mComponents.begin(); i!=mComponents.end(); ++i)
+    {
+        (*i)->init();
+    }
 }
 
 void Object::update(float elapsedTime)

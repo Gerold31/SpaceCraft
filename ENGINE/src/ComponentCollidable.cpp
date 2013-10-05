@@ -20,6 +20,10 @@ void *ComponentCollidable::createInstance(Object *object, std::map<std::string, 
 {
     return new ComponentCollidable(object, params);
 }
+
+void ComponentCollidable::init()
+{
+}
     
 void ComponentCollidable::update(float elapsedTime)
 {

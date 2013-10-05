@@ -26,7 +26,7 @@ void SystemObjectFactory::init()
 
     file.open("objects.cfg");
 
-    if(file.eof())
+    if(file.eof() || !file.is_open())
     {
         file.close();
         return;
@@ -99,5 +99,6 @@ Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion or
         mComponents.push_back(component);
     }
     mObjects.push_back(object);
+    object->init();
     return object;
 }

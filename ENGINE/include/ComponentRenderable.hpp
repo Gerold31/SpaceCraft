@@ -18,6 +18,7 @@ public:
 
     static void *createInstance(Object *object, std::map<std::string, std::string> params);
     
+    void init();
     void update(float elapsedTime);
     void receiveMessage(Message *message);
     

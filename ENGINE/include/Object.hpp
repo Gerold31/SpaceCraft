@@ -27,6 +27,7 @@ public:
     int getNumberComponents() {return mComponents.size();}
     Component *getComponent(int i) {return mComponents.at(i);}
 
+    void init();
     void update(float elapsedTime);
     void receiveMessage(Message *message);
 

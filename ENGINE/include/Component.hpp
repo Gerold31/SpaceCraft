@@ -19,6 +19,7 @@ public:
     Component(Object *object, std::map<std::string, std::string> params, TypeInfo *type);
     virtual ~Component() {};
 
+    virtual void init() = 0;
     virtual void update(float elapsedTime) = 0;
     virtual void receiveMessage(Message *message) = 0;
 

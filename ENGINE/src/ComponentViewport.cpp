@@ -14,10 +14,24 @@ TypeInfo *ComponentViewport::mType = new TypeInfo("ComponentViewport", &Componen
 ComponentViewport::ComponentViewport(Object *object, std::map<std::string, std::string> params) :
     Component(object, params, mType)
 {
+    mViewport = nullptr;
+}
+
+ComponentViewport::~ComponentViewport()
+{
+}
+
+void *ComponentViewport::createInstance(Object *object, std::map<std::string, std::string> params)
+{
+    return new ComponentViewport(object, params);
+}
+
+void ComponentViewport::init()
+{
     Ogre::Camera *cam = nullptr;
-    for(int i=0; i<object->getNumberComponents(); i++)
+    for(int i=0; i<mObject->getNumberComponents(); i++)
     {
-        Component *c = object->getComponent(i);
+        Component *c = mObject->getComponent(i);
         printf("ComponentCamera::getType()->getName() == %s\n", ComponentCamera::getType()->getName().c_str());
         printf("c->getType()->getName() == %s\n", c->getType()->getName().c_str());
         if(c->getType() == ComponentCamera::getType())
@@ -39,15 +53,6 @@ ComponentViewport::ComponentViewport(Object *object, std::map<std::string, std::
     {
         throw "ComponentViewport requires a ComponentCamera";
     }
-}
-
-ComponentViewport::~ComponentViewport()
-{
-}
-
-void *ComponentViewport::createInstance(Object *object, std::map<std::string, std::string> params)
-{
-    return new ComponentViewport(object, params);
 }
     
 void ComponentViewport::update(float elapsedTime)
