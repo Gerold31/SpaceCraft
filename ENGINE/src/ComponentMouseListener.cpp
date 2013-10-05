@@ -1,6 +1,7 @@
 #include "ComponentMouseListener.hpp"
 
 #include "TypeInfo.hpp"
+#include "SystemInput.hpp"
 
 using namespace ENGINE;
 
@@ -23,6 +24,7 @@ void *ComponentMouseListener::createInstance(Object *object, std::map<std::strin
 
 void ComponentMouseListener::init()
 {
+    SystemInput::getSingleton()->addMouseListener(this);
 }
     
 void ComponentMouseListener::update(float elapsedTime)

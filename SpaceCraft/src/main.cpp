@@ -11,7 +11,9 @@
 #include "ComponentCollidable.hpp"
 #include "ComponentJoystickListener.hpp"
 #include "ComponentKeyboardListener.hpp"
+#include "ComponentKeyMapping.hpp"
 #include "ComponentMouseListener.hpp"
+#include "ComponentMover.hpp"
 #include "ComponentRenderable.hpp"
 #include "ComponentViewport.hpp"
 
@@ -28,7 +30,9 @@ int main(int argc, char **argv)
         SystemObjectFactory::getSingleton()->registerComponent(ComponentCollidable::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentJoystickListener::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentKeyboardListener::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentKeyMapping::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentMouseListener::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentMover::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentRenderable::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentViewport::getType());
 
@@ -41,6 +45,7 @@ int main(int argc, char **argv)
         engine->init();
 
         SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "me", "Player");
+        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(Ogre::Degree(45), Ogre::Vector3(0,1,0)), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu0", "CPU");
 
         engine->run();
 

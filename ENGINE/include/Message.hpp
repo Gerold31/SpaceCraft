@@ -10,7 +10,7 @@ class Message
 {
 public:
     Message() {}
-    ~Message() {}
+    virtual ~Message() {}
 
     virtual void sendTo(MessageReceiver *receiver) {receiver->receiveMessage(this);}
 

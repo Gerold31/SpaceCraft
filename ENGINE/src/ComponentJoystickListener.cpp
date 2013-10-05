@@ -1,6 +1,7 @@
 #include "ComponentJoystickListener.hpp"
 
 #include "TypeInfo.hpp"
+#include "SystemInput.hpp"
 
 using namespace ENGINE;
 
@@ -23,6 +24,7 @@ void *ComponentJoystickListener::createInstance(Object *object, std::map<std::st
 
 void ComponentJoystickListener::init()
 {
+    SystemInput::getSingleton()->addJoystickListener(this);
 }
     
 void ComponentJoystickListener::update(float elapsedTime)

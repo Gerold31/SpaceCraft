@@ -1,6 +1,7 @@
 #include "ComponentKeyboardListener.hpp"
 
 #include "TypeInfo.hpp"
+#include "SystemInput.hpp"
 
 using namespace ENGINE;
 
@@ -23,6 +24,7 @@ void *ComponentKeyboardListener::createInstance(Object *object, std::map<std::st
 
 void ComponentKeyboardListener::init()
 {
+    SystemInput::getSingleton()->addKeyListener(this);
 }
     
 void ComponentKeyboardListener::update(float elapsedTime)
