@@ -41,8 +41,12 @@ void SystemObjectFactory::init()
 
         ComponentList entityList;
 
-        while(!file.eof()){
-            std::getline(file, line);
+        printf("\tadd Object \"%s\"\n", name.c_str());
+        
+        std::getline(file, line);
+
+        while(!file.eof())
+        {
             if(line[0] != '\t')
                 break;
 
@@ -53,16 +57,29 @@ void SystemObjectFactory::init()
 
             if(mComponentMap.find(line) == mComponentMap.end())
                 throw "no \"" + line + "\" found";
-
+            
+            printf("\t\tadd Component \"%s\"\n", line.c_str());
+            
             element.first = mComponentMap[line];
+
+            while(!file.eof())
+            {
+                std::getline(file, line);
+                if(line[0] != '\t' || line[1] != '\t')
+                    break;
+
+                line = line.substr(2);
+                line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
+                std::string param, value;
+                param = line.substr(0, line.find_first_of('='));
+                value = line.substr(line.find_first_of('=')+1);
+                printf("\t\t\tadd Param \"%s\", Value \"%s\"\n", param.c_str(), value.c_str());
+                params[param] = value;
+            }
             element.second = params;
             entityList.push_back(element);
         }
-
-        printf("\tadd Object \"%s\"\n", name.c_str());
         mObjectMap[name] = entityList;
-
-        //std::getline(file, line);
     }
 
     printf("finished\n");
@@ -72,6 +89,10 @@ void SystemObjectFactory::init()
 
 void SystemObjectFactory::update(float elapsedTime)
 {
+    for(std::vector<Object *>::iterator i = mObjects.begin(); i!=mObjects.end(); ++i)
+    {
+        (*i)->update(elapsedTime);
+    }
 }
 
 void SystemObjectFactory::receiveMessage(Message *msg)
