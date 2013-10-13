@@ -36,18 +36,26 @@ int main(int argc, char **argv)
         SystemObjectFactory::getSingleton()->registerComponent(ComponentRenderable::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentViewport::getType());
 
-        Engine *engine =  new Engine();
-        engine->addSystem(SystemGraphics::getSingleton());
-        engine->addSystem(SystemObjectFactory::getSingleton());
-        engine->addSystem(SystemPhysics::getSingleton());
-        engine->addSystem(SystemInput::getSingleton());
+        
+        Engine::getSingleton()->addSystem(SystemGraphics::getSingleton());
+        Engine::getSingleton()->addSystem(SystemObjectFactory::getSingleton());
+        Engine::getSingleton()->addSystem(SystemPhysics::getSingleton());
+        Engine::getSingleton()->addSystem(SystemInput::getSingleton());
 
-        engine->init();
+        Engine::getSingleton()->init();
 
         SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "me", "Player");
-        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(Ogre::Degree(45), Ogre::Vector3(0,1,0)), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu0", "CPU");
+        //SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(Ogre::Degree(45), Ogre::Vector3(0,1,0)), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu0", "CPU");
 
-        engine->run();
+        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu1", "CPU");
+        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, 5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu2", "CPU");
+        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(-5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu3", "CPU");
+        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu4", "CPU");
+        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, -5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu5", "CPU");
+        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu6", "CPU");
+
+
+        Engine::getSingleton()->run();
 
         printf("End\n");
         return 0;

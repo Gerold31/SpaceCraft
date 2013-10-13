@@ -4,6 +4,8 @@
 #include "TypeInfo.hpp"
 #include "MessageInput.hpp"
 #include "MessageMove.hpp"
+#include "MessageEngine.hpp"
+#include "Engine.hpp"
 
 using namespace ENGINE;
 
@@ -65,6 +67,11 @@ void ComponentKeyMapping::receiveMessage(Message *message)
             MessageStartMoveRight msg;
             msg.sendTo(mObject);
             break;
+        }
+        case OIS::KC_ESCAPE:
+        {
+            MessageQuit msg;
+            msg.sendTo(Engine::getSingleton());
         }
         }
     }else if(MessageKeyReleased *m = dynamic_cast<MessageKeyReleased *>(message))

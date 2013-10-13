@@ -1,5 +1,6 @@
 #include "Engine.hpp"
 
+#include "MessageEngine.hpp"
 #include "System.hpp"
 
 #include "boost/date_time.hpp" 
@@ -8,6 +9,7 @@ using namespace ENGINE;
 
 Engine::Engine()
 {
+    mQuit = true;
 }
 
 Engine::~Engine()
@@ -27,19 +29,28 @@ void Engine::init()
     {
         (*i)->init();
     }
+    mQuit = false;
 }
 
 void Engine::run()
 {
     boost::posix_time::ptime t0 = boost::posix_time::microsec_clock::local_time();
 
-    while(1)
+    while(!mQuit)
     {
         boost::posix_time::ptime t1 = boost::posix_time::microsec_clock::local_time();
         boost::posix_time::time_duration diff = t1 - t0;
         t0 = t1;
 
         update(diff.total_milliseconds() / 1000.0f);
+    }
+}
+
+void Engine::receiveMessage(Message *msg)
+{
+    if(MessageQuit *m = dynamic_cast<MessageQuit *>(msg))
+    {
+        mQuit = true;
     }
 }
 
