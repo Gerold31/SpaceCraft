@@ -34,7 +34,11 @@ void ComponentKeyMapping::update(float elapsedTime)
 
 void ComponentKeyMapping::receiveMessage(Message *message)
 {
-    if(MessageKeyPressed *m = dynamic_cast<MessageKeyPressed *>(message))
+    if(MessageMouseMoved *m = dynamic_cast<MessageMouseMoved *>(message))
+    {
+        MessageLookAtRel msg(m->mEvent.state.X.rel, m->mEvent.state.Y.rel);
+        msg.sendTo(mObject);
+    }else if(MessageKeyPressed *m = dynamic_cast<MessageKeyPressed *>(message))
     {
         switch(m->mEvent.key)
         {
@@ -63,8 +67,7 @@ void ComponentKeyMapping::receiveMessage(Message *message)
             break;
         }
         }
-    }
-    if(MessageKeyReleased *m = dynamic_cast<MessageKeyReleased *>(message))
+    }else if(MessageKeyReleased *m = dynamic_cast<MessageKeyReleased *>(message))
     {
         switch(m->mEvent.key)
         {

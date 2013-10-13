@@ -56,6 +56,12 @@ public:
     MessageStopMoveRight() {}
 };
 
+class MessageLookAtRel : public Message
+{
+public:
+    MessageLookAtRel(int x, int y): mX(x), mY(y) {}
+    int mX, mY;
+};
 
 };
 

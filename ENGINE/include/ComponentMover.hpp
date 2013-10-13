@@ -29,6 +29,9 @@ private:
     double mSpeed;
     Ogre::Vector3 mTranslation;
 
+    Ogre::SceneNode *mYawNode;
+    Ogre::SceneNode *mPitchNode;
+
 };
 
 };
