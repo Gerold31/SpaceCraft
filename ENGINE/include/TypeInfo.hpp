@@ -1,15 +1,12 @@
 #ifndef _TYPEINFO_HPP_
 #define _TYPEINFO_HPP_
 
-#include <map>
-#include <string>
+#include "Defines.hpp"
 
 namespace ENGINE
 {
 
 class Object;
-
-typedef void* (*CreateInstance)(Object *object, std::map<std::string, std::string> params);
 
 class TypeInfo
 {

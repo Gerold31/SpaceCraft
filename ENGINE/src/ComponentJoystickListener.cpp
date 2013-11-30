@@ -7,7 +7,7 @@ using namespace ENGINE;
 
 TypeInfo *ComponentJoystickListener::mType = new TypeInfo("ComponentJoystickListener", &ComponentJoystickListener::createInstance);
 
-ComponentJoystickListener::ComponentJoystickListener(Object *object, std::map<std::string, std::string> params) :
+ComponentJoystickListener::ComponentJoystickListener(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
 
@@ -17,7 +17,7 @@ ComponentJoystickListener::~ComponentJoystickListener()
 {
 }
 
-void *ComponentJoystickListener::createInstance(Object *object, std::map<std::string, std::string> params)
+void *ComponentJoystickListener::createInstance(Object *object, ParamMap &params)
 {
     return new ComponentJoystickListener(object, params);
 }

@@ -1,7 +1,6 @@
 #ifndef _COMPONENTKEYBOARDLISTENER_HPP_
 #define _COMPONENTKEYBOARDLISTENER_HPP_
 
-#include <string>
 #include "Component.hpp"
 
 namespace ENGINE
@@ -10,10 +9,10 @@ namespace ENGINE
 class ComponentKeyboardListener : public Component
 {
 public:
-    ComponentKeyboardListener(Object *object, std::map<std::string, std::string> params);
+    ComponentKeyboardListener(Object *object, ParamMap &params);
     ~ComponentKeyboardListener();
 
-    static void *createInstance(Object *object, std::map<std::string, std::string> params);
+    static void *createInstance(Object *object, ParamMap &params);
     
     void init();
     void update(float elapsedTime);

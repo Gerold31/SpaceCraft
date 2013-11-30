@@ -10,10 +10,10 @@ using namespace ENGINE;
 
 TypeInfo *ComponentRenderable::mType = new TypeInfo("ComponentRenderable", &ComponentRenderable::createInstance);
 
-ComponentRenderable::ComponentRenderable(Object *object, std::map<std::string, std::string> params) :
+ComponentRenderable::ComponentRenderable(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
-    mEntity = ((SystemGraphics *)SystemGraphics::getSingleton())->getSceneMgr()->createEntity(mObject->getName() + "RenderableEnt", params["MeshName"]);
+    mEntity = ((SystemGraphics *)SystemGraphics::getSingleton())->getSceneMgr()->createEntity(mObject->getName() + "RenderableEnt", boost::any_cast<std::string>(params["MeshName"]));
     mEntity->getUserObjectBindings().setUserAny("Object", Ogre::Any(mObject));
     mObject->getSceneNode()->attachObject(mEntity);
 }
@@ -22,7 +22,7 @@ ComponentRenderable::~ComponentRenderable()
 {
 }
 
-void *ComponentRenderable::createInstance(Object *object, std::map<std::string, std::string> params)
+void *ComponentRenderable::createInstance(Object *object, ParamMap &params)
 {
     return new ComponentRenderable(object, params);
 }

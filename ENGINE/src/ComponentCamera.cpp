@@ -11,7 +11,7 @@ using namespace ENGINE;
 
 TypeInfo *ComponentCamera::mType = new TypeInfo("ComponentCamera", &ComponentCamera::createInstance);
 
-ComponentCamera::ComponentCamera(Object *object, std::map<std::string, std::string> params) :
+ComponentCamera::ComponentCamera(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
     mCamera = SystemGraphics::getSingleton()->getSceneMgr()->createCamera(object->getName() + "Camera");
@@ -31,7 +31,7 @@ ComponentCamera::~ComponentCamera()
 {
 }
 
-void *ComponentCamera::createInstance(Object *object, std::map<std::string, std::string> params)
+void *ComponentCamera::createInstance(Object *object, ParamMap &params)
 {
     return new ComponentCamera(object, params);
 }
@@ -46,8 +46,9 @@ void ComponentCamera::update(float elapsedTime)
 
 void ComponentCamera::receiveMessage(Message *message)
 {
-    if(MessageLookAtRel *m = dynamic_cast<MessageLookAtRel *>(message))
+    if(message->getID() == MessageLookAtRel::getID())
     {
+        MessageLookAtRel *m = (MessageLookAtRel *)message;
         //orientation
         float rotCoeff = -1.0f * 0.005;// elapsedTime;
         Ogre::Radian lAngleX(m->mX * rotCoeff);

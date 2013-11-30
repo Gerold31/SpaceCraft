@@ -1,7 +1,6 @@
 #ifndef _COMPONENTMOUSELISTENER_HPP_
 #define _COMPONENTMOUSELISTENER_HPP_
 
-#include <string>
 #include "Component.hpp"
 
 namespace ENGINE
@@ -10,10 +9,10 @@ namespace ENGINE
 class ComponentMouseListener : public Component
 {
 public:
-    ComponentMouseListener(Object *object, std::map<std::string, std::string> params);
+    ComponentMouseListener(Object *object, ParamMap &params);
     ~ComponentMouseListener();
 
-    static void *createInstance(Object *object, std::map<std::string, std::string> params);
+    static void *createInstance(Object *object, ParamMap &params);
     
     void init();
     void update(float elapsedTime);

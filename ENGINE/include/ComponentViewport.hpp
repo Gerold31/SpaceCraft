@@ -5,18 +5,16 @@
 
 #include "OGRE/OgreViewport.h"
 
-#include <string>
-
 namespace ENGINE
 {
 
 class ComponentViewport : public Component
 {
 public:
-    ComponentViewport(Object *object, std::map<std::string, std::string> params);
+    ComponentViewport(Object *object, ParamMap &params);
     ~ComponentViewport();
 
-    static void *createInstance(Object *object, std::map<std::string, std::string> params);
+    static void *createInstance(Object *object, ParamMap &params);
     
     void init();
     void update(float elapsedTime);

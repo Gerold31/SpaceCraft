@@ -11,7 +11,7 @@ using namespace ENGINE;
 
 TypeInfo *ComponentKeyMapping::mType = new TypeInfo("ComponentKeyMapping", &ComponentKeyMapping::createInstance);
 
-ComponentKeyMapping::ComponentKeyMapping(Object *object, std::map<std::string, std::string> params) :
+ComponentKeyMapping::ComponentKeyMapping(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
 
@@ -21,7 +21,7 @@ ComponentKeyMapping::~ComponentKeyMapping()
 {
 }
 
-void *ComponentKeyMapping::createInstance(Object *object, std::map<std::string, std::string> params)
+void *ComponentKeyMapping::createInstance(Object *object, ParamMap &params)
 {
     return new ComponentKeyMapping(object, params);
 }

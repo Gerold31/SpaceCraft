@@ -13,11 +13,10 @@ using namespace ENGINE;
 
 TypeInfo *ComponentMover::mType = new TypeInfo("ComponentMover", &ComponentMover::createInstance);
 
-ComponentMover::ComponentMover(Object *object, std::map<std::string, std::string> params) :
+ComponentMover::ComponentMover(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
-    mSpeed = atof(params["Speed"].c_str());
-    printf("\tSpeed == %lf\n", mSpeed);
+    mSpeed = atof(boost::any_cast<std::string>(params["Speed"]).c_str());
     mTranslation = Ogre::Vector3();
     mYawNode = mPitchNode = nullptr;
 }
@@ -26,7 +25,7 @@ ComponentMover::~ComponentMover()
 {
 }
 
-void *ComponentMover::createInstance(Object *object, std::map<std::string, std::string> params)
+void *ComponentMover::createInstance(Object *object, ParamMap &params)
 {
     return new ComponentMover(object, params);
 }

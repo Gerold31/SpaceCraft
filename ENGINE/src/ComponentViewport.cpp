@@ -11,7 +11,7 @@ using namespace ENGINE;
 
 TypeInfo *ComponentViewport::mType = new TypeInfo("ComponentViewport", &ComponentViewport::createInstance);
 
-ComponentViewport::ComponentViewport(Object *object, std::map<std::string, std::string> params) :
+ComponentViewport::ComponentViewport(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
     mViewport = nullptr;
@@ -21,7 +21,7 @@ ComponentViewport::~ComponentViewport()
 {
 }
 
-void *ComponentViewport::createInstance(Object *object, std::map<std::string, std::string> params)
+void *ComponentViewport::createInstance(Object *object, ParamMap &params)
 {
     return new ComponentViewport(object, params);
 }
@@ -32,8 +32,6 @@ void ComponentViewport::init()
     for(int i=0; i<mObject->getNumberComponents(); i++)
     {
         Component *c = mObject->getComponent(i);
-        printf("ComponentCamera::getType()->getName() == %s\n", ComponentCamera::getType()->getName().c_str());
-        printf("c->getType()->getName() == %s\n", c->getType()->getName().c_str());
         if(c->getType() == ComponentCamera::getType())
         {
             cam = ((ComponentCamera*)c)->getCamera();

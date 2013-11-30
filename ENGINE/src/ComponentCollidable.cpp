@@ -6,7 +6,7 @@ using namespace ENGINE;
 
 TypeInfo *ComponentCollidable::mType = new TypeInfo("ComponentCollidable", &ComponentCollidable::createInstance);
 
-ComponentCollidable::ComponentCollidable(Object *object, std::map<std::string, std::string> params) :
+ComponentCollidable::ComponentCollidable(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
 
@@ -16,7 +16,7 @@ ComponentCollidable::~ComponentCollidable()
 {
 }
 
-void *ComponentCollidable::createInstance(Object *object, std::map<std::string, std::string> params)
+void *ComponentCollidable::createInstance(Object *object, ParamMap &params)
 {
     return new ComponentCollidable(object, params);
 }

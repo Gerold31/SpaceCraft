@@ -5,18 +5,16 @@
 
 #include "OGRE/OgreEntity.h"
 
-#include <string>
-
 namespace ENGINE
 {
 
 class ComponentRenderable : public Component
 {
 public:
-    ComponentRenderable(Object *object, std::map<std::string, std::string> params);
+    ComponentRenderable(Object *object, ParamMap &params);
     ~ComponentRenderable();
 
-    static void *createInstance(Object *object, std::map<std::string, std::string> params);
+    static void *createInstance(Object *object, ParamMap &params);
     
     void init();
     void update(float elapsedTime);

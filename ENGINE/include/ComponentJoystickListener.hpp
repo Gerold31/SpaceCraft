@@ -1,7 +1,6 @@
 #ifndef _COMPONENTJOYSTICKLISTENER_HPP_
 #define _COMPONENTJOYSTICKLISTENER_HPP_
 
-#include <string>
 #include "Component.hpp"
 
 namespace ENGINE
@@ -10,10 +9,10 @@ namespace ENGINE
 class ComponentJoystickListener : public Component
 {
 public:
-    ComponentJoystickListener(Object *object, std::map<std::string, std::string> params);
+    ComponentJoystickListener(Object *object, ParamMap &params);
     ~ComponentJoystickListener();
 
-    static void *createInstance(Object *object, std::map<std::string, std::string> params);
+    static void *createInstance(Object *object, ParamMap &params);
     
     void init();
     void update(float elapsedTime);

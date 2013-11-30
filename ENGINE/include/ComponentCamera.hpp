@@ -5,18 +5,16 @@
 
 #include "OGRE/OgreCamera.h"
 
-#include <string>
-
 namespace ENGINE
 {
 
 class ComponentCamera : public Component
 {
 public:
-    ComponentCamera(Object *object, std::map<std::string, std::string> params);
+    ComponentCamera(Object *object, ParamMap &params);
     ~ComponentCamera();
 
-    static void *createInstance(Object *object, std::map<std::string, std::string> params);
+    static void *createInstance(Object *object, ParamMap &params);
     
     void init();
     void update(float elapsedTime);

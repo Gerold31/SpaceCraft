@@ -1,7 +1,6 @@
 #ifndef _COMPONENTMOVER_HPP_
 #define _COMPONENTMOVER_HPP_
 
-#include <string>
 #include "Component.hpp"
 
 #include "OGRE/OgreVector3.h"
@@ -12,10 +11,10 @@ namespace ENGINE
 class ComponentMover : public Component
 {
 public:
-    ComponentMover(Object *object, std::map<std::string, std::string> params);
+    ComponentMover(Object *object, ParamMap &params);
     ~ComponentMover();
 
-    static void *createInstance(Object *object, std::map<std::string, std::string> params);
+    static void *createInstance(Object *object, ParamMap &params);
     
     void init();
     void update(float elapsedTime);
