@@ -136,7 +136,7 @@ void SystemGraphics::update(float elapsedTime)
 {
     mWindow->update(false);
  
-    mWindow->swapBuffers(true);
+    mWindow->swapBuffers();
  
     mRoot->renderOneFrame();
  

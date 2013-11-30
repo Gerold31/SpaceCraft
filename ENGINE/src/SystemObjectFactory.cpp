@@ -136,7 +136,7 @@ Object *SystemObjectFactory::getObject(std::string name)
 
 Component *SystemObjectFactory::createComponent(Object *parent, std::string name, ParamMap &params)
 {
-    printf("add Component %s\n", name);
+    printf("add Component %s\n", name.c_str());
     assert(mComponentMap.count(name) > 0);
     Component *component = (Component *)mComponentMap[name]->createInstance(parent, params);
     parent->addComponent(component);

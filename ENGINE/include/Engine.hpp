@@ -5,6 +5,7 @@
 #include "Singleton.hpp"
 
 #include <vector>
+#include <string>
 
 namespace ENGINE
 {

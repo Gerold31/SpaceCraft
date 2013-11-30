@@ -5,6 +5,7 @@
 #include "NetworkMessage.hpp"
 
 #include <sstream>
+#include <cstring>
 
 #define HOST ("192.168.0.13")
 #define PORT (55555)
