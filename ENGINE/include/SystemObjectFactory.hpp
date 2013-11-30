@@ -1,14 +1,14 @@
 #ifndef _SYSTEMOBJECTFACTORY_HPP_
 #define _SYSTEMOBJECTFACTORY_HPP_
 
+#include "Defines.hpp"
+
 #include "System.hpp"
 
 #include "OGRE/OgreSceneNode.h"
 #include "OGRE/OgreString.h"
 
 #include <vector>
-#include <map>
-#include <string>
 
 namespace ENGINE
 {
@@ -17,8 +17,7 @@ class Component;
 class Object;
 class TypeInfo;
 
-typedef std::map<std::string, std::string> ParameterList;
-typedef std::pair<TypeInfo *, ParameterList> ComponentListElement;
+typedef std::pair<TypeInfo *, ParamMap> ComponentListElement;
 typedef std::vector<ComponentListElement> ComponentList;
 typedef std::map<std::string, ComponentList> ObjectMap;
 
@@ -33,10 +32,12 @@ public:
     void registerComponent(TypeInfo *type);
 
     Object *createObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, std::string type = "");
+    Object *getObject(std::string name);
+    Component *createComponent(Object *parent, std::string name, ParamMap &params);
 
 private:
     SystemObjectFactory();
-    SystemObjectFactory(const SystemObjectFactory &) {}
+    SystemObjectFactory(const SystemObjectFactory &) : System("SystemObjectFactory") {}
     ~SystemObjectFactory();
 
     std::vector<Object *> mObjects;

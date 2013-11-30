@@ -17,7 +17,7 @@ using namespace ENGINE;
 #define ENGINE_ERROR(str) printf("%s", str)
 
 SystemGraphics::SystemGraphics() :
-    System()
+    System("SystemGraphics")
 {
     try{
         mRoot = new Ogre::Root(Ogre::String("plugins").append(OGRE_DEBUG_MODE ? "_d.cfg" : ".cfg"), "", "Ogre.log");

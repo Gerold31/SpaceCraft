@@ -19,6 +19,7 @@ public:
         \note Ownership of the system goes to the engine
      */
     void addSystem(System *system);
+    System *getSystem(std::string name);
 
     void init();
     void run();

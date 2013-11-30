@@ -49,7 +49,7 @@ public:
 
 private:
     SystemInput();
-    SystemInput(const SystemInput&) { }
+    SystemInput(const SystemInput&) : System("SystemInput") { }
     ~SystemInput();
  
     bool keyPressed(const OIS::KeyEvent &e);

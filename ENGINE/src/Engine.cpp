@@ -23,6 +23,16 @@ void Engine::addSystem(System *system)
     mSystems.push_back(system);
 }
 
+System *Engine::getSystem(std::string name)
+{
+    for(std::vector<System *>::iterator i = mSystems.begin(); i!=mSystems.end(); ++i)
+    {
+        if((*i)->getName() == name)
+            return *i;
+    }
+    return nullptr;
+}
+
 void Engine::init()
 {
     for(std::vector<System *>::iterator i = mSystems.begin(); i!=mSystems.end(); ++i)

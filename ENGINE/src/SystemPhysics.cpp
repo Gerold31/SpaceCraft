@@ -3,7 +3,7 @@
 using namespace ENGINE;
 
 SystemPhysics::SystemPhysics() :
-    System()
+    System("SystemPhysics")
 {
 }
 

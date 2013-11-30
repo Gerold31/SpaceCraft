@@ -8,7 +8,7 @@
 using namespace ENGINE;
 
 SystemObjectFactory::SystemObjectFactory() :
-    System()
+    System("SystemObjectFactory")
 {
 }
 
@@ -51,7 +51,7 @@ void SystemObjectFactory::init()
                 break;
 
             ComponentListElement element;
-            ParameterList params;
+            ParamMap params;
 
             line = line.substr(1);
 
@@ -122,4 +122,24 @@ Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion or
     mObjects.push_back(object);
     object->init();
     return object;
+}
+
+Object *SystemObjectFactory::getObject(std::string name)
+{
+    for(std::vector<Object *>::iterator i = mObjects.begin(); i!=mObjects.end(); ++i)
+    {
+        if((*i)->getName() == name)
+            return *i;
+    }
+    return nullptr;
+}
+
+Component *SystemObjectFactory::createComponent(Object *parent, std::string name, ParamMap &params)
+{
+    printf("add Component %s\n", name);
+    assert(mComponentMap.count(name) > 0);
+    Component *component = (Component *)mComponentMap[name]->createInstance(parent, params);
+    parent->addComponent(component);
+    mComponents.push_back(component);
+    return component;
 }

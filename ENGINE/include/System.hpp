@@ -5,6 +5,7 @@
 #include "Singleton.hpp"
 
 #include <stdio.h>
+#include <string>
 
 namespace ENGINE
 {
@@ -14,12 +15,14 @@ class System : public MessageReceiver
 public:
     virtual void init() = 0;
     virtual void update(float elapsedTime) = 0;
+    std::string getName() {return mName;}
 
 protected:
-    System() {printf("create System\n");}
+    System(std::string name) :mName(name) {printf("create System\n");}
     System(const System&) {}
     virtual ~System() {}
 
+    std::string mName;
 };
 
 };

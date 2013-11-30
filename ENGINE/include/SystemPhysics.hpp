@@ -16,7 +16,7 @@ public:
 
 private:
     SystemPhysics();
-    SystemPhysics(const SystemPhysics &) {}
+    SystemPhysics(const SystemPhysics &) : System("SystemPhysics") {}
     ~SystemPhysics();
 
 };

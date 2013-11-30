@@ -29,7 +29,7 @@ public:
 
 private:
     SystemGraphics();
-    SystemGraphics(const SystemGraphics &) {}
+    SystemGraphics(const SystemGraphics &) : System("SystemGraphics") {}
     ~SystemGraphics();
 
     Ogre::Root          *mRoot;

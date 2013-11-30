@@ -10,6 +10,7 @@
 using namespace ENGINE;
  
 SystemInput::SystemInput(void) :
+    System("SystemInput"),
     mMouse(0),
     mKeyboard(0),
     mInputSystem(0)
