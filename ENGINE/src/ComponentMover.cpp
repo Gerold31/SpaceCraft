@@ -17,7 +17,7 @@ ComponentMover::ComponentMover(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
     mSpeed = atof(boost::any_cast<std::string>(params["Speed"]).c_str());
-    mTranslation = Ogre::Vector3();
+    mTranslation = Ogre::Vector3(0, 0, 0);
     mYawNode = mPitchNode = nullptr;
 }
 
