@@ -8,6 +8,7 @@
 #include "SystemInput.hpp"
 #include "SystemClient.hpp"
 #include "SystemServer.hpp"
+#include "SystemConfiguration.hpp"
 
 #include "ComponentCamera.hpp"
 #include "ComponentCollidable.hpp"
@@ -55,24 +56,68 @@ int main(int argc, char **argv)
         NetworkMessage::registerMessge(MessageStopMoveRight::getID(), MessageStopMoveRight::CreateMessage);
         NetworkMessage::registerMessge(MessageLookAtRel::getID(), MessageLookAtRel::CreateMessage);
         
-        Engine::getSingleton()->addSystem(SystemGraphics::getSingleton());
-        Engine::getSingleton()->addSystem(SystemObjectFactory::getSingleton());
-        Engine::getSingleton()->addSystem(SystemPhysics::getSingleton());
-        Engine::getSingleton()->addSystem(SystemInput::getSingleton());
+        Engine::getSingleton()->addSystem(SystemConfiguration::getSingleton());
 
-        //Engine::getSingleton()->addSystem(SystemClient::getSingleton());
-        Engine::getSingleton()->addSystem(SystemServer::getSingleton());
+        if(argc == 2)
+            SystemConfiguration::getSingleton()->loadFromFile(argv[1]);
+        else
+            SystemConfiguration::getSingleton()->loadFromFile("SpaceCraftListenServer.cfg");
 
+        if(SystemConfiguration::getSingleton()->getConfiguration("NetworkType") == "Client")
+        {
+            Engine::getSingleton()->addSystem(SystemGraphics::getSingleton());
+            Engine::getSingleton()->addSystem(SystemObjectFactory::getSingleton());
+            Engine::getSingleton()->addSystem(SystemPhysics::getSingleton());
+            Engine::getSingleton()->addSystem(SystemInput::getSingleton());
+
+            Engine::getSingleton()->addSystem(SystemClient::getSingleton());
+        }else if(SystemConfiguration::getSingleton()->getConfiguration("NetworkType") == "DedicatedServer")
+        {
+            Engine::getSingleton()->addSystem(SystemGraphics::getSingleton());
+            Engine::getSingleton()->addSystem(SystemObjectFactory::getSingleton());
+            Engine::getSingleton()->addSystem(SystemPhysics::getSingleton());
+
+            Engine::getSingleton()->addSystem(SystemServer::getSingleton());
+        }else if(SystemConfiguration::getSingleton()->getConfiguration("NetworkType") == "ListenServer")
+        {
+            Engine::getSingleton()->addSystem(SystemGraphics::getSingleton());
+            Engine::getSingleton()->addSystem(SystemObjectFactory::getSingleton());
+            Engine::getSingleton()->addSystem(SystemPhysics::getSingleton());
+            Engine::getSingleton()->addSystem(SystemInput::getSingleton());
+            
+            Engine::getSingleton()->addSystem(SystemServer::getSingleton());
+            Engine::getSingleton()->addSystem(SystemClient::getSingleton());
+        }else
+        {
+            throw "No NetworkType specified";
+        }
+        
         Engine::getSingleton()->init();
 
-        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "me", "Player");
+        printf("init world\n");
+        // @todo remove, create onConnect instead
+        if(SystemConfiguration::getSingleton()->isClient())
+        {
+            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "me", "PlayerClient");
+            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu1c", "CPUClient");
+            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0,  5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu2c", "CPUClient");
+            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(-5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu3c", "CPUClient");
+            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3( 5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu4c", "CPUClient");
+            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, -5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu5c", "CPUClient");
+            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0,  5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu6c", "CPUClient");
+        }
 
-        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu1", "CPU");
-        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0,  5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu2", "CPU");
-        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(-5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu3", "CPU");
-        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3( 5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu4", "CPU");
-        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, -5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu5", "CPU");
-        SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0,  5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu6", "CPU");
+        // @todo use messages
+        if(SystemConfiguration::getSingleton()->isServer())
+        {
+            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu1", "CPUServer");
+            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0,  5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu2", "CPUServer");
+            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(-5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu3", "CPUServer");
+            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3( 5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu4", "CPUServer");
+            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, -5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu5", "CPUServer");
+            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0,  5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu6", "CPUServer");
+        }
+        printf("init finished\n");
 
         Engine::getSingleton()->run();
 

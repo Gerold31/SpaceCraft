@@ -3,12 +3,10 @@
 #include "Message.hpp"
 #include "MessageInput.hpp"
 #include "NetworkMessage.hpp"
+#include "SystemConfiguration.hpp"
 
 #include <sstream>
 #include <cstring>
-
-#define HOST ("192.168.0.13")
-#define PORT (55555)
 
 using namespace ENGINE;
 
@@ -23,8 +21,9 @@ SystemClient::~SystemClient()
 
 void SystemClient::init()
 {
+    unsigned short port = atoi(SystemConfiguration::getSingleton()->getConfiguration("Port").c_str()); 
     mSocket = new Poco::Net::StreamSocket();
-    mSocket->connect(Poco::Net::SocketAddress(HOST, PORT));
+    mSocket->connect(Poco::Net::SocketAddress(SystemConfiguration::getSingleton()->getConfiguration("Host"), port));
 }
 
 void SystemClient::update(float elapsedTime)

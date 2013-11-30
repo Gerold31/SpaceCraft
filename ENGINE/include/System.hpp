@@ -18,7 +18,7 @@ public:
     std::string getName() {return mName;}
 
 protected:
-    System(std::string name) :mName(name) {printf("create System\n");}
+    System(std::string name) :mName(name) {printf("create System %s\n", name.c_str());}
     System(const System&) {}
     virtual ~System() {}
 

@@ -19,7 +19,7 @@ Engine::~Engine()
 
 void Engine::addSystem(System *system)
 {
-    printf("add System\n");
+    printf("add System %s\n", system->getName().c_str());
     mSystems.push_back(system);
 }
 
