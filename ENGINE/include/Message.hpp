@@ -2,39 +2,42 @@
 #define _MESSAGE_HPP_
 
 #include <string>
+#include <iostream>
+#include <map>
 
 #include "MessageReceiver.hpp"
 
 namespace ENGINE
 {
-
-class NetworkMessage;
+    
+typedef void* (*CreateMessage)(std::istream &stream);
 
 class Message
 {
 public:
-    enum RECEIVER_TYPE
-    {
-        RECEIVER_ENGINE,
-        RECEIVER_SYSTEM,
-        RECEIVER_OBJECT
-    };
-
-    Message(int id) : mID(id) {}
+    Message(int id, bool sendToServer, bool sendToClient) : mID(id), mSendToServer(sendToServer), mSendToClient(sendToClient) {}
     virtual ~Message() {};
 
-    void sendTo(MessageReceiver *receiver) {receiver->receiveMessage(this);}
+    void sendTo(MessageReceiver *receiver);
 
-    virtual NetworkMessage *toNetworkMessage();
+    void serialize(std::ostream &stream) {stream << mID << " "; std::cout << "serialize: " << mID << std::endl; _serialize(stream);}
+    static Message *deserialize(std::istream &stream); 
 
     int getID() {return mID;}
+    
+    static void registerMessge(int id, CreateMessage createMessage)
+    {
+        mMessages[id] = createMessage;
+    }
 
 protected:
     static int calcID(std::string name);
+    virtual void _serialize(std::ostream &stream) {};
 
     int mID;
-    RECEIVER_TYPE mReceiverType;
-    std::string mReceiverName;
+    bool mSendToServer, mSendToClient;
+    
+    static std::map<int, CreateMessage> mMessages;
 };
 
 };

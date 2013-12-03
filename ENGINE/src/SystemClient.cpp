@@ -1,12 +1,11 @@
 #include "SystemClient.hpp"
 
 #include "Message.hpp"
-#include "MessageInput.hpp"
-#include "NetworkMessage.hpp"
 #include "SystemConfiguration.hpp"
+#include "Object.hpp"
 
-#include <sstream>
-#include <cstring>
+#include "Poco/Net/StreamSocket.h"
+#include "Poco/Net/SocketStream.h"
 
 using namespace ENGINE;
 
@@ -35,18 +34,32 @@ void SystemClient::update(float elapsedTime)
 
 void SystemClient::receiveMessage(Message *msg)
 {
-    if(msg->getID() == MessageKeyPressed::getID())
-    {
-        MessageKeyPressed *m = (MessageKeyPressed *)msg;
-        std::stringstream s;
-        s << std::hex << m->mEvent.text;
-        char buf[512];
-        s >> buf;
-        mSocket->sendBytes(buf, strlen(buf));
-    }
 }
 
 
-void SystemClient::write(NetworkMessage *msg)
+void SystemClient::send(Message *msg, MessageReceiver *receiver)
 {
+    std::cout << "message to ";
+    Poco::Net::SocketStream stream(*mSocket);
+
+    switch(receiver->getReceiverType())
+    {
+    case MessageReceiver::RECEIVER_ENGINE:
+        std::cout << "ENGINE" << std::endl;
+        stream << MessageReceiver::RECEIVER_ENGINE << " ENGINE ";
+        break;
+    case MessageReceiver::RECEIVER_SYSTEM:
+        std::cout << "System: " << ((System *)receiver)->getName() << std::endl;
+        stream << MessageReceiver::RECEIVER_SYSTEM << " " << ((System *)receiver)->getName() << " ";
+        break;
+    case MessageReceiver::RECEIVER_OBJECT:
+        std::cout << "Object: " << ((Object *)receiver)->getName() << std::endl;
+        stream << MessageReceiver::RECEIVER_OBJECT << " " << ((Object *)receiver)->getName() << " ";
+        break;
+    default:
+        // @todo no messages to components?
+        break;
+    }
+
+    msg->serialize(stream);
 }

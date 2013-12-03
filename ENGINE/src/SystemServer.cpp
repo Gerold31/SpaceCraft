@@ -1,12 +1,9 @@
 #include "SystemServer.hpp"
 
-#include "SystemObjectFactory.hpp"
-#include "SystemGraphics.hpp"
+#include "SystemGameState.hpp"
 #include "SystemConfiguration.hpp"
 #include "ComponentServerConnection.hpp"
 #include "Object.hpp"
-
-#include "OGRE/OgreSceneManager.h"
 
 using namespace ENGINE;
 
@@ -15,12 +12,7 @@ Poco::Net::TCPServerConnection* ServerConnectionFactory::createConnection(const 
     ParamMap params;
     params["Socket"] = socket;
 
-    // @todo let this make SystemGameState
-    // @todo give name
-    Object *newPlayer = SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "", "PlayerServer");
-    ComponentServerConnection *connection = (ComponentServerConnection *)SystemObjectFactory::getSingleton()->createComponent(newPlayer, "ComponentServerConnection", params);
-    
-    // @todo: inform SystemGameState (todo) that a new Player connected, send him the GameState and inform other connected Player that a new Player connected
+    ComponentServerConnection *connection = SystemGameState::getSingleton()->newPlayer(params);    
 
     return connection;
 }

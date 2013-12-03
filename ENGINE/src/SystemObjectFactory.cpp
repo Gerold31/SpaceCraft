@@ -2,6 +2,7 @@
 
 #include "Object.hpp"
 #include "TypeInfo.hpp"
+#include "Component.hpp"
 
 #include <fstream>
 
@@ -141,5 +142,6 @@ Component *SystemObjectFactory::createComponent(Object *parent, std::string name
     Component *component = (Component *)mComponentMap[name]->createInstance(parent, params);
     parent->addComponent(component);
     mComponents.push_back(component);
+    component->init();
     return component;
 }

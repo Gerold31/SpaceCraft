@@ -8,8 +8,6 @@
 namespace ENGINE
 {
 
-class NetworkMessage;
-
 class SystemClient : public System, public Singleton<SystemClient>
 {
 friend class Singleton<SystemClient>;
@@ -18,7 +16,7 @@ public:
     void update(float elapsedTime);
     void receiveMessage(Message *msg);
 
-    void write(NetworkMessage *msg);
+    void send(Message *msg, MessageReceiver *receiver);
 
 private:
     SystemClient();

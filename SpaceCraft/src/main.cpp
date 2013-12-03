@@ -9,6 +9,7 @@
 #include "SystemClient.hpp"
 #include "SystemServer.hpp"
 #include "SystemConfiguration.hpp"
+#include "SystemGameState.hpp"
 
 #include "ComponentCamera.hpp"
 #include "ComponentCollidable.hpp"
@@ -21,7 +22,7 @@
 #include "ComponentViewport.hpp"
 #include "ComponentServerConnection.hpp"
 
-#include "NetworkMessage.hpp"
+#include "Message.hpp"
 #include "MessageEngine.hpp"
 #include "MessageMove.hpp"
 
@@ -45,51 +46,38 @@ int main(int argc, char **argv)
         SystemObjectFactory::getSingleton()->registerComponent(ComponentViewport::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentServerConnection::getType());
         
-        NetworkMessage::registerMessge(MessageQuit::getID(), MessageQuit::CreateMessage);
-        NetworkMessage::registerMessge(MessageStartMoveForward::getID(), MessageStartMoveForward::CreateMessage);
-        NetworkMessage::registerMessge(MessageStopMoveForward::getID(), MessageStopMoveForward::CreateMessage);
-        NetworkMessage::registerMessge(MessageStartMoveBackward::getID(), MessageStartMoveBackward::CreateMessage);
-        NetworkMessage::registerMessge(MessageStopMoveBackward::getID(), MessageStopMoveBackward::CreateMessage);
-        NetworkMessage::registerMessge(MessageStartMoveLeft::getID(), MessageStartMoveLeft::CreateMessage);
-        NetworkMessage::registerMessge(MessageStopMoveLeft::getID(), MessageStopMoveLeft::CreateMessage);
-        NetworkMessage::registerMessge(MessageStartMoveRight::getID(), MessageStartMoveRight::CreateMessage);
-        NetworkMessage::registerMessge(MessageStopMoveRight::getID(), MessageStopMoveRight::CreateMessage);
-        NetworkMessage::registerMessge(MessageLookAtRel::getID(), MessageLookAtRel::CreateMessage);
+        Message::registerMessge(MessageQuit::getID(), MessageQuit::CreateMessage);
+        Message::registerMessge(MessageStartMoveForward::getID(), MessageStartMoveForward::CreateMessage);
+        Message::registerMessge(MessageStopMoveForward::getID(), MessageStopMoveForward::CreateMessage);
+        Message::registerMessge(MessageStartMoveBackward::getID(), MessageStartMoveBackward::CreateMessage);
+        Message::registerMessge(MessageStopMoveBackward::getID(), MessageStopMoveBackward::CreateMessage);
+        Message::registerMessge(MessageStartMoveLeft::getID(), MessageStartMoveLeft::CreateMessage);
+        Message::registerMessge(MessageStopMoveLeft::getID(), MessageStopMoveLeft::CreateMessage);
+        Message::registerMessge(MessageStartMoveRight::getID(), MessageStartMoveRight::CreateMessage);
+        Message::registerMessge(MessageStopMoveRight::getID(), MessageStopMoveRight::CreateMessage);
+        Message::registerMessge(MessageLookAtRel::getID(), MessageLookAtRel::CreateMessage);
         
         Engine::getSingleton()->addSystem(SystemConfiguration::getSingleton());
 
         if(argc == 2)
             SystemConfiguration::getSingleton()->loadFromFile(argv[1]);
         else
-            SystemConfiguration::getSingleton()->loadFromFile("SpaceCraftListenServer.cfg");
+            SystemConfiguration::getSingleton()->loadFromFile("SpaceCraftDedicatedServer.cfg");
 
-        if(SystemConfiguration::getSingleton()->getConfiguration("NetworkType") == "Client")
+        Engine::getSingleton()->addSystem(SystemGraphics::getSingleton());
+        Engine::getSingleton()->addSystem(SystemObjectFactory::getSingleton());
+        Engine::getSingleton()->addSystem(SystemPhysics::getSingleton());
+
+        if(SystemConfiguration::getSingleton()->isServer())
         {
-            Engine::getSingleton()->addSystem(SystemGraphics::getSingleton());
-            Engine::getSingleton()->addSystem(SystemObjectFactory::getSingleton());
-            Engine::getSingleton()->addSystem(SystemPhysics::getSingleton());
-            Engine::getSingleton()->addSystem(SystemInput::getSingleton());
-
-            Engine::getSingleton()->addSystem(SystemClient::getSingleton());
-        }else if(SystemConfiguration::getSingleton()->getConfiguration("NetworkType") == "DedicatedServer")
-        {
-            Engine::getSingleton()->addSystem(SystemGraphics::getSingleton());
-            Engine::getSingleton()->addSystem(SystemObjectFactory::getSingleton());
-            Engine::getSingleton()->addSystem(SystemPhysics::getSingleton());
-
+            Engine::getSingleton()->addSystem(SystemGameState::getSingleton());
             Engine::getSingleton()->addSystem(SystemServer::getSingleton());
-        }else if(SystemConfiguration::getSingleton()->getConfiguration("NetworkType") == "ListenServer")
+        }
+
+        if(SystemConfiguration::getSingleton()->isClient())
         {
-            Engine::getSingleton()->addSystem(SystemGraphics::getSingleton());
-            Engine::getSingleton()->addSystem(SystemObjectFactory::getSingleton());
-            Engine::getSingleton()->addSystem(SystemPhysics::getSingleton());
             Engine::getSingleton()->addSystem(SystemInput::getSingleton());
-            
-            Engine::getSingleton()->addSystem(SystemServer::getSingleton());
             Engine::getSingleton()->addSystem(SystemClient::getSingleton());
-        }else
-        {
-            throw "No NetworkType specified";
         }
         
         Engine::getSingleton()->init();

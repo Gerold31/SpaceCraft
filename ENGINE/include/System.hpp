@@ -18,8 +18,8 @@ public:
     std::string getName() {return mName;}
 
 protected:
-    System(std::string name) :mName(name) {printf("create System %s\n", name.c_str());}
-    System(const System&) {}
+    System(std::string name) : MessageReceiver(MessageReceiver::RECEIVER_SYSTEM), mName(name) {printf("create System %s\n", name.c_str());}
+    System(const System&) : MessageReceiver(MessageReceiver::RECEIVER_SYSTEM) {}
     virtual ~System() {}
 
     std::string mName;

@@ -2,6 +2,10 @@
 
 #include "TypeInfo.hpp"
 #include "SystemObjectFactory.hpp"
+#include "Message.hpp"
+#include "MessageEngine.hpp"
+#include "Engine.hpp"
+#include "Object.hpp"
 
 #include <iostream>
 #include "Poco/Net/StreamSocket.h"
@@ -41,27 +45,54 @@ void ComponentServerConnection::receiveMessage(Message *message)
 void ComponentServerConnection::run()
 {
     std::cout << "new incomming connection" << std::endl;
-
-    Poco::Net::SocketStream stream(socket());
     Poco::Net::StreamSocket sock = socket();
+    Poco::Net::SocketStream stream(sock);
 
-    bool quit = false;
-
-    while(!quit)
+    while(1)
     {
-        if(sock.available())
+        //if(sock.available())
         {
-            char buf[512];
-            sock.receiveBytes(buf, 512);
-            std::cout << "received:\n\t" << buf << std::endl;
-            if(strcmp(buf, "quit") == 0)
-                quit = true;
+            int receiverType;
+            std::string receiverName;
+            stream >> receiverType;
+            stream >> receiverName;
+
+            std::cout << "Message from " << receiverType << ": "<< receiverName << std::endl;
+
+            Message *message = Message::deserialize(stream);
+
+            if(message->getID() == MessageQuit::getID())
+            {
+                break;
+            }
+
+            MessageReceiver *r = nullptr;
+            switch(receiverType)
+            {
+            case MessageReceiver::RECEIVER_ENGINE:
+                r = Engine::getSingleton();
+                break;
+            case MessageReceiver::RECEIVER_SYSTEM:
+                r = Engine::getSingleton()->getSystem(receiverName);
+                break;
+            case MessageReceiver::RECEIVER_OBJECT:
+                //r = SystemObjectFactory::getSingleton()->getObject(receiverName);
+                break;
+            default:
+                // @todo no messages to components?
+                r = nullptr;
+            }
+
+            if(r)
+                r->receiveMessage(message);
+
+            delete message;
         }
     }
     
-
     std::cout << "connection closed" << std::endl;
-
-    // destroy this object
-    SystemObjectFactory::getSingleton();
+    
+    
+    // @todo destroy this object
+    while(1);
 }

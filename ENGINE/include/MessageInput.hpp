@@ -11,7 +11,7 @@ namespace ENGINE
 class MessageKeyPressed : public Message
 {
 public:
-    MessageKeyPressed(const OIS::KeyEvent &e) : Message(getID()), mEvent(e) {}
+    MessageKeyPressed(const OIS::KeyEvent &e) : Message(getID(), false, false), mEvent(e) {}
     static int getID() {if(mID == -1) mID = calcID("MessageKeyPressed"); return mID;}
 
     const OIS::KeyEvent &mEvent;
@@ -23,7 +23,7 @@ private:
 class MessageKeyReleased : public Message
 {
 public:
-    MessageKeyReleased(const OIS::KeyEvent &e) : Message(getID()), mEvent(e) {}
+    MessageKeyReleased(const OIS::KeyEvent &e) : Message(getID(), false, false), mEvent(e) {}
     static int getID() {if(mID == -1) mID = calcID("MessageKeyReleased"); return mID;}
 
     const OIS::KeyEvent &mEvent;
@@ -35,7 +35,7 @@ private:
 class MessageMouseMoved : public Message
 {
 public:
-    MessageMouseMoved(const OIS::MouseEvent &e) : Message(getID()), mEvent(e) {}
+    MessageMouseMoved(const OIS::MouseEvent &e) : Message(getID(), false, false), mEvent(e) {}
     static int getID() {if(mID == -1) mID = calcID("MessageMouseMoved"); return mID;}
 
     const OIS::MouseEvent &mEvent;
@@ -47,7 +47,7 @@ private:
 class MessageMousePressed : public Message
 {
 public:
-    MessageMousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id) : Message(getID()), mEvent(e), mButtonID(id) {}
+    MessageMousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id) : Message(getID(), false, false), mEvent(e), mButtonID(id) {}
     static int getID() {if(mID == -1) mID = calcID("MessageMousePressed"); return mID;}
 
     const OIS::MouseEvent &mEvent;
@@ -60,7 +60,7 @@ private:
 class MessageMouseReleased : public Message
 {
 public:
-    MessageMouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) : Message(getID()), mEvent(e), mButtonID(id) {}
+    MessageMouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) : Message(getID(), false, false), mEvent(e), mButtonID(id) {}
     static int getID() {if(mID == -1) mID = calcID("MessageMouseReleased"); return mID;}
 
     const OIS::MouseEvent &mEvent;

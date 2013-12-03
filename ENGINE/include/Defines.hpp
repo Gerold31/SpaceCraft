@@ -1,6 +1,8 @@
 #ifndef _DEFINES_HPP_
 #define _DEFINES_HPP_
 
+#include <string>
+#include <vector>
 #include <map>
 #include <boost/any.hpp>
 

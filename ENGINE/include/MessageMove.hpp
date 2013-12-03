@@ -5,7 +5,7 @@
 
 #include <OIS/OIS.h>
 
-#include <sstream>
+#include <iostream>
 
 namespace ENGINE
 {
@@ -13,8 +13,8 @@ namespace ENGINE
 class MessageStartMoveForward : public Message
 {
 public:
-    MessageStartMoveForward() : Message(getID()) {}
-    static void *CreateMessage(std::stringstream &stream) { return new MessageStartMoveForward(); }
+    MessageStartMoveForward() : Message(getID(), true, true) {}
+    static void *CreateMessage(std::istream &stream) { return new MessageStartMoveForward(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStartMoveForward"); return mID;}
 private:
     static int mID;
@@ -23,8 +23,8 @@ private:
 class MessageStopMoveForward : public Message
 {
 public:
-    MessageStopMoveForward() : Message(getID()) {}
-    static void *CreateMessage(std::stringstream &stream) { return new MessageStopMoveForward(); }
+    MessageStopMoveForward() : Message(getID(), true, true) {}
+    static void *CreateMessage(std::istream &stream) { return new MessageStopMoveForward(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStopMoveForward"); return mID;}
 private:
     static int mID;
@@ -33,8 +33,8 @@ private:
 class MessageStartMoveBackward : public Message
 {
 public:
-    MessageStartMoveBackward() : Message(getID()) {}
-    static void *CreateMessage(std::stringstream &stream) { return new MessageStartMoveBackward(); }
+    MessageStartMoveBackward() : Message(getID(), true, true) {}
+    static void *CreateMessage(std::istream &stream) { return new MessageStartMoveBackward(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStartMoveBackward"); return mID;}
 private:
     static int mID;
@@ -43,8 +43,8 @@ private:
 class MessageStopMoveBackward : public Message
 {
 public:
-    MessageStopMoveBackward() : Message(getID()) {}
-    static void *CreateMessage(std::stringstream &stream) { return new MessageStopMoveBackward(); }
+    MessageStopMoveBackward() : Message(getID(), true, true) {}
+    static void *CreateMessage(std::istream &stream) { return new MessageStopMoveBackward(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStopMoveBackward"); return mID;}
 private:
     static int mID;
@@ -53,8 +53,8 @@ private:
 class MessageStartMoveLeft : public Message
 {
 public:
-    MessageStartMoveLeft() : Message(getID()) {}
-    static void *CreateMessage(std::stringstream &stream) { return new MessageStartMoveLeft(); }
+    MessageStartMoveLeft() : Message(getID(), true, true) {}
+    static void *CreateMessage(std::istream &stream) { return new MessageStartMoveLeft(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStartMoveLeft"); return mID;}
 private:
     static int mID;
@@ -63,8 +63,8 @@ private:
 class MessageStopMoveLeft : public Message
 {
 public:
-    MessageStopMoveLeft() : Message(getID()) {}
-    static void *CreateMessage(std::stringstream &stream) { return new MessageStopMoveLeft(); }
+    MessageStopMoveLeft() : Message(getID(), true, true) {}
+    static void *CreateMessage(std::istream &stream) { return new MessageStopMoveLeft(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStopMoveLeft"); return mID;}
 private:
     static int mID;
@@ -73,8 +73,8 @@ private:
 class MessageStartMoveRight : public Message
 {
 public:
-    MessageStartMoveRight() : Message(getID()) {}
-    static void *CreateMessage(std::stringstream &stream) { return new MessageStartMoveRight(); }
+    MessageStartMoveRight() : Message(getID(), true, true) {}
+    static void *CreateMessage(std::istream &stream) { return new MessageStartMoveRight(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStartMoveRight"); return mID;}
 private:
     static int mID;
@@ -83,8 +83,8 @@ private:
 class MessageStopMoveRight : public Message
 {
 public:
-    MessageStopMoveRight() : Message(getID()) {}
-    static void *CreateMessage(std::stringstream &stream) { return new MessageStopMoveRight(); }
+    MessageStopMoveRight() : Message(getID(), true, true) {}
+    static void *CreateMessage(std::istream &stream) { return new MessageStopMoveRight(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStopMoveRight"); return mID;}
 private:
     static int mID;
@@ -93,11 +93,12 @@ private:
 class MessageLookAtRel : public Message
 {
 public:
-    MessageLookAtRel(int x, int y) : Message(getID()), mX(x), mY(y) {}
-    static void *CreateMessage(std::stringstream &stream) {int x,y; stream >> x >> y; return new MessageLookAtRel(x, y); }
+    MessageLookAtRel(int x, int y) : Message(getID(), true, true), mX(x), mY(y) {}
+    static void *CreateMessage(std::istream &stream) {int x,y; stream >> x >> y; std::cout << "read: " << x << " " << y << std::endl; return new MessageLookAtRel(x, y); }
     static int getID() {if(mID == -1) mID = calcID("MessageLookAtRel"); return mID;}
     int mX, mY;
 private:
+    void _serialize(std::ostream &stream) {std::cout << "write: " << mX << " " << mY << std::endl; stream << mX << " " << mY << " ";}
     static int mID;
 };
 

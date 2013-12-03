@@ -5,6 +5,7 @@
 using namespace ENGINE;
 
 Object::Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name) :
+    MessageReceiver(MessageReceiver::RECEIVER_OBJECT),
     mName(name)
 {
     mNode = parent->createChildSceneNode(name);

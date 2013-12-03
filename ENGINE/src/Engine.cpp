@@ -7,7 +7,8 @@
 
 using namespace ENGINE;
 
-Engine::Engine()
+Engine::Engine() : 
+    MessageReceiver(MessageReceiver::RECEIVER_ENGINE)
 {
     mQuit = true;
 }
