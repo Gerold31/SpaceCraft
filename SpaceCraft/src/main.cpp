@@ -25,6 +25,7 @@
 #include "Message.hpp"
 #include "MessageEngine.hpp"
 #include "MessageMove.hpp"
+#include "MessageObjectFactory.hpp"
 
 #include "OGRE/OgreSceneManager.h"
 
@@ -56,6 +57,7 @@ int main(int argc, char **argv)
         Message::registerMessge(MessageStartMoveRight::getID(), MessageStartMoveRight::CreateMessage);
         Message::registerMessge(MessageStopMoveRight::getID(), MessageStopMoveRight::CreateMessage);
         Message::registerMessge(MessageLookAtRel::getID(), MessageLookAtRel::CreateMessage);
+        Message::registerMessge(MessageCreateObject::getID(), MessageCreateObject::CreateMessage);
         
         Engine::getSingleton()->addSystem(SystemConfiguration::getSingleton());
 
@@ -83,27 +85,18 @@ int main(int argc, char **argv)
         Engine::getSingleton()->init();
 
         printf("init world\n");
-        // @todo remove, create onConnect instead
         if(SystemConfiguration::getSingleton()->isClient())
         {
-            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "me", "PlayerClient");
-            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu1c", "CPUClient");
-            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0,  5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu2c", "CPUClient");
-            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(-5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu3c", "CPUClient");
-            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3( 5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu4c", "CPUClient");
-            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, -5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu5c", "CPUClient");
-            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0,  5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu6c", "CPUClient");
         }
 
-        // @todo use messages
         if(SystemConfiguration::getSingleton()->isServer())
         {
-            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu1", "CPUServer");
-            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, 0,  5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu2", "CPUServer");
-            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(-5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu3", "CPUServer");
-            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3( 5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu4", "CPUServer");
-            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0, -5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu5", "CPUServer");
-            SystemObjectFactory::getSingleton()->createObject(Ogre::Vector3(0,  5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu6", "CPUServer");
+            SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu1", "CPU");
+            SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, 0,  5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu2", "CPU");
+            SystemGameState::getSingleton()->addObject(Ogre::Vector3(-5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu3", "CPU");
+            SystemGameState::getSingleton()->addObject(Ogre::Vector3( 5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu4", "CPU");
+            SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, -5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu5", "CPU");
+            SystemGameState::getSingleton()->addObject(Ogre::Vector3(0,  5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu6", "CPU");
         }
         printf("init finished\n");
 
@@ -123,6 +116,9 @@ int main(int argc, char **argv)
     {
         printf("%s\n", e.what());
         return 1;
+    }catch(std::exception &e)
+    {
+        printf("%s\n", e.what());
     }catch(...)
     {
         printf("Unknown Exception!\n");

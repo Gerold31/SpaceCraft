@@ -11,6 +11,8 @@
 namespace ENGINE
 {
 
+class ComponentServerConnection;
+
 class ServerConnectionFactory : public Poco::Net::TCPServerConnectionFactory
 {
 public:
@@ -26,6 +28,13 @@ public:
     void init();
     void update(float elapsedTime);
     void receiveMessage(Message *msg);
+    
+    void addConnection(ComponentServerConnection *connection);
+    void removeConnection(ComponentServerConnection *connection);
+    
+    void sendTo(Message *msg, MessageReceiver *receiver, ComponentServerConnection *to);
+    void sendToAllBut(Message *msg, MessageReceiver *receiver, ComponentServerConnection *notTo);
+    void sendToAll(Message *msg, MessageReceiver *receiver);
 
 private:
     SystemServer();
@@ -34,6 +43,8 @@ private:
 
     Poco::Net::TCPServer *mServer;
     Poco::Net::ServerSocket *mSocket;
+
+    std::vector<ComponentServerConnection *> mConnections;
 };
 
 };

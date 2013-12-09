@@ -5,6 +5,9 @@
 
 #include "Defines.hpp"
 
+#include "OGRE/OgreString.h"
+#include "OGRE/OgreSceneNode.h"
+
 namespace ENGINE
 {
 
@@ -20,6 +23,7 @@ public:
     void receiveMessage(Message *msg);
 
     ComponentServerConnection *newPlayer(ParamMap &params);
+    void addObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, std::string type = "");
 
 private:
     SystemGameState();
@@ -29,6 +33,7 @@ private:
     std::vector<std::pair<std::string, Object *> > mLoadedObjects;
     std::vector<ComponentServerConnection *> mConnectedPlayers;
 
+    int mNextPlayerID;
 };
 
 };

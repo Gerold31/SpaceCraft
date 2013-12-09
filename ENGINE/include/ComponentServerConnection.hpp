@@ -22,6 +22,8 @@ public:
 
     void run();
 
+    void send(Message *msg, MessageReceiver *receiver);
+
     static TypeInfo *getType() {return mType;}
 
 private:
