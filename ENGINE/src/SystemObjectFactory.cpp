@@ -3,6 +3,7 @@
 #include "Object.hpp"
 #include "TypeInfo.hpp"
 #include "Component.hpp"
+#include "MessageObjectFactory.hpp"
 
 #include <fstream>
 
@@ -98,6 +99,12 @@ void SystemObjectFactory::update(float elapsedTime)
 
 void SystemObjectFactory::receiveMessage(Message *msg)
 {
+    // @todo destroyObject
+    if(msg->getID() == MessageCreateObject::getID())
+    {
+        MessageCreateObject *m = (MessageCreateObject *)msg;
+        createObject(m->mPos, m->mOri, m->mParent, m->mName, m->mType);
+    }
 }
 
 void SystemObjectFactory::registerComponent(TypeInfo *type)

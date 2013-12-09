@@ -20,7 +20,7 @@ public:
 
     void sendTo(MessageReceiver *receiver);
 
-    void serialize(std::ostream &stream) {stream << mID << " "; std::cout << "serialize: " << mID << std::endl; _serialize(stream);}
+    void serialize(std::ostream &stream);
     static Message *deserialize(std::istream &stream); 
 
     int getID() {return mID;}

@@ -31,7 +31,6 @@ public:
 
     void registerComponent(TypeInfo *type);
 
-    Object *createObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, std::string type = "");
     Object *getObject(std::string name);
     Component *createComponent(Object *parent, std::string name, ParamMap &params);
 
@@ -39,6 +38,8 @@ private:
     SystemObjectFactory();
     SystemObjectFactory(const SystemObjectFactory &) : System("SystemObjectFactory") {}
     ~SystemObjectFactory();
+
+    Object *createObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, std::string type = "");
 
     std::vector<Object *> mObjects;
     std::vector<Component *> mComponents;

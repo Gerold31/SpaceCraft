@@ -22,8 +22,7 @@ void Message::sendTo(MessageReceiver *receiver)
     if(mSendToClient && !SystemConfiguration::getSingleton()->isClient())
     {
         assert(SystemConfiguration::getSingleton()->isServer());
-        // @todo
-        //SystemServer::getSingleton()->send(this, receiver);
+        SystemServer::getSingleton()->sendToAll(this, receiver);
     }
 }
 
@@ -37,6 +36,13 @@ int Message::calcID(std::string name)
     }
     printf("Message %#.8x: \"%s\"\n", id, name.c_str());
     return id;
+}
+
+void Message::serialize(std::ostream &stream) 
+{
+    stream << mID << " "; 
+    std::cout << "serialize: " << mID << std::endl;
+    _serialize(stream);
 }
 
 Message *Message::deserialize(std::istream &stream)
