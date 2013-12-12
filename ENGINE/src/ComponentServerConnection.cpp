@@ -83,7 +83,7 @@ void ComponentServerConnection::run()
                 r = Engine::getSingleton()->getSystem(receiverName);
                 break;
             case MessageReceiver::RECEIVER_OBJECT:
-                //r = SystemObjectFactory::getSingleton()->getObject(receiverName);
+                r = SystemObjectFactory::getSingleton()->getObject(receiverName);
                 break;
             default:
                 // @todo no messages to components?
@@ -115,8 +115,6 @@ void ComponentServerConnection::run()
 void ComponentServerConnection::send(Message *msg, MessageReceiver *receiver)
 {
     // @todo remove code duplication at SystemClient::send
-    std::cout << "message to ";
-
     Poco::Net::SocketStream stream(socket());
 
     switch(receiver->getReceiverType())

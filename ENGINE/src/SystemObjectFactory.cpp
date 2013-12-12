@@ -91,7 +91,7 @@ void SystemObjectFactory::init()
 
 void SystemObjectFactory::update(float elapsedTime)
 {
-    for(std::vector<Object *>::iterator i = mObjects.begin(); i!=mObjects.end(); ++i)
+    for(auto i = mObjects.begin(); i!=mObjects.end(); ++i)
     {
         (*i)->update(elapsedTime);
     }
@@ -134,7 +134,7 @@ Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion or
 
 Object *SystemObjectFactory::getObject(std::string name)
 {
-    for(std::vector<Object *>::iterator i = mObjects.begin(); i!=mObjects.end(); ++i)
+    for(auto i = mObjects.begin(); i!=mObjects.end(); ++i)
     {
         if((*i)->getName() == name)
             return *i;

@@ -41,7 +41,7 @@ int Message::calcID(std::string name)
 void Message::serialize(std::ostream &stream) 
 {
     stream << mID << std::endl;
-    std::cout << "serialize: " << std::hex << mID << std::endl;
+    //std::cout << "serialize: " << std::hex << mID << std::endl;
     _serialize(stream);
 }
 
@@ -49,7 +49,7 @@ Message *Message::deserialize(std::istream &stream)
 {
     int id;
     stream >> id;
-    std::cout << "deserialize: " << std::hex << id << std::endl;
+    //std::cout << "deserialize: " << std::hex << id << std::endl;
 
     return (Message *)mMessages.at(id)(stream);
 }
