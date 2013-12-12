@@ -29,6 +29,6 @@ void *MessageCreateObject::CreateMessage(std::istream &stream)
 
 void MessageCreateObject::_serialize(std::ostream &stream) 
 {
-    stream << mPos.x << " " << mPos.y << " " << mPos.z << " " << mOri.w << " " << mOri.x << " " << mOri.y << " " << mOri.z << " " << mParent->getName().c_str() << " " << mName << " " << mType << " ";
+    stream << mPos.x << std::endl << mPos.y << std::endl << mPos.z << std::endl << mOri.w << std::endl << mOri.x << std::endl << mOri.y << std::endl << mOri.z << std::endl << mParent->getName().c_str() << std::endl << mName << std::endl << mType << std::endl;
     std::cout << "px: " << mPos.x << "\npy: " << mPos.y << "\npz: " << mPos.z << "\now: " << mOri.w << "\nox: " << mOri.x << "\noy: " << mOri.y << "\noz: " << mOri.z << "\nparentName: " << mParent->getName().c_str() << "\nname: " << mName << "\ntype: " << mType << std::endl;
 }

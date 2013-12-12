@@ -4,6 +4,7 @@
 #include "System.hpp"
 
 #include "Poco/Net/StreamSocket.h"
+#include "Poco/Net/SocketStream.h"
 
 namespace ENGINE
 {
@@ -24,6 +25,7 @@ private:
     ~SystemClient();
 
     Poco::Net::StreamSocket *mSocket;
+    Poco::Net::SocketStream *mStream;
 
 };
 

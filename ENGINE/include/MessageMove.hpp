@@ -98,7 +98,7 @@ public:
     static int getID() {if(mID == -1) mID = calcID("MessageLookAtRel"); return mID;}
     int mX, mY;
 private:
-    void _serialize(std::ostream &stream) {std::cout << "write: " << mX << " " << mY << std::endl; stream << mX << " " << mY << " ";}
+    void _serialize(std::ostream &stream) {std::cout << "write: " << mX << " " << mY << std::endl; stream << mX << std::endl << mY << std::endl;}
     static int mID;
 };
 

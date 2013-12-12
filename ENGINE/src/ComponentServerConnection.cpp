@@ -9,6 +9,8 @@
 #include "SystemServer.hpp"
 
 #include <iostream>
+#include <string>
+#include <exception>
 #include "Poco/Net/StreamSocket.h"
 #include "Poco/Net/SocketStream.h"
 
@@ -45,56 +47,67 @@ void ComponentServerConnection::receiveMessage(Message *message)
 
 void ComponentServerConnection::run()
 {
-    std::cout << "new incomming connection" << std::endl;
-    Poco::Net::StreamSocket sock = socket();
-    Poco::Net::SocketStream stream(sock);
+    try{
+        std::cout << "new incomming connection" << std::endl;
+        Poco::Net::StreamSocket sock = socket();
+        Poco::Net::SocketStream stream(sock);
 
-    SystemServer::getSingleton()->addConnection(this);
+        SystemServer::getSingleton()->addConnection(this);
 
-    while(1)
-    {
-        // @todo remove code duplication at SystemClient::update
-        int receiverType;
-        std::string receiverName;
-        stream >> receiverType;
-        stream >> receiverName;
-
-        std::cout << "Message from " << receiverType << ": "<< receiverName << std::endl;
-
-        Message *message = Message::deserialize(stream);
-
-        if(message->getID() == MessageQuit::getID())
+        while(1)
         {
-            break;
+            // @todo remove code duplication at SystemClient::update
+
+            int receiverType;
+            std::string receiverName;
+            stream >> receiverType;
+            stream >> receiverName;
+
+            if(receiverName == "")
+                break;
+
+            Message *message = Message::deserialize(stream);
+
+            if(message->getID() == MessageQuit::getID())
+            {
+                break;
+            }
+
+            MessageReceiver *r = nullptr;
+            switch(receiverType)
+            {
+            case MessageReceiver::RECEIVER_ENGINE:
+                r = Engine::getSingleton();
+                break;
+            case MessageReceiver::RECEIVER_SYSTEM:
+                r = Engine::getSingleton()->getSystem(receiverName);
+                break;
+            case MessageReceiver::RECEIVER_OBJECT:
+                //r = SystemObjectFactory::getSingleton()->getObject(receiverName);
+                break;
+            default:
+                // @todo no messages to components?
+                r = nullptr;
+            }
+
+            if(r)
+                r->receiveMessage(message);
+
+            delete message;
         }
 
-        MessageReceiver *r = nullptr;
-        switch(receiverType)
-        {
-        case MessageReceiver::RECEIVER_ENGINE:
-            r = Engine::getSingleton();
-            break;
-        case MessageReceiver::RECEIVER_SYSTEM:
-            r = Engine::getSingleton()->getSystem(receiverName);
-            break;
-        case MessageReceiver::RECEIVER_OBJECT:
-            //r = SystemObjectFactory::getSingleton()->getObject(receiverName);
-            break;
-        default:
-            // @todo no messages to components?
-            r = nullptr;
-        }
+        std::cout << "connection closed" << std::endl;
 
-        if(r)
-            r->receiveMessage(message);
-
-        delete message;
+        SystemServer::getSingleton()->removeConnection(this);
     }
-    
-    std::cout << "connection closed" << std::endl;
-    
-    SystemServer::getSingleton()->removeConnection(this);
-    
+    catch(Poco::Exception &e)
+    {
+        std::cout << "poco exception: " << e.name() << ": " << e.message() << std::endl;
+    }
+    catch(std::exception &e)
+    {
+        std::cout << "exception: " << e.what() << std::endl;
+    }
     // @todo destroy this object
     while(1);
 }
@@ -103,26 +116,28 @@ void ComponentServerConnection::send(Message *msg, MessageReceiver *receiver)
 {
     // @todo remove code duplication at SystemClient::send
     std::cout << "message to ";
+
     Poco::Net::SocketStream stream(socket());
 
     switch(receiver->getReceiverType())
     {
     case MessageReceiver::RECEIVER_ENGINE:
         std::cout << "ENGINE" << std::endl;
-        stream << MessageReceiver::RECEIVER_ENGINE << " ENGINE ";
+        stream << MessageReceiver::RECEIVER_ENGINE  << std::endl << "ENGINE" << std::endl;
         break;
     case MessageReceiver::RECEIVER_SYSTEM:
         std::cout << "System: " << ((System *)receiver)->getName() << std::endl;
-        stream << MessageReceiver::RECEIVER_SYSTEM << " " << ((System *)receiver)->getName() << " ";
+        stream << MessageReceiver::RECEIVER_SYSTEM << std::endl << ((System *)receiver)->getName() << std::endl;
         break;
     case MessageReceiver::RECEIVER_OBJECT:
         std::cout << "Object: " << ((Object *)receiver)->getName() << std::endl;
-        stream << MessageReceiver::RECEIVER_OBJECT << " " << ((Object *)receiver)->getName() << " ";
+        stream << MessageReceiver::RECEIVER_OBJECT << std::endl << ((Object *)receiver)->getName() << std::endl;
         break;
     default:
         // @todo no messages to components?
         break;
     }
-
     msg->serialize(stream);
+
+    stream.flush();
 }
