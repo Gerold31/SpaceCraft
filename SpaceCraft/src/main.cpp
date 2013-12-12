@@ -58,6 +58,7 @@ int main(int argc, char **argv)
         Message::registerMessge(MessageStopMoveRight::getID(), MessageStopMoveRight::CreateMessage);
         Message::registerMessge(MessageLookAtRel::getID(), MessageLookAtRel::CreateMessage);
         Message::registerMessge(MessageCreateObject::getID(), MessageCreateObject::CreateMessage);
+        Message::registerMessge(MessageSetPosition::getID(), MessageSetPosition::CreateMessage);
         
         Engine::getSingleton()->addSystem(SystemConfiguration::getSingleton());
 

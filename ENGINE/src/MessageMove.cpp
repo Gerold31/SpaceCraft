@@ -11,3 +11,4 @@ int MessageStopMoveLeft::mID = -1;
 int MessageStartMoveRight::mID = -1;
 int MessageStopMoveRight::mID = -1;
 int MessageLookAtRel::mID = -1;
+int MessageSetPosition::mID = -1;

@@ -1,6 +1,7 @@
 #include "Object.hpp"
 
 #include "Component.hpp"
+#include "MessageMove.hpp"
 
 using namespace ENGINE;
 
@@ -47,6 +48,11 @@ void Object::update(float elapsedTime)
 
 void Object::receiveMessage(Message *message)
 {
+    if(message->getID() == MessageSetPosition::getID())
+    {
+        MessageSetPosition *m = (MessageSetPosition *)message;
+        mNode->setPosition(m->mX, m->mY, m->mZ);
+    }
     for(std::vector<Component *>::iterator i = mComponents.begin(); i!=mComponents.end(); ++i)
     {
         (*i)->receiveMessage(message);

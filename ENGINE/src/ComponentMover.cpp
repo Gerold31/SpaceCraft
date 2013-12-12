@@ -45,10 +45,22 @@ void ComponentMover::init()
     
 void ComponentMover::update(float elapsedTime)
 {
-    if(mYawNode && mPitchNode)
-        mObject->getSceneNode()->translate(mYawNode->getOrientation() * mPitchNode->getOrientation() * mTranslation.normalisedCopy() * elapsedTime * mSpeed, Ogre::Node::TS_LOCAL);
-    else 
-        mObject->getSceneNode()->translate(mTranslation.normalisedCopy() * elapsedTime * mSpeed, Ogre::Node::TS_PARENT);
+    if(mTranslation != Ogre::Vector3(0, 0, 0))
+    {
+        Ogre::Vector3 t;
+        if(mYawNode && mPitchNode)
+            t = mYawNode->getOrientation() * mPitchNode->getOrientation() * mTranslation.normalisedCopy() * elapsedTime * mSpeed;
+        else 
+            t = mTranslation.normalisedCopy() * elapsedTime * mSpeed;
+    
+        //if(t.length() != 0)
+        {
+            t = mObject->getSceneNode()->getPosition() + t;
+            MessageSetPosition m(t.x, t.y, t.z);
+            std::cout << "send message" << std::endl;
+            m.sendTo(mObject);
+        }
+    }
 }
 
 void ComponentMover::receiveMessage(Message *message)

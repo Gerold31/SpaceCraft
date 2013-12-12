@@ -94,11 +94,23 @@ class MessageLookAtRel : public Message
 {
 public:
     MessageLookAtRel(int x, int y) : Message(getID(), true, true), mX(x), mY(y) {}
-    static void *CreateMessage(std::istream &stream) {int x,y; stream >> x >> y; std::cout << "read: " << x << " " << y << std::endl; return new MessageLookAtRel(x, y); }
+    static void *CreateMessage(std::istream &stream) {int x,y; stream >> x >> y; /*std::cout << "read: " << x << " " << y << std::endl;*/ return new MessageLookAtRel(x, y); }
     static int getID() {if(mID == -1) mID = calcID("MessageLookAtRel"); return mID;}
     int mX, mY;
 private:
-    void _serialize(std::ostream &stream) {std::cout << "write: " << mX << " " << mY << std::endl; stream << mX << std::endl << mY << std::endl;}
+    void _serialize(std::ostream &stream) {/*std::cout << "write: " << mX << " " << mY << std::endl; */stream << mX << std::endl << mY << std::endl;}
+    static int mID;
+};
+
+class MessageSetPosition : public Message
+{
+public:
+    MessageSetPosition(double x, double y, double z) : Message(getID(), true, true), mX(x), mY(y), mZ(z) {}
+    static void *CreateMessage(std::istream &stream) {double x,y,z; stream >> x >> y >> z; /*std::cout << "read: " << x << " " << y << " " << z << std::endl; */return new MessageSetPosition(x, y, z); }
+    static int getID() {if(mID == -1) mID = calcID("MessageSetPosition"); return mID;}
+    double mX, mY, mZ;
+private:
+    void _serialize(std::ostream &stream) {/*std::cout << "write: " << mX << " " << mY << " " << mZ << std::endl; */stream << mX << std::endl << mY << std::endl << mZ << std::endl;}
     static int mID;
 };
 
