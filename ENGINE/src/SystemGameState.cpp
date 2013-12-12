@@ -39,9 +39,7 @@ ComponentServerConnection *SystemGameState::newPlayer(ParamMap &params)
 
     Object *newPlayer = SystemObjectFactory::getSingleton()->getObject(name);
     ComponentServerConnection *connection = (ComponentServerConnection *)SystemObjectFactory::getSingleton()->createComponent(newPlayer, "ComponentServerConnection", params);
-
-    mConnectedPlayers.push_back(connection);
-
+    
     for(auto i=mLoadedObjects.begin(); i!=mLoadedObjects.end(); ++i)
     {
         Object *obj = (*i).second;
@@ -51,6 +49,8 @@ ComponentServerConnection *SystemGameState::newPlayer(ParamMap &params)
         MessageCreateObject msg(obj->getSceneNode()->getPosition(), obj->getSceneNode()->getOrientation(), obj->getSceneNode()->getParentSceneNode(), obj->getName(), type);
         SystemServer::getSingleton()->sendTo(&msg, SystemObjectFactory::getSingleton(), connection);
     }
+
+    mConnectedPlayers.push_back(connection);
 
     return connection;
 }

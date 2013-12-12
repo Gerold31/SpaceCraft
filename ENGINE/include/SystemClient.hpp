@@ -5,11 +5,13 @@
 
 #include "Poco/Net/StreamSocket.h"
 #include "Poco/Net/SocketStream.h"
+#include "Poco/Runnable.h"
+#include "Poco/Thread.h"
 
 namespace ENGINE
 {
 
-class SystemClient : public System, public Singleton<SystemClient>
+class SystemClient : public System, public Singleton<SystemClient>, public Poco::Runnable
 {
 friend class Singleton<SystemClient>;
 public:
@@ -19,6 +21,8 @@ public:
 
     void send(Message *msg, MessageReceiver *receiver);
 
+    void run();
+
 private:
     SystemClient();
     SystemClient(const SystemClient &):System("SystemClient") {}
@@ -26,6 +30,7 @@ private:
 
     Poco::Net::StreamSocket *mSocket;
     Poco::Net::SocketStream *mStream;
+    Poco::Thread mThread;
 
 };
 

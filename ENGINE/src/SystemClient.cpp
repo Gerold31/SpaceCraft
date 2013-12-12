@@ -5,6 +5,7 @@
 #include "Object.hpp"
 #include "Engine.hpp"
 #include "MessageEngine.hpp"
+#include "SystemObjectFactory.hpp"
 
 using namespace ENGINE;
 
@@ -22,64 +23,75 @@ void SystemClient::init()
     unsigned short port = atoi(SystemConfiguration::getSingleton()->getConfiguration("Port").c_str()); 
     mSocket = new Poco::Net::StreamSocket();
     mSocket->connect(Poco::Net::SocketAddress(SystemConfiguration::getSingleton()->getConfiguration("Host"), port));
-    mSocket->setBlocking(false);
-    mStream = new Poco::Net::SocketStream(*mSocket);
+
+    mThread.start(*this);
 }
 
 void SystemClient::update(float elapsedTime)
 {
-    try
-    {
-        // @todo remove code duplication at ComponentServerConnection::run
-        int receiverType;
-        std::string receiverName;
-        (*mStream) >> receiverType;
-        (*mStream) >> receiverName;
-
-        std::cout << "Message from " << receiverType << ": "<< receiverName << std::endl;
-
-        if(receiverName == "")
-            return;
-
-        Message *message = Message::deserialize(*mStream);
-
-        MessageReceiver *r = nullptr;
-        switch(receiverType)
-        {
-        case MessageReceiver::RECEIVER_ENGINE:
-            r = Engine::getSingleton();
-            break;
-        case MessageReceiver::RECEIVER_SYSTEM:
-            r = Engine::getSingleton()->getSystem(receiverName);
-            break;
-        case MessageReceiver::RECEIVER_OBJECT:
-            //r = SystemObjectFactory::getSingleton()->getObject(receiverName);
-            break;
-        default:
-            // @todo no messages to components?
-            r = nullptr;
-        }
-
-        if(r)
-            r->receiveMessage(message);
-
-        delete message;
-    }
-    catch(Poco::TimeoutException &e)
-    {
-    }
 }
 
 void SystemClient::receiveMessage(Message *msg)
 {
 }
 
+void SystemClient::run()
+{
+    try{
+        Poco::Net::SocketStream stream(*mSocket);
+        
+        while(1)
+        {
+            // @todo remove code duplication at ComponentServerConnection::run
+
+            int receiverType;
+            std::string receiverName;
+            stream >> receiverType;
+            stream >> receiverName;
+
+            if(receiverName == "")
+                break;
+
+            Message *message = Message::deserialize(stream);
+
+            MessageReceiver *r = nullptr;
+            switch(receiverType)
+            {
+            case MessageReceiver::RECEIVER_ENGINE:
+                r = Engine::getSingleton();
+                break;
+            case MessageReceiver::RECEIVER_SYSTEM:
+                r = Engine::getSingleton()->getSystem(receiverName);
+                break;
+            case MessageReceiver::RECEIVER_OBJECT:
+                r = SystemObjectFactory::getSingleton()->getObject(receiverName);
+                break;
+            default:
+                // @todo no messages to components?
+                r = nullptr;
+            }
+
+            if(r)
+                r->receiveMessage(message);
+
+            delete message;
+        }
+
+        std::cout << "connection closed" << std::endl;
+    }
+    catch(Poco::Exception &e)
+    {
+        std::cout << "poco exception: " << e.name() << ": " << e.message() << std::endl;
+    }
+    catch(std::exception &e)
+    {
+        std::cout << "exception: " << e.what() << std::endl;
+    }
+}
 
 void SystemClient::send(Message *msg, MessageReceiver *receiver)
 {
     // @todo remove code duplication at ComponentServerConnection::send
-    std::cout << "message to ";
-
     Poco::Net::SocketStream stream(*mSocket);
 
     switch(receiver->getReceiverType())

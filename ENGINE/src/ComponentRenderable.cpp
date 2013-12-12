@@ -13,9 +13,7 @@ TypeInfo *ComponentRenderable::mType = new TypeInfo("ComponentRenderable", &Comp
 ComponentRenderable::ComponentRenderable(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
-    mEntity = ((SystemGraphics *)SystemGraphics::getSingleton())->getSceneMgr()->createEntity(mObject->getName() + "RenderableEnt", boost::any_cast<std::string>(params["MeshName"]));
-    mEntity->getUserObjectBindings().setUserAny("Object", Ogre::Any(mObject));
-    mObject->getSceneNode()->attachObject(mEntity);
+    mEntity = nullptr;
 }
 
 ComponentRenderable::~ComponentRenderable()
@@ -33,6 +31,12 @@ void ComponentRenderable::init()
     
 void ComponentRenderable::update(float elapsedTime)
 {
+    if(!mEntity)
+    {
+        mEntity = ((SystemGraphics *)SystemGraphics::getSingleton())->getSceneMgr()->createEntity(mObject->getName() + "RenderableEnt", boost::any_cast<std::string>(mParams["MeshName"]));
+        mEntity->getUserObjectBindings().setUserAny("Object", Ogre::Any(mObject));
+        mObject->getSceneNode()->attachObject(mEntity);
+    }
 }
 
 void ComponentRenderable::receiveMessage(Message *message)
