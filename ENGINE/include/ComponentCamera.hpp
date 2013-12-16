@@ -24,17 +24,10 @@ public:
 
     Ogre::Camera *getCamera() {return mCamera;}
 
-    Ogre::SceneNode *getYawNode() {return mCameraYawNode;}
-    Ogre::SceneNode *getPitchNode() {return mCameraPitchNode;}
-    Ogre::SceneNode *getRollNode() {return mCameraRollNode;}
-
 private:
     static TypeInfo *mType;
 
     Ogre::Camera *mCamera;
-    Ogre::SceneNode *mCameraYawNode;
-    Ogre::SceneNode *mCameraPitchNode;
-    Ogre::SceneNode *mCameraRollNode;
 
 };
 

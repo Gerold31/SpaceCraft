@@ -22,14 +22,21 @@ public:
 
     static TypeInfo *getType() {return mType;}
 
+    Ogre::SceneNode *getYawNode() {return mYawNode;}
+    Ogre::SceneNode *getPitchNode() {return mPitchNode;}
+    Ogre::SceneNode *getRollNode() {return mRollNode;}
+
 private:
     static TypeInfo *mType;
 
+    double mElapsedTime;
+
     double mSpeed;
     Ogre::Vector3 mTranslation;
-
+    
     Ogre::SceneNode *mYawNode;
     Ogre::SceneNode *mPitchNode;
+    Ogre::SceneNode *mRollNode;
 
 };
 
