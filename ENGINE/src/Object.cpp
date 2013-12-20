@@ -15,7 +15,7 @@ Object::Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     mNode->setPosition(pos);
     mNode->setOrientation(ori);
     mNode->getUserObjectBindings().setUserAny("Object", Ogre::Any(this));
-    mInit = false;
+    mInit = mReady = false;
     LOG_OUT("object");
 }
 
@@ -54,6 +54,8 @@ void Object::init()
 
 void Object::update(float elapsedTime)
 {
+    if(!mReady)
+        return;
     if(!mInit)
     {
         mInit = true;
@@ -81,4 +83,11 @@ void Object::receiveMessage(Message *message)
         (*i)->receiveMessage(message);
     }
     mComponentsMutex.unlock();
+}
+
+void Object::ready()
+{
+    LOG_IN("object");
+    mReady = true;
+    LOG_OUT("object");
 }

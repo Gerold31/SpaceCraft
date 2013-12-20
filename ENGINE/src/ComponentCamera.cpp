@@ -49,6 +49,7 @@ void ComponentCamera::init()
         if(c->getType() == ComponentMover::getType())
         {
             ((ComponentMover *)c)->getRollNode()->attachObject(mCamera);
+            LOG_OUT("component");
             return;
         }
     }

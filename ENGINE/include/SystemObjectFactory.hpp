@@ -10,6 +10,8 @@
 
 #include <vector>
 
+#include <boost/thread/mutex.hpp>
+
 namespace ENGINE
 {
 
@@ -45,6 +47,8 @@ private:
     std::vector<Component *> mComponents;
     ObjectMap mObjectMap;
     std::map<std::string, TypeInfo *> mComponentMap;
+
+    boost::mutex mComponentsMutex;
     
 };
 

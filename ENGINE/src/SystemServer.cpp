@@ -67,6 +67,7 @@ void SystemServer::removeConnection(ComponentServerConnection *connection)
         if(*i == connection)
         {
             mConnections.erase(i);
+            LOG_OUT("system");
             return;
         }
     }

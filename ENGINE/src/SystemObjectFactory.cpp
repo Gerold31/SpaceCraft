@@ -95,10 +95,12 @@ void SystemObjectFactory::init()
 
 void SystemObjectFactory::update(float elapsedTime)
 {
+    mComponentsMutex.lock();
     for(auto i = mObjects.begin(); i!=mObjects.end(); ++i)
     {
         (*i)->update(elapsedTime);
     }
+    mComponentsMutex.unlock();
 }
 
 void SystemObjectFactory::receiveMessage(Message *msg)
@@ -139,7 +141,10 @@ Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion or
         object->addComponent(component);
         mComponents.push_back(component);
     }
+    mComponentsMutex.lock();
     mObjects.push_back(object);
+    mComponentsMutex.unlock();
+    object->ready();
     LOG_OUT("system");
     return object;
 }
@@ -147,14 +152,17 @@ Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion or
 Object *SystemObjectFactory::getObject(std::string name)
 {
     LOG_IN("system");
+    mComponentsMutex.lock();
     for(auto i = mObjects.begin(); i!=mObjects.end(); ++i)
     {
         if((*i)->getName() == name)
         {
+            mComponentsMutex.unlock();
             LOG_OUT("system");
             return *i;
         }
     }
+    mComponentsMutex.unlock();
     LOG_OUT("system");
     return nullptr;
 }

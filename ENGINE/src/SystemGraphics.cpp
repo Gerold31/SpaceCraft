@@ -32,6 +32,7 @@ SystemGraphics::SystemGraphics() :
             if( renderSystemList.size() == 0 )
             {
                 LOG("Sorry, no rendersystem was found.", "error");
+                LOG_OUT("system");
                 return;
             }
 

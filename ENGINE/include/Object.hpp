@@ -33,6 +33,8 @@ public:
     void update(float elapsedTime);
     void receiveMessage(Message *message);
 
+    void ready();
+
     Ogre::SceneNode *getSceneNode() {return mNode;}
     Ogre::String getName() {return mName;}
 
@@ -42,6 +44,7 @@ private:
     std::vector<Component *> mComponents;
     boost::mutex mComponentsMutex;
     bool mInit;
+    bool mReady;
 
 };
 
