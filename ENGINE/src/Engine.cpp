@@ -76,16 +76,20 @@ void Engine::run()
 
 void Engine::receiveMessage(Message *msg)
 {
+    LOG_IN_FRAME;
     if(MessageQuit *m = dynamic_cast<MessageQuit *>(msg))
     {
         mQuit = true;
     }
+    LOG_OUT_FRAME;
 }
 
 void Engine::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
     for(std::vector<System *>::iterator i = mSystems.begin(); i!=mSystems.end(); ++i)
     {
         (*i)->update(elapsedTime);
     }
+    LOG_OUT_FRAME;
 }

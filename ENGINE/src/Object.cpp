@@ -54,8 +54,12 @@ void Object::init()
 
 void Object::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
     if(!mReady)
+    {
+        LOG_OUT_FRAME;
         return;
+    }
     if(!mInit)
     {
         mInit = true;
@@ -68,10 +72,12 @@ void Object::update(float elapsedTime)
         (*i)->update(elapsedTime);
     }
     mComponentsMutex.unlock();
+    LOG_OUT_FRAME;
 }
 
 void Object::receiveMessage(Message *message)
 {
+    LOG_IN_FRAME;
     if(message->getID() == MessageSetPosition::getID())
     {
         MessageSetPosition *m = (MessageSetPosition *)message;
@@ -83,6 +89,7 @@ void Object::receiveMessage(Message *message)
         (*i)->receiveMessage(message);
     }
     mComponentsMutex.unlock();
+    LOG_OUT_FRAME;
 }
 
 void Object::ready()

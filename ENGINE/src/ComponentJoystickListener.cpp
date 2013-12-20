@@ -37,8 +37,12 @@ void ComponentJoystickListener::init()
     
 void ComponentJoystickListener::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void ComponentJoystickListener::receiveMessage(Message *message)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }

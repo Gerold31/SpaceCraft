@@ -37,8 +37,12 @@ void ComponentMouseListener::init()
     
 void ComponentMouseListener::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void ComponentMouseListener::receiveMessage(Message *message)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }

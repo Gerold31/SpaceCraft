@@ -36,15 +36,19 @@ void SystemGameState::init()
     
 void SystemGameState::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
     for(auto i=mNewPlayers.begin(); i!= mNewPlayers.end(); ++i)
     {
         onNewPlayer(*i);
     }
     mNewPlayers.clear();
+    LOG_OUT_FRAME;
 }
 
 void SystemGameState::receiveMessage(Message *msg)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 ComponentServerConnection *SystemGameState::newPlayer(ParamMap &params)

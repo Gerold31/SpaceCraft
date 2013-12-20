@@ -46,10 +46,14 @@ void SystemServer::init()
 
 void SystemServer::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void SystemServer::receiveMessage(Message *msg)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void SystemServer::addConnection(ComponentServerConnection *connection)

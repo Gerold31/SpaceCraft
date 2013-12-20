@@ -36,10 +36,14 @@ void SystemClient::init()
 
 void SystemClient::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void SystemClient::receiveMessage(Message *msg)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void SystemClient::run()

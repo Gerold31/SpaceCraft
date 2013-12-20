@@ -12,6 +12,18 @@
 #define LOG_OUT(type) SystemLog::getSingleton()->exit(BOOST_CURRENT_FUNCTION, type)
 #define LOG(msg, type) SystemLog::getSingleton()->log(msg, type)
 
+//#define LOG_EVERY_FRAME
+
+#ifdef LOG_EVERY_FRAME
+#define LOG_IN_FRAME SystemLog::getSingleton()->enter(BOOST_CURRENT_FUNCTION, "frame")
+#define LOG_OUT_FRAME SystemLog::getSingleton()->exit(BOOST_CURRENT_FUNCTION, "frame")
+#define LOG_FRAME(msg) SystemLog::getSingleton()->log(msg, "frame")
+#else
+#define LOG_IN_FRAME (void*)0
+#define LOG_OUT_FRAME (void*)0
+#define LOG_FRAME(x) (void*)0
+#endif
+
 namespace ENGINE
 {
 

@@ -35,8 +35,12 @@ void ComponentCollidable::init()
     
 void ComponentCollidable::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void ComponentCollidable::receiveMessage(Message *message)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }

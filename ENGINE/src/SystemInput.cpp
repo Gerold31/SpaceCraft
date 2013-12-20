@@ -122,6 +122,7 @@ void SystemInput::init()
  
 void SystemInput::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
     if(mMouse) {
         mMouse->capture();
     }
@@ -137,10 +138,13 @@ void SystemInput::update(float elapsedTime)
             (*mJoystickBeg)->capture();
         }
     }
+    LOG_OUT_FRAME;
 }
 
 void SystemInput::receiveMessage(Message *msg)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
  
 void SystemInput::addKeyListener(ComponentKeyboardListener *keyListener)
@@ -289,6 +293,7 @@ int SystemInput::getNumOfJoysticks(void)
  
 bool SystemInput::keyPressed(const OIS::KeyEvent &e)
 {
+    LOG_IN_FRAME;
     mKeyListenerBeg = mKeyListeners.begin();
     mKeyListenerEnd = mKeyListeners.end();
 
@@ -297,12 +302,14 @@ bool SystemInput::keyPressed(const OIS::KeyEvent &e)
     for(; mKeyListenerBeg != mKeyListenerEnd; ++mKeyListenerBeg) {
         msg.sendTo((*mKeyListenerBeg)->getObject());
     }
- 
+
+    LOG_OUT_FRAME;
     return true;
 }
  
 bool SystemInput::keyReleased(const OIS::KeyEvent &e)
 {
+    LOG_IN_FRAME;
     mKeyListenerBeg = mKeyListeners.begin();
     mKeyListenerEnd = mKeyListeners.end();
 
@@ -311,12 +318,14 @@ bool SystemInput::keyReleased(const OIS::KeyEvent &e)
     for(; mKeyListenerBeg != mKeyListenerEnd; ++mKeyListenerBeg) {
         msg.sendTo((*mKeyListenerBeg)->getObject());
     }
- 
+
+    LOG_OUT_FRAME;
     return true;
 }
  
 bool SystemInput::mouseMoved(const OIS::MouseEvent &e)
 {
+    LOG_IN_FRAME;
     mMouseListenerBeg = mMouseListeners.begin();
     mMouseListenerEnd = mMouseListeners.end();
 
@@ -325,12 +334,14 @@ bool SystemInput::mouseMoved(const OIS::MouseEvent &e)
     for(; mMouseListenerBeg != mMouseListenerEnd; ++mMouseListenerBeg) {
         msg.sendTo((*mMouseListenerBeg)->getObject());
     }
- 
+
+    LOG_OUT_FRAME;
     return true;
 }
  
 bool SystemInput::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
+    LOG_IN_FRAME;
     mMouseListenerBeg = mMouseListeners.begin();
     mMouseListenerEnd = mMouseListeners.end();
 
@@ -339,12 +350,14 @@ bool SystemInput::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
     for(; mMouseListenerBeg != mMouseListenerEnd; ++mMouseListenerBeg) {
         msg.sendTo((*mMouseListenerBeg)->getObject());
     }
- 
+
+    LOG_OUT_FRAME;
     return true;
 }
  
 bool SystemInput::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
 {
+    LOG_IN_FRAME;
     mMouseListenerBeg = mMouseListeners.begin();
     mMouseListenerEnd = mMouseListeners.end();
 
@@ -353,56 +366,67 @@ bool SystemInput::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
     for(; mMouseListenerBeg != mMouseListenerEnd; ++mMouseListenerBeg) {
         msg.sendTo((*mMouseListenerBeg)->getObject());
     }
- 
+
+    LOG_OUT_FRAME;
     return true;
 }
  
 bool SystemInput::povMoved(const OIS::JoyStickEvent &e, int pov)
 {
+    LOG_IN_FRAME;
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
     }
- 
+
+    LOG_OUT_FRAME;
     return true;
 }
  
 bool SystemInput::axisMoved(const OIS::JoyStickEvent &e, int axis)
 {
+    LOG_IN_FRAME;
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
     }
- 
+
+    LOG_OUT_FRAME;
     return true;
 }
  
 bool SystemInput::sliderMoved(const OIS::JoyStickEvent &e, int sliderID)
 {
+    LOG_IN_FRAME;
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
     }
- 
+
+    LOG_OUT_FRAME;
     return true;
 }
  
 bool SystemInput::buttonPressed(const OIS::JoyStickEvent &e, int button)
 {
+    LOG_IN_FRAME;
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
     }
- 
+
+    LOG_OUT_FRAME;
     return true;
 }
  
 bool SystemInput::buttonReleased(const OIS::JoyStickEvent &e, int button)
 {
+    LOG_IN_FRAME;
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
     }
- 
+
+    LOG_OUT_FRAME;
     return true;
 }

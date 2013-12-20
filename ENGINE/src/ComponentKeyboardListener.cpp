@@ -37,8 +37,12 @@ void ComponentKeyboardListener::init()
     
 void ComponentKeyboardListener::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void ComponentKeyboardListener::receiveMessage(Message *message)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }

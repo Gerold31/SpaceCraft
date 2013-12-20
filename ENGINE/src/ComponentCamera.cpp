@@ -59,8 +59,12 @@ void ComponentCamera::init()
     
 void ComponentCamera::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void ComponentCamera::receiveMessage(Message *message)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }

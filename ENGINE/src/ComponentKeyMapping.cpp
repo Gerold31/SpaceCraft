@@ -40,10 +40,13 @@ void ComponentKeyMapping::init()
     
 void ComponentKeyMapping::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void ComponentKeyMapping::receiveMessage(Message *message)
 {
+    LOG_IN_FRAME;
     if(MessageMouseMoved *m = dynamic_cast<MessageMouseMoved *>(message))
     {
         MessageLookAtRel msg(m->mEvent.state.X.rel, m->mEvent.state.Y.rel);
@@ -112,4 +115,5 @@ void ComponentKeyMapping::receiveMessage(Message *message)
         }
         }
     }
+    LOG_OUT_FRAME;
 }

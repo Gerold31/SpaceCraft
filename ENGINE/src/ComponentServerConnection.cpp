@@ -48,10 +48,14 @@ void ComponentServerConnection::init()
     
 void ComponentServerConnection::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void ComponentServerConnection::receiveMessage(Message *message)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void ComponentServerConnection::run()

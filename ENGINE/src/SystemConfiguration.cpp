@@ -27,10 +27,14 @@ void SystemConfiguration::init()
     
 void SystemConfiguration::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void SystemConfiguration::receiveMessage(Message *msg)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void SystemConfiguration::loadFromFile(std::string filename)

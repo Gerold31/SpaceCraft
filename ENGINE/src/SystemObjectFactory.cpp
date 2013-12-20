@@ -95,22 +95,26 @@ void SystemObjectFactory::init()
 
 void SystemObjectFactory::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
     mComponentsMutex.lock();
     for(auto i = mObjects.begin(); i!=mObjects.end(); ++i)
     {
         (*i)->update(elapsedTime);
     }
     mComponentsMutex.unlock();
+    LOG_OUT_FRAME;
 }
 
 void SystemObjectFactory::receiveMessage(Message *msg)
 {
+    LOG_IN_FRAME;
     // @todo destroyObject
     if(msg->getID() == MessageCreateObject::getID())
     {
         MessageCreateObject *m = (MessageCreateObject *)msg;
         createObject(m->mPos, m->mOri, m->mParent, m->mName, m->mType);
     }
+    LOG_OUT_FRAME;
 }
 
 void SystemObjectFactory::registerComponent(TypeInfo *type)

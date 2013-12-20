@@ -127,6 +127,7 @@ void SystemGraphics::init()
     
 void SystemGraphics::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
     if(mWindow)
     {
         mWindow->update(false);
@@ -137,8 +138,11 @@ void SystemGraphics::update(float elapsedTime)
     }
  
     Ogre::WindowEventUtilities::messagePump();
+    LOG_OUT_FRAME;
 }
 
 void SystemGraphics::receiveMessage(Message *msg)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }

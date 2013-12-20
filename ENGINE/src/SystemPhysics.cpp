@@ -25,8 +25,12 @@ void SystemPhysics::init()
     
 void SystemPhysics::update(float elapsedTime)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
 
 void SystemPhysics::receiveMessage(Message *msg)
 {
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
 }
