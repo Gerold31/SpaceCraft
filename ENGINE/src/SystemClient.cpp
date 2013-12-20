@@ -104,7 +104,7 @@ void SystemClient::run()
 
 void SystemClient::send(Message *msg, MessageReceiver *receiver)
 {
-    LOG_IN("system");
+    LOG_IN_FRAME;
     // @todo remove code duplication at ComponentServerConnection::send
     try{
         Poco::Net::SocketStream stream(*mSocket);
@@ -112,15 +112,15 @@ void SystemClient::send(Message *msg, MessageReceiver *receiver)
         switch(receiver->getReceiverType())
         {
         case MessageReceiver::RECEIVER_ENGINE:
-            LOG("Send to: ENGINE", "log");
+            LOG_FRAME("Send to: ENGINE");
             stream << MessageReceiver::RECEIVER_ENGINE  << std::endl << "ENGINE" << std::endl;
             break;
         case MessageReceiver::RECEIVER_SYSTEM:
-            LOG("Send to: System", "log");
+            LOG_FRAME("Send to: System");
             stream << MessageReceiver::RECEIVER_SYSTEM << std::endl << ((System *)receiver)->getName() << std::endl;
             break;
         case MessageReceiver::RECEIVER_OBJECT:
-            LOG("Send to: Object", "log");
+            LOG_FRAME("Send to: Object");
             stream << MessageReceiver::RECEIVER_OBJECT << std::endl << ((Object *)receiver)->getName() << std::endl;
             break;
         default:
@@ -128,10 +128,10 @@ void SystemClient::send(Message *msg, MessageReceiver *receiver)
             break;
         }
 
-        LOG("serialize msg...", "log");
+        LOG_FRAME("serialize msg...");
         msg->serialize(stream);
 
-        LOG("flush", "log");
+        LOG_FRAME("flush");
 
         stream.flush();
     }
@@ -147,5 +147,5 @@ void SystemClient::send(Message *msg, MessageReceiver *receiver)
     {
         LOG("unknown exception", "error");
     }
-    LOG_OUT("system");
+    LOG_OUT_FRAME;
 }

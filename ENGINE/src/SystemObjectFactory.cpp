@@ -155,19 +155,19 @@ Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion or
 
 Object *SystemObjectFactory::getObject(std::string name)
 {
-    LOG_IN("system");
+    LOG_IN_FRAME;
     mComponentsMutex.lock();
     for(auto i = mObjects.begin(); i!=mObjects.end(); ++i)
     {
         if((*i)->getName() == name)
         {
             mComponentsMutex.unlock();
-            LOG_OUT("system");
+            LOG_OUT_FRAME;
             return *i;
         }
     }
     mComponentsMutex.unlock();
-    LOG_OUT("system");
+    LOG_OUT_FRAME;
     return nullptr;
 }
 

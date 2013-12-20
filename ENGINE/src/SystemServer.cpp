@@ -80,14 +80,14 @@ void SystemServer::removeConnection(ComponentServerConnection *connection)
 
 void SystemServer::sendTo(Message *msg, MessageReceiver *receiver, ComponentServerConnection *to)
 {
-    LOG_IN("system");
+    LOG_IN_FRAME;
     to->send(msg, receiver);
-    LOG_OUT("system");
+    LOG_OUT_FRAME;
 }
 
 void SystemServer::sendToAllBut(Message *msg, MessageReceiver *receiver, ComponentServerConnection *notTo)
 {
-    LOG_IN("system");
+    LOG_IN_FRAME;
     for(auto i=mConnections.begin(); i!=mConnections.end(); ++i)
     {
         if(*i != notTo)
@@ -95,15 +95,15 @@ void SystemServer::sendToAllBut(Message *msg, MessageReceiver *receiver, Compone
             (*i)->send(msg, receiver);
         }
     }
-    LOG_OUT("system");
+    LOG_OUT_FRAME;
 }
 
 void SystemServer::sendToAll(Message *msg, MessageReceiver *receiver)
 {
-    LOG_IN("system");
+    LOG_IN_FRAME;
     for(auto i=mConnections.begin(); i!=mConnections.end(); ++i)
     {
         (*i)->send(msg, receiver);
     }
-    LOG_OUT("system");
+    LOG_OUT_FRAME;
 }
