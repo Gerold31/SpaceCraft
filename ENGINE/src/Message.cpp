@@ -3,8 +3,8 @@
 #include "SystemConfiguration.hpp"
 #include "SystemClient.hpp"
 #include "SystemServer.hpp"
+#include "SystemLog.hpp"
 
-#include <stdio.h>
 #include <assert.h>
 
 using namespace ENGINE;
@@ -29,19 +29,21 @@ void Message::sendTo(MessageReceiver *receiver)
 
 int Message::calcID(std::string name)
 {
+    LOG_IN("message");
     int id = 0;
     for(int i=0; i<name.size(); i++)
     {
         id += name[i] << (i % 38);
     }
-    printf("Message %#.8x: \"%s\"\n", id, name.c_str());
+    //LOG("Message " +  id + ": " + name, "log");
+    LOG_OUT("message");
     return id;
 }
 
 void Message::serialize(std::ostream &stream) 
 {
     stream << mID << std::endl;
-    //std::cout << "serialize: " << std::hex << mID << std::endl;
+    //LOG("serialize: " << std::hex << mID << std::endl;
     _serialize(stream);
 }
 
@@ -49,7 +51,7 @@ Message *Message::deserialize(std::istream &stream)
 {
     int id;
     stream >> id;
-    //std::cout << "deserialize: " << std::hex << id << std::endl;
+    //LOG("deserialize: " << std::hex << id << std::endl;
 
     return (Message *)mMessages.at(id)(stream);
 }

@@ -4,6 +4,7 @@
 #include "TypeInfo.hpp"
 #include "Component.hpp"
 #include "MessageObjectFactory.hpp"
+#include "SystemLog.hpp"
 
 #include <fstream>
 
@@ -12,17 +13,20 @@ using namespace ENGINE;
 SystemObjectFactory::SystemObjectFactory() :
     System("SystemObjectFactory")
 {
+    LOG_IN("system");
+    LOG_OUT("system");
 }
 
 SystemObjectFactory::~SystemObjectFactory()
 {
+    LOG_IN("system");
+    LOG_OUT("system");
 }
 
 void SystemObjectFactory::init()
 {
+    LOG_IN("system");
     mObjectMap[""] = ComponentList();
-
-    printf("SystemObjectFactory::init\n");
 
     std::fstream file;
 
@@ -31,6 +35,7 @@ void SystemObjectFactory::init()
     if(file.eof() || !file.is_open())
     {
         file.close();
+        LOG_OUT("system");
         return;
     }
 
@@ -43,7 +48,7 @@ void SystemObjectFactory::init()
 
         ComponentList entityList;
 
-        printf("\tadd Object \"%s\"\n", name.c_str());
+        LOG("add Object " + name, "log");
         
         std::getline(file, line);
 
@@ -60,7 +65,7 @@ void SystemObjectFactory::init()
             if(mComponentMap.find(line) == mComponentMap.end())
                 throw "no \"" + line + "\" found";
             
-            printf("\t\tadd Component \"%s\"\n", line.c_str());
+            LOG("\tadd Component " + line, "log");
             
             element.first = mComponentMap[line];
 
@@ -75,7 +80,7 @@ void SystemObjectFactory::init()
                 std::string param, value;
                 param = line.substr(0, line.find_first_of('='));
                 value = line.substr(line.find_first_of('=')+1);
-                printf("\t\t\tadd Param \"%s\", Value \"%s\"\n", param.c_str(), value.c_str());
+                LOG("\t\tadd Param " + param + ", value = " + value, "log");
                 params[param] = value;
             }
             element.second = params;
@@ -84,9 +89,8 @@ void SystemObjectFactory::init()
         mObjectMap[name] = entityList;
     }
 
-    printf("finished\n");
-
     file.close();
+    LOG_OUT("system");
 }
 
 void SystemObjectFactory::update(float elapsedTime)
@@ -109,44 +113,61 @@ void SystemObjectFactory::receiveMessage(Message *msg)
 
 void SystemObjectFactory::registerComponent(TypeInfo *type)
 {
-    printf("register %s\n", type->getName().c_str());
+    LOG_IN("system");
+    LOG("register " + type->getName(), "log");
     mComponentMap[type->getName()] = type;
+    LOG_OUT("system");
 }
 
 Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, std::string type)
 {
-    printf("add Object:\n\tType: %s\n\tName: %s\n", type.c_str(), name.c_str());
+    LOG_IN("system");
+    LOG("add Object:", "log");
+    LOG("\tType: " + type, "log");
+    LOG("\tName: " + name, "log");
     ObjectMap::iterator components = mObjectMap.find(type);
     if(components == mObjectMap.end())
+    {
+        LOG_OUT("system");
         return nullptr;
+    }
     Object *object = new Object(pos, ori, parent, name);
     for(ComponentList::iterator i = components->second.begin(); i!= components->second.end(); ++i)
     {
-        printf("add Component %s\n", (*i).first->getName().c_str());
+        LOG("\tadd Component " + (*i).first->getName(), "log");
         Component *component = (Component *)(*i).first->createInstance(object, (*i).second);
         object->addComponent(component);
         mComponents.push_back(component);
     }
     mObjects.push_back(object);
+    LOG_OUT("system");
     return object;
 }
 
 Object *SystemObjectFactory::getObject(std::string name)
 {
+    LOG_IN("system");
     for(auto i = mObjects.begin(); i!=mObjects.end(); ++i)
     {
         if((*i)->getName() == name)
+        {
+            LOG_OUT("system");
             return *i;
+        }
     }
+    LOG_OUT("system");
     return nullptr;
 }
 
 Component *SystemObjectFactory::createComponent(Object *parent, std::string name, ParamMap &params)
 {
-    printf("add Component %s\n", name.c_str());
+    LOG_IN("system");
+    LOG("add Component " + name, "log");
     assert(mComponentMap.count(name) > 0);
     Component *component = (Component *)mComponentMap[name]->createInstance(parent, params);
     parent->addComponent(component);
     mComponents.push_back(component);
+
+    LOG_OUT("system");
     return component;
 }

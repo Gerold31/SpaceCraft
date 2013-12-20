@@ -16,23 +16,27 @@ TypeInfo *ComponentCamera::mType = new TypeInfo("ComponentCamera", &ComponentCam
 ComponentCamera::ComponentCamera(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
-    LOG_IN("log");
+    LOG_IN("component");
     mCamera = nullptr;
-    LOG_OUT("log");
+    LOG_OUT("component");
 }
 
 ComponentCamera::~ComponentCamera()
 {
+    LOG_IN("component");
+    LOG_OUT("component");
 }
 
 void *ComponentCamera::createInstance(Object *object, ParamMap &params)
 {
+    LOG_IN("component");
+    LOG_OUT("component");
     return new ComponentCamera(object, params);
 }
 
 void ComponentCamera::init()
 {
-    LOG_IN("log");
+    LOG_IN("component");
     mCamera = SystemGraphics::getSingleton()->getSceneMgr()->createCamera(mObject->getName() + "Camera");
     mCamera->lookAt(0,0,-1);
     mCamera->setPosition(0, 0, 0);
@@ -49,7 +53,7 @@ void ComponentCamera::init()
         }
     }
     mObject->getSceneNode()->attachObject(mCamera);
-    LOG_OUT("log");
+    LOG_OUT("component");
 }
     
 void ComponentCamera::update(float elapsedTime)

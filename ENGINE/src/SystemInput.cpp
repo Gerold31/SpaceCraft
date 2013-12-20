@@ -6,6 +6,7 @@
 #include "Object.hpp"
 #include "SystemGraphics.hpp"
 #include "MessageInput.hpp"
+#include "SystemLog.hpp"
 
 using namespace ENGINE;
  
@@ -15,9 +16,13 @@ SystemInput::SystemInput(void) :
     mKeyboard(0),
     mInputSystem(0)
 {
+    LOG_IN("system");
+    LOG_OUT("system");
 }
  
-SystemInput::~SystemInput(void) {
+SystemInput::~SystemInput(void)
+{
+    LOG_IN("system");
     if(mInputSystem) {
         if(mMouse) {
             mInputSystem->destroyInputObject(mMouse);
@@ -50,10 +55,12 @@ SystemInput::~SystemInput(void) {
         mMouseListeners.clear();
         mJoystickListeners.clear();
     }
+    LOG_OUT("system");
 }
  
 void SystemInput::init()
 {
+    LOG_IN("system");
     Ogre::RenderWindow *renderWindow = SystemGraphics::getSingleton()->getWindow();
     if(!mInputSystem) {
         // Setup basic variables
@@ -110,6 +117,7 @@ void SystemInput::init()
             }
         }
     }
+    LOG_OUT("system");
 }
  
 void SystemInput::update(float elapsedTime)
@@ -135,25 +143,36 @@ void SystemInput::receiveMessage(Message *msg)
 {
 }
  
-void SystemInput::addKeyListener(ComponentKeyboardListener *keyListener) {
+void SystemInput::addKeyListener(ComponentKeyboardListener *keyListener)
+{
+    LOG_IN("system");
     if(mKeyboard) {
         mKeyListeners.push_back(keyListener);
     }
+    LOG_OUT("system");
 }
  
-void SystemInput::addMouseListener(ComponentMouseListener *mouseListener) {
+void SystemInput::addMouseListener(ComponentMouseListener *mouseListener)
+{
+    LOG_IN("system");
     if(mMouse) {
         mMouseListeners.push_back(mouseListener);
     }
+    LOG_OUT("system");
 }
  
-void SystemInput::addJoystickListener(ComponentJoystickListener *joystickListener) {
+void SystemInput::addJoystickListener(ComponentJoystickListener *joystickListener)
+{
+    LOG_IN("system");
     if(mJoysticks.size() > 0) {
         mJoystickListeners.push_back(joystickListener);
     }
+    LOG_OUT("system");
 }
  
-void SystemInput::removeKeyListener(ComponentKeyboardListener *keyListener) {
+void SystemInput::removeKeyListener(ComponentKeyboardListener *keyListener)
+{
+    LOG_IN("system");
     mKeyListenerBeg = mKeyListeners.begin();
     mKeyListenerEnd = mKeyListeners.end();
     for(; mKeyListenerBeg != mKeyListenerEnd; ++mKeyListenerBeg) {
@@ -162,9 +181,12 @@ void SystemInput::removeKeyListener(ComponentKeyboardListener *keyListener) {
             break;
         }
     }
+    LOG_OUT("system");
 }
  
-void SystemInput::removeMouseListener(ComponentMouseListener *mouseListener) {
+void SystemInput::removeMouseListener(ComponentMouseListener *mouseListener)
+{
+    LOG_IN("system");
     mMouseListenerBeg = mMouseListeners.begin();
     mMouseListenerEnd = mMouseListeners.end();
     for(; mMouseListenerBeg != mMouseListenerEnd; ++mMouseListenerBeg) {
@@ -173,9 +195,12 @@ void SystemInput::removeMouseListener(ComponentMouseListener *mouseListener) {
             break;
         }
     }
+    LOG_OUT("system");
 }
  
-void SystemInput::removeJoystickListener(ComponentJoystickListener *joystickListener) {
+void SystemInput::removeJoystickListener(ComponentJoystickListener *joystickListener)
+{
+    LOG_IN("system");
     mJoystickListenerBeg    = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
@@ -184,56 +209,86 @@ void SystemInput::removeJoystickListener(ComponentJoystickListener *joystickList
             break;
         }
     }
+    LOG_OUT("system");
 }
  
-void SystemInput::removeAllListeners() {
+void SystemInput::removeAllListeners()
+{
+    LOG_IN("system");
     mKeyListeners.clear();
     mMouseListeners.clear();
     mJoystickListeners.clear();
+    LOG_OUT("system");
 }
  
-void SystemInput::removeAllKeyListeners() {
+void SystemInput::removeAllKeyListeners()
+{
+    LOG_IN("system");
     mKeyListeners.clear();
+    LOG_OUT("system");
 }
  
-void SystemInput::removeAllMouseListeners() {
+void SystemInput::removeAllMouseListeners()
+{
+    LOG_IN("system");
     mMouseListeners.clear();
+    LOG_OUT("system");
 }
  
-void SystemInput::removeAllJoystickListeners() {
+void SystemInput::removeAllJoystickListeners()
+{
+    LOG_IN("system");
     mJoystickListeners.clear();
+    LOG_OUT("system");
 }
  
-void SystemInput::setWindowExtents(int width, int height) {
+void SystemInput::setWindowExtents(int width, int height)
+{
+    LOG_IN("system");
     // Set mouse region (if window resizes, we should alter this to reflect as well)
     const OIS::MouseState &mouseState = mMouse->getMouseState();
     mouseState.width  = width;
     mouseState.height = height;
+    LOG_OUT("system");
 }
  
-OIS::Mouse *SystemInput::getMouse() {
+OIS::Mouse *SystemInput::getMouse()
+{
+    LOG_IN("system");
+    LOG_OUT("system");
     return mMouse;
 }
  
-OIS::Keyboard *SystemInput::getKeyboard() {
+OIS::Keyboard *SystemInput::getKeyboard()
+{
+    LOG_IN("system");
+    LOG_OUT("system");
     return mKeyboard;
 }
  
-OIS::JoyStick *SystemInput::getJoystick(unsigned int index) {
+OIS::JoyStick *SystemInput::getJoystick(unsigned int index)
+{
+    LOG_IN("system");
     // Make sure m's a valid index
     if(index < mJoysticks.size()) {
+        LOG_OUT("system");
         return mJoysticks[index];
     }
- 
+
+    LOG_OUT("system");
     return 0;
 }
  
-int SystemInput::getNumOfJoysticks(void) {
+int SystemInput::getNumOfJoysticks(void)
+{
+    LOG_IN("system");
+    LOG_OUT("system");
     // Cast to keep compiler happy ^^
     return (int) mJoysticks.size();
 }
  
-bool SystemInput::keyPressed(const OIS::KeyEvent &e) {
+bool SystemInput::keyPressed(const OIS::KeyEvent &e)
+{
     mKeyListenerBeg = mKeyListeners.begin();
     mKeyListenerEnd = mKeyListeners.end();
 
@@ -246,7 +301,8 @@ bool SystemInput::keyPressed(const OIS::KeyEvent &e) {
     return true;
 }
  
-bool SystemInput::keyReleased(const OIS::KeyEvent &e) {
+bool SystemInput::keyReleased(const OIS::KeyEvent &e)
+{
     mKeyListenerBeg = mKeyListeners.begin();
     mKeyListenerEnd = mKeyListeners.end();
 
@@ -259,7 +315,8 @@ bool SystemInput::keyReleased(const OIS::KeyEvent &e) {
     return true;
 }
  
-bool SystemInput::mouseMoved(const OIS::MouseEvent &e) {
+bool SystemInput::mouseMoved(const OIS::MouseEvent &e)
+{
     mMouseListenerBeg = mMouseListeners.begin();
     mMouseListenerEnd = mMouseListeners.end();
 
@@ -272,7 +329,8 @@ bool SystemInput::mouseMoved(const OIS::MouseEvent &e) {
     return true;
 }
  
-bool SystemInput::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id) {
+bool SystemInput::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+{
     mMouseListenerBeg = mMouseListeners.begin();
     mMouseListenerEnd = mMouseListeners.end();
 
@@ -285,7 +343,8 @@ bool SystemInput::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id) 
     return true;
 }
  
-bool SystemInput::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id) {
+bool SystemInput::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
+{
     mMouseListenerBeg = mMouseListeners.begin();
     mMouseListenerEnd = mMouseListeners.end();
 
@@ -298,7 +357,8 @@ bool SystemInput::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
     return true;
 }
  
-bool SystemInput::povMoved(const OIS::JoyStickEvent &e, int pov) {
+bool SystemInput::povMoved(const OIS::JoyStickEvent &e, int pov)
+{
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
@@ -307,7 +367,8 @@ bool SystemInput::povMoved(const OIS::JoyStickEvent &e, int pov) {
     return true;
 }
  
-bool SystemInput::axisMoved(const OIS::JoyStickEvent &e, int axis) {
+bool SystemInput::axisMoved(const OIS::JoyStickEvent &e, int axis)
+{
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
@@ -316,7 +377,8 @@ bool SystemInput::axisMoved(const OIS::JoyStickEvent &e, int axis) {
     return true;
 }
  
-bool SystemInput::sliderMoved(const OIS::JoyStickEvent &e, int sliderID) {
+bool SystemInput::sliderMoved(const OIS::JoyStickEvent &e, int sliderID)
+{
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
@@ -325,7 +387,8 @@ bool SystemInput::sliderMoved(const OIS::JoyStickEvent &e, int sliderID) {
     return true;
 }
  
-bool SystemInput::buttonPressed(const OIS::JoyStickEvent &e, int button) {
+bool SystemInput::buttonPressed(const OIS::JoyStickEvent &e, int button)
+{
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
@@ -334,7 +397,8 @@ bool SystemInput::buttonPressed(const OIS::JoyStickEvent &e, int button) {
     return true;
 }
  
-bool SystemInput::buttonReleased(const OIS::JoyStickEvent &e, int button) {
+bool SystemInput::buttonReleased(const OIS::JoyStickEvent &e, int button)
+{
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {

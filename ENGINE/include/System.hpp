@@ -3,6 +3,7 @@
 
 #include "MessageReceiver.hpp"
 #include "Singleton.hpp"
+#include "Defines.hpp"
 
 #include <stdio.h>
 #include <string>

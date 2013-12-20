@@ -1,6 +1,7 @@
 #include "SystemGraphics.hpp"
 
 #include "SystemConfiguration.hpp"
+#include "SystemLog.hpp"
 
 #include "OGRE/OgreRoot.h"
 #include "OGRE/OgreRenderSystem.h"
@@ -12,15 +13,13 @@
 
 #include <vector>
 #include <exception>
-#include <stdio.h>
 
 using namespace ENGINE;
-
-#define ENGINE_ERROR(str) printf("%s", str)
 
 SystemGraphics::SystemGraphics() :
     System("SystemGraphics")
 {
+    LOG_IN("system");
     try{
         mRoot = new Ogre::Root(Ogre::String("plugins").append(OGRE_DEBUG_MODE ? "_d.cfg" : ".cfg"), "", "Ogre.log");
 
@@ -32,7 +31,7 @@ SystemGraphics::SystemGraphics() :
             const Ogre::RenderSystemList& renderSystemList = mRoot->getAvailableRenderers();
             if( renderSystemList.size() == 0 )
             {
-                ENGINE_ERROR("Sorry, no rendersystem was found.");
+                LOG("Sorry, no rendersystem was found.", "error");
                 return;
             }
 
@@ -90,18 +89,20 @@ SystemGraphics::SystemGraphics() :
 
     }catch(Ogre::Exception &e)
     {
-        ENGINE_ERROR(e.what());
+        LOG(e.what(), "error");
     }catch(std::exception &e)
     {
-        ENGINE_ERROR(e.what());
+        LOG(e.what(), "error");
     }catch(...)
     {
-        ENGINE_ERROR("Unknown Error");
+        LOG("Unknown Error", "error");
     }
+    LOG_OUT("system");
 }
 
 SystemGraphics::~SystemGraphics()
 {
+    LOG_IN("system");
     /*
     if(mWindow){
         mWindow->destroy();
@@ -114,10 +115,13 @@ SystemGraphics::~SystemGraphics()
         mRoot = NULL;
     }
     */
+    LOG_OUT("system");
 }
 
 void SystemGraphics::init()
 {
+    LOG_IN("system");
+    LOG_OUT("system");
 }
     
 void SystemGraphics::update(float elapsedTime)

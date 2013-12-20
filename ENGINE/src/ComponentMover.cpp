@@ -4,6 +4,7 @@
 #include "Object.hpp"
 #include "TypeInfo.hpp"
 #include "MessageMove.hpp"
+#include "SystemLog.hpp"
 
 #include "OGRE/OgreStringConverter.h"
 
@@ -18,29 +19,35 @@ TypeInfo *ComponentMover::mType = new TypeInfo("ComponentMover", &ComponentMover
 ComponentMover::ComponentMover(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
+    LOG_IN("component");
     mSpeed = atof(boost::any_cast<std::string>(params["Speed"]).c_str());
     mTranslation = Ogre::Vector3(0, 0, 0);
 
     mElapsedTime = 0.0;
     mYawNode = mPitchNode = mRollNode = nullptr;
+    LOG_OUT("component");
 }
 
 ComponentMover::~ComponentMover()
 {
+    LOG_IN("component");
+    LOG_OUT("component");
 }
 
 void *ComponentMover::createInstance(Object *object, ParamMap &params)
 {
+    LOG_IN("component");
+    LOG_OUT("component");
     return new ComponentMover(object, params);
 }
 
 void ComponentMover::init()
 {
-    std::cout << "E: ComponentMover::init" << std::endl;
+    LOG_IN("component");
     mYawNode = mObject->getSceneNode()->createChildSceneNode();
     mPitchNode = mYawNode->createChildSceneNode();
     mRollNode = mPitchNode->createChildSceneNode();
-    std::cout << "X: ComponentMover::init" << std::endl;
+    LOG_OUT("component");
 }
     
 void ComponentMover::update(float elapsedTime)

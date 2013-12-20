@@ -1,5 +1,7 @@
 #include "SystemConfiguration.hpp"
 
+#include "SystemLog.hpp"
+
 #include <fstream>
 
 using namespace ENGINE;
@@ -7,14 +9,20 @@ using namespace ENGINE;
 SystemConfiguration::SystemConfiguration() :
     System("SystemConfiguration")
 {
+    LOG_IN("system");
+    LOG_OUT("system");
 }
 
 SystemConfiguration::~SystemConfiguration()
 {
+    LOG_IN("system");
+    LOG_OUT("system");
 }
 
 void SystemConfiguration::init()
 {
+    LOG_IN("system");
+    LOG_OUT("system");
 }
     
 void SystemConfiguration::update(float elapsedTime)
@@ -27,6 +35,7 @@ void SystemConfiguration::receiveMessage(Message *msg)
 
 void SystemConfiguration::loadFromFile(std::string filename)
 {
+    LOG_IN("system");
     std::fstream file;
 
     file.open(filename);
@@ -34,6 +43,7 @@ void SystemConfiguration::loadFromFile(std::string filename)
     if(file.eof() || !file.is_open())
     {
         file.close();
+        LOG_OUT("system");
         return;
     }
 
@@ -45,7 +55,7 @@ void SystemConfiguration::loadFromFile(std::string filename)
         file >> value;
 
         mConfiguration[param] = value;
-        printf("Add Param %s = %s\n", param.c_str(), value.c_str());
+        LOG("Add Param " + param + " = " + value, "log");
         if(param == "NetworkType")
         {
             if(value == "Client")
@@ -65,9 +75,12 @@ void SystemConfiguration::loadFromFile(std::string filename)
     }
 
     file.close();
+    LOG_OUT("system");
 }
 
 std::string SystemConfiguration::getConfiguration(std::string name)
 {
+    LOG_IN("system");
+    LOG_OUT("system");
     return mConfiguration.at(name);
 }

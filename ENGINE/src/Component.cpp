@@ -1,6 +1,7 @@
 #include "Component.hpp"
 
 #include "TypeInfo.hpp"
+#include "SystemLog.hpp"
 
 using namespace ENGINE;
 
@@ -10,5 +11,6 @@ Component::Component(Object *object, ParamMap &params, TypeInfo *type) :
     mParams(params),
     mType(type)
 {
-
+    LOG_IN("component");
+    LOG_OUT("component");
 }

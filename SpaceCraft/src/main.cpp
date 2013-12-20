@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include <string>
 
 #include "Engine.hpp"
@@ -10,6 +9,7 @@
 #include "SystemServer.hpp"
 #include "SystemConfiguration.hpp"
 #include "SystemGameState.hpp"
+#include "SystemLog.hpp"
 
 #include "ComponentCamera.hpp"
 #include "ComponentCollidable.hpp"
@@ -33,9 +33,8 @@ using namespace ENGINE;
 
 int main(int argc, char **argv)
 {
-    printf("Start\n");
+    LOG_IN("log");
     try{
-
         SystemObjectFactory::getSingleton()->registerComponent(ComponentCamera::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentCollidable::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentJoystickListener::getType());
@@ -65,11 +64,12 @@ int main(int argc, char **argv)
         if(argc == 2)
             SystemConfiguration::getSingleton()->loadFromFile(argv[1]);
         else
-            SystemConfiguration::getSingleton()->loadFromFile("SpaceCraftDedicatedServer.cfg");
+            SystemConfiguration::getSingleton()->loadFromFile("SpaceCraftClient.cfg");
 
         Engine::getSingleton()->addSystem(SystemGraphics::getSingleton());
         Engine::getSingleton()->addSystem(SystemObjectFactory::getSingleton());
         Engine::getSingleton()->addSystem(SystemPhysics::getSingleton());
+        Engine::getSingleton()->addSystem(SystemLog::getSingleton());
 
         if(SystemConfiguration::getSingleton()->isServer())
         {
@@ -82,10 +82,12 @@ int main(int argc, char **argv)
             Engine::getSingleton()->addSystem(SystemInput::getSingleton());
             Engine::getSingleton()->addSystem(SystemClient::getSingleton());
         }
-        
+
+        SystemLog::getSingleton()->createLog(SystemConfiguration::getSingleton()->getConfiguration("NetworkType") + ".html");
+
         Engine::getSingleton()->init();
 
-        printf("init world\n");
+        LOG("init world", "log");
         if(SystemConfiguration::getSingleton()->isClient())
         {
         }
@@ -99,30 +101,30 @@ int main(int argc, char **argv)
             SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, -5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu5", "CPU");
             SystemGameState::getSingleton()->addObject(Ogre::Vector3(0,  5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu6", "CPU");
         }
-        printf("init finished\n");
+        LOG("init finished", "log");
 
         Engine::getSingleton()->run();
 
-        printf("End\n");
+        LOG_OUT("log");
+        SystemLog::getSingleton()->close();
         return 0;
     }catch(const char *msg)
     {
-        printf("%s\n", msg);
-        return 1;
+        LOG(msg, "error");
     }catch(std::string msg)
     {
-        printf("%s\n", msg.c_str());
-        return 1;
+        LOG(msg, "error");
     }catch(Ogre::Exception &e)
     {
-        printf("%s\n", e.what());
-        return 1;
+        LOG(e.what(), "error");
     }catch(std::exception &e)
     {
-        printf("%s\n", e.what());
+        LOG(e.what(), "error");
     }catch(...)
     {
-        printf("Unknown Exception!\n");
-        return 1;
+        LOG("Unknown Exception!", "error");
     }
+    LOG_OUT("log");
+    SystemLog::getSingleton()->close();
+    return 1;
 }

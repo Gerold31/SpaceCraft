@@ -1,6 +1,7 @@
 #include "ComponentCollidable.hpp"
 
 #include "TypeInfo.hpp"
+#include "SystemLog.hpp"
 
 using namespace ENGINE;
 
@@ -9,20 +10,27 @@ TypeInfo *ComponentCollidable::mType = new TypeInfo("ComponentCollidable", &Comp
 ComponentCollidable::ComponentCollidable(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
-
+    LOG_IN("component");
+    LOG_OUT("component");
 }
 
 ComponentCollidable::~ComponentCollidable()
 {
+    LOG_IN("component");
+    LOG_OUT("component");
 }
 
 void *ComponentCollidable::createInstance(Object *object, ParamMap &params)
 {
+    LOG_IN("component");
+    LOG_OUT("component");
     return new ComponentCollidable(object, params);
 }
 
 void ComponentCollidable::init()
 {
+    LOG_IN("component");
+    LOG_OUT("component");
 }
     
 void ComponentCollidable::update(float elapsedTime)

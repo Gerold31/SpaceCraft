@@ -4,6 +4,7 @@
 #include "Object.hpp"
 #include "SystemGraphics.hpp"
 #include "TypeInfo.hpp"
+#include "SystemLog.hpp"
 
 #include "OGRE/OgreRenderWindow.h"
 
@@ -14,20 +15,27 @@ TypeInfo *ComponentViewport::mType = new TypeInfo("ComponentViewport", &Componen
 ComponentViewport::ComponentViewport(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
+    LOG_IN("component");
     mViewport = nullptr;
+    LOG_OUT("component");
 }
 
 ComponentViewport::~ComponentViewport()
 {
+    LOG_IN("component");
+    LOG_OUT("component");
 }
 
 void *ComponentViewport::createInstance(Object *object, ParamMap &params)
 {
+    LOG_IN("component");
+    LOG_OUT("component");
     return new ComponentViewport(object, params);
 }
 
 void ComponentViewport::init()
 {
+    LOG_IN("component");
     Ogre::Camera *cam = nullptr;
     for(int i=0; i<mObject->getNumberComponents(); i++)
     {
@@ -49,8 +57,10 @@ void ComponentViewport::init()
 
     }else
     {
+        LOG_OUT("component");
         throw "ComponentViewport requires a ComponentCamera";
     }
+    LOG_OUT("component");
 }
     
 void ComponentViewport::update(float elapsedTime)

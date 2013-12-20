@@ -6,25 +6,32 @@
 #include "Engine.hpp"
 #include "MessageEngine.hpp"
 #include "SystemObjectFactory.hpp"
+#include "SystemLog.hpp"
 
 using namespace ENGINE;
 
 SystemClient::SystemClient() :
     System("SystemClient")
 {
+    LOG_IN("system");
+    LOG_OUT("system");
 }
 
 SystemClient::~SystemClient()
 {
+    LOG_IN("system");
+    LOG_OUT("system");
 }
 
 void SystemClient::init()
 {
+    LOG_IN("system");
     unsigned short port = atoi(SystemConfiguration::getSingleton()->getConfiguration("Port").c_str()); 
     mSocket = new Poco::Net::StreamSocket();
     mSocket->connect(Poco::Net::SocketAddress(SystemConfiguration::getSingleton()->getConfiguration("Host"), port));
 
     mThread.start(*this);
+    LOG_OUT("system");
 }
 
 void SystemClient::update(float elapsedTime)
@@ -37,6 +44,7 @@ void SystemClient::receiveMessage(Message *msg)
 
 void SystemClient::run()
 {
+    LOG_IN("system");
     try{
         Poco::Net::SocketStream stream(*mSocket);
         
@@ -77,38 +85,38 @@ void SystemClient::run()
             delete message;
         }
 
-        std::cout << "connection closed" << std::endl;
+        LOG("connection closed", "log");
     }
     catch(Poco::Exception &e)
     {
-        std::cout << "poco exception: " << e.name() << ": " << e.message() << std::endl;
+        LOG(e.what(), "error");
     }
     catch(std::exception &e)
     {
-        std::cout << "exception: " << e.what() << std::endl;
+        LOG(e.what(), "error");
     }
+    LOG_OUT("system");
 }
 
 void SystemClient::send(Message *msg, MessageReceiver *receiver)
 {
+    LOG_IN("system");
     // @todo remove code duplication at ComponentServerConnection::send
     try{
         Poco::Net::SocketStream stream(*mSocket);
 
-        std::cout << "send Message to ";
-
         switch(receiver->getReceiverType())
         {
         case MessageReceiver::RECEIVER_ENGINE:
-            std::cout << "ENGINE" << std::endl;
+            LOG("Send to: ENGINE", "log");
             stream << MessageReceiver::RECEIVER_ENGINE  << std::endl << "ENGINE" << std::endl;
             break;
         case MessageReceiver::RECEIVER_SYSTEM:
-            std::cout << "System: " << ((System *)receiver)->getName() << std::endl;
+            LOG("Send to: System", "log");
             stream << MessageReceiver::RECEIVER_SYSTEM << std::endl << ((System *)receiver)->getName() << std::endl;
             break;
         case MessageReceiver::RECEIVER_OBJECT:
-            std::cout << "Object: " << ((Object *)receiver)->getName() << std::endl;
+            LOG("Send to: Object", "log");
             stream << MessageReceiver::RECEIVER_OBJECT << std::endl << ((Object *)receiver)->getName() << std::endl;
             break;
         default:
@@ -116,23 +124,24 @@ void SystemClient::send(Message *msg, MessageReceiver *receiver)
             break;
         }
 
-        std::cout << "serialize msg..." << std::endl;
+        LOG("serialize msg...", "log");
         msg->serialize(stream);
 
-        std::cout << "flush" << std::endl;
+        LOG("flush", "log");
 
         stream.flush();
     }
     catch(Poco::Exception &e)
     {
-        std::cout << "poco exception: " << e.name() << ": " << e.message() << std::endl;
+        LOG(e.what(), "error");
     }
     catch(std::exception &e)
     {
-        std::cout << "exception: " << e.what() << std::endl;
+        LOG(e.what(), "error");
     }
     catch(...)
     {
-        std::cout << "unknown exception" << std::endl;
+        LOG("unknown exception", "error");
     }
+    LOG_OUT("system");
 }

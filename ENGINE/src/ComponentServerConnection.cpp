@@ -7,10 +7,11 @@
 #include "Engine.hpp"
 #include "Object.hpp"
 #include "SystemServer.hpp"
+#include "SystemLog.hpp"
 
-#include <iostream>
 #include <string>
 #include <exception>
+
 #include "Poco/Net/StreamSocket.h"
 #include "Poco/Net/SocketStream.h"
 
@@ -22,19 +23,27 @@ ComponentServerConnection::ComponentServerConnection(Object *object, ParamMap &p
     Component(object, params, mType),
     Poco::Net::TCPServerConnection(boost::any_cast<const Poco::Net::StreamSocket &>(params["Socket"]))
 {
+    LOG_IN("component");
+    LOG_OUT("component");
 }
 
 ComponentServerConnection::~ComponentServerConnection()
 {
+    LOG_IN("component");
+    LOG_OUT("component");
 }
 
 void *ComponentServerConnection::createInstance(Object *object, ParamMap &params)
 {
+    LOG_IN("component");
+    LOG_OUT("component");
     return new ComponentServerConnection(object, params);
 }
 
 void ComponentServerConnection::init()
 {
+    LOG_IN("component");
+    LOG_OUT("component");
 }
     
 void ComponentServerConnection::update(float elapsedTime)
@@ -47,8 +56,9 @@ void ComponentServerConnection::receiveMessage(Message *message)
 
 void ComponentServerConnection::run()
 {
+    LOG_IN("component");
     try{
-        std::cout << "new incomming connection" << std::endl;
+        LOG("new incomming connection", "log");
         Poco::Net::StreamSocket sock = socket();
         Poco::Net::SocketStream stream(sock);
 
@@ -96,46 +106,47 @@ void ComponentServerConnection::run()
             delete message;
         }
 
-        std::cout << "connection closed" << std::endl;
+        LOG("connection closed", "log");
 
         SystemServer::getSingleton()->removeConnection(this);
     }
     catch(Poco::Exception &e)
     {
-        std::cout << "poco exception: " << e.name() << ": " << e.message() << std::endl;
+        LOG(e.what(), "error");
     }
     catch(std::exception &e)
     {
-        std::cout << "exception: " << e.what() << std::endl;
+        LOG(e.what(), "error");
     }
     catch(...)
     {
-        std::cout << "unknown exception" << std::endl;
+        LOG("unknown exception", "error");
     }
+
+    LOG_OUT("component");
     // @todo destroy this object
     while(1);
 }
 
 void ComponentServerConnection::send(Message *msg, MessageReceiver *receiver)
 {
+    LOG_IN("component");
     // @todo remove code duplication at SystemClient::send
     try{
         Poco::Net::SocketStream stream(socket());
 
-        std::cout << "send Message to ";
-
         switch(receiver->getReceiverType())
         {
         case MessageReceiver::RECEIVER_ENGINE:
-            std::cout << "ENGINE" << std::endl;
+            LOG("Send to: ENGINE", "log");
             stream << MessageReceiver::RECEIVER_ENGINE  << std::endl << "ENGINE" << std::endl;
             break;
         case MessageReceiver::RECEIVER_SYSTEM:
-            std::cout << "System: " << ((System *)receiver)->getName() << std::endl;
+            LOG("Send to: System", "log");
             stream << MessageReceiver::RECEIVER_SYSTEM << std::endl << ((System *)receiver)->getName() << std::endl;
             break;
         case MessageReceiver::RECEIVER_OBJECT:
-            std::cout << "Object: " << ((Object *)receiver)->getName() << std::endl;
+            LOG("Send to: Object", "log");
             stream << MessageReceiver::RECEIVER_OBJECT << std::endl << ((Object *)receiver)->getName() << std::endl;
             break;
         default:
@@ -143,23 +154,24 @@ void ComponentServerConnection::send(Message *msg, MessageReceiver *receiver)
             break;
         }
 
-        std::cout << "serialize msg..." << std::endl;
+        LOG("serialize msg...", "log");
         msg->serialize(stream);
 
-        std::cout << "flush" << std::endl;
+        LOG("flush", "log");
 
         stream.flush();
     }
     catch(Poco::Exception &e)
     {
-        std::cout << "poco exception: " << e.name() << ": " << e.message() << std::endl;
+        LOG(e.what(), "error");
     }
     catch(std::exception &e)
     {
-        std::cout << "exception: " << e.what() << std::endl;
+        LOG(e.what(), "error");
     }
     catch(...)
     {
-        std::cout << "unknown exception" << std::endl;
+        LOG("unknown exception", "error");
     }
+    LOG_OUT("component");
 }

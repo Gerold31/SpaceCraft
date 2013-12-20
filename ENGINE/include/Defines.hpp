@@ -4,7 +4,13 @@
 #include <string>
 #include <vector>
 #include <map>
+
 #include <boost/any.hpp>
+#include <boost/current_function.hpp>
+
+#define LOG_IN(type) SystemLog::getSingleton()->enter(BOOST_CURRENT_FUNCTION, type)
+#define LOG_OUT(type) SystemLog::getSingleton()->exit(BOOST_CURRENT_FUNCTION, type)
+#define LOG(msg, type) SystemLog::getSingleton()->log(msg, type)
 
 namespace ENGINE
 {

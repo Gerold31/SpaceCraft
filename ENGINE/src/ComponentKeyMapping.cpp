@@ -6,6 +6,7 @@
 #include "MessageMove.hpp"
 #include "MessageEngine.hpp"
 #include "Engine.hpp"
+#include "SystemLog.hpp"
 
 using namespace ENGINE;
 
@@ -14,20 +15,27 @@ TypeInfo *ComponentKeyMapping::mType = new TypeInfo("ComponentKeyMapping", &Comp
 ComponentKeyMapping::ComponentKeyMapping(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
-
+    LOG_IN("component");
+    LOG_OUT("component");
 }
 
 ComponentKeyMapping::~ComponentKeyMapping()
 {
+    LOG_IN("component");
+    LOG_OUT("component");
 }
 
 void *ComponentKeyMapping::createInstance(Object *object, ParamMap &params)
 {
+    LOG_IN("component");
+    LOG_OUT("component");
     return new ComponentKeyMapping(object, params);
 }
 
 void ComponentKeyMapping::init()
 {
+    LOG_IN("component");
+    LOG_OUT("component");
 }
     
 void ComponentKeyMapping::update(float elapsedTime)

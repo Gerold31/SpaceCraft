@@ -6,6 +6,7 @@
 #include "MessageObjectFactory.hpp"
 #include "Object.hpp"
 #include "ComponentServerConnection.hpp"
+#include "SystemLog.hpp"
 
 #include "OGRE/OgreSceneManager.h"
 
@@ -16,15 +17,21 @@ using namespace ENGINE;
 SystemGameState::SystemGameState() :
     System("SystemGameState")
 {
+    LOG_IN("system");
     mNextPlayerID = 0;
+    LOG_OUT("system");
 }
 
 SystemGameState::~SystemGameState()
 {
+    LOG_IN("system");
+    LOG_OUT("system");
 }
 
 void SystemGameState::init()
 {
+    LOG_IN("system");
+    LOG_OUT("system");
 }
     
 void SystemGameState::update(float elapsedTime)
@@ -42,6 +49,7 @@ void SystemGameState::receiveMessage(Message *msg)
 
 ComponentServerConnection *SystemGameState::newPlayer(ParamMap &params)
 {
+    LOG_IN("system");
     std::string name = "Player" + std::to_string(mNextPlayerID++);
     addObject(Ogre::Vector3(), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), name, "Player");
 
@@ -49,11 +57,13 @@ ComponentServerConnection *SystemGameState::newPlayer(ParamMap &params)
     ComponentServerConnection *connection = (ComponentServerConnection *)SystemObjectFactory::getSingleton()->createComponent(newPlayer, "ComponentServerConnection", params);
     mNewPlayers.push_back(connection);
 
+    LOG_OUT("system");
     return connection;
 }
 
 void SystemGameState::addObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, std::string type)
 {
+    LOG_IN("system");
     MessageCreateObject m(pos, ori, parent, name, type + "Server");
     m.sendTo(SystemObjectFactory::getSingleton());
 
@@ -65,11 +75,12 @@ void SystemGameState::addObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::S
 
     MessageCreateObject msg(pos, ori, parent, name, type + "Client");
     SystemServer::getSingleton()->sendToAll(&msg, SystemObjectFactory::getSingleton());
+    LOG_OUT("system");
 }
 
 void SystemGameState::onNewPlayer(ComponentServerConnection *connection)
 {
-    std::cout << "E: onNewPlayer" << std::endl;
+    LOG_IN("system");
     // send objects to new player
     for(auto i=mLoadedObjects.begin(); i!=mLoadedObjects.end(); ++i)
     {
@@ -82,5 +93,5 @@ void SystemGameState::onNewPlayer(ComponentServerConnection *connection)
     }
 
     mConnectedPlayers.push_back(connection);
-    std::cout << "X: onNewPlayer" << std::endl;
+    LOG_OUT("system");
 }
