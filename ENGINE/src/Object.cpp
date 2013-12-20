@@ -83,12 +83,10 @@ void Object::receiveMessage(Message *message)
         MessageSetPosition *m = (MessageSetPosition *)message;
         mNode->setPosition(m->mX, m->mY, m->mZ);
     }
-    mComponentsMutex.lock();
     for(std::vector<Component *>::iterator i = mComponents.begin(); i!=mComponents.end(); ++i)
     {
         (*i)->receiveMessage(message);
     }
-    mComponentsMutex.unlock();
     LOG_OUT_FRAME;
 }
 
