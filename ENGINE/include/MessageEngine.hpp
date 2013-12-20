@@ -11,7 +11,7 @@ namespace ENGINE
 class MessageQuit : public Message
 {
 public:
-    MessageQuit() : Message(getID(), true, true) {}
+    MessageQuit() : Message(getID(), true, true, true, true, false) {}
     static void *CreateMessage(std::istream &stream) { return new MessageQuit(); }
     static int getID() {if(mID == -1) mID = calcID("MessageQuit"); return mID;}
 private:

@@ -37,7 +37,7 @@ void ComponentRenderable::init()
     LOG_IN("component");
     mEntity = ((SystemGraphics *)SystemGraphics::getSingleton())->getSceneMgr()->createEntity(mObject->getName() + "RenderableEnt", boost::any_cast<std::string>(mParams["MeshName"]));
     mEntity->getUserObjectBindings().setUserAny("Object", Ogre::Any(mObject));
-    mObject->getSceneNode()->attachObject(mEntity);
+    SystemGraphics::getSingleton()->getSceneMgr()->getSceneNode(mObject->getName() + boost::any_cast<std::string>(mParams["NodeName"]))->attachObject(mEntity);
     LOG_OUT("component");
 }
     

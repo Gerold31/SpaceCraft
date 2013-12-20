@@ -44,9 +44,9 @@ void *ComponentMover::createInstance(Object *object, ParamMap &params)
 void ComponentMover::init()
 {
     LOG_IN("component");
-    mYawNode = mObject->getSceneNode()->createChildSceneNode();
-    mPitchNode = mYawNode->createChildSceneNode();
-    mRollNode = mPitchNode->createChildSceneNode();
+    mYawNode = mObject->getSceneNode()->createChildSceneNode(mObject->getName() + "YawNode");
+    mPitchNode = mYawNode->createChildSceneNode(mObject->getName() + "PitchNode");
+    mRollNode = mPitchNode->createChildSceneNode(mObject->getName() + "RollNode");
     LOG_OUT("component");
 }
     

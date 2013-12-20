@@ -105,7 +105,11 @@ void ComponentServerConnection::run()
             }
 
             if(r)
+            {
                 r->receiveMessage(message);
+                if(message->getDistribute())
+                    SystemServer::getSingleton()->sendToAllBut(message, r, this);
+            }
 
             delete message;
         }

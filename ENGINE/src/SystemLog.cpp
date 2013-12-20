@@ -22,15 +22,6 @@ void SystemLog::init()
     if(mState == STATE_STARTED)
         createLog();
 
-    addLogType("error"    , "color: #FFFF00;background-color: #FF0000");
-    addLogType("log"      , "color: #000000;background-color: #FFFFFF");
-    addLogType("engine"   , "color: #7F0000;background-color: #FFFFFF");
-    addLogType("system"   , "color: #007F00;background-color: #FFFFFF");
-    addLogType("object"   , "color: #00007F;background-color: #FFFFFF");
-    addLogType("component", "color: #007F7F;background-color: #FFFFFF");
-    addLogType("message"  , "color: #7F7F00;background-color: #FFFFFF");
-    addLogType("frame"    , "color: #222222;background-color: #FFFFFF");
-
     mLogFile << "</style><body>Log<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\" frame=\"box\">" << std::endl;
 
     mState = STATE_INITED;
@@ -77,6 +68,16 @@ void SystemLog::createLog(std::string filename)
     mLogFile << "td{text-align: left; vertical-align: middle; border-width:2px;}" << std::endl;
 
     mState = STATE_CREATED;
+
+    addLogType("error"    , "color: #FFFF00;background-color: #FF0000");
+    addLogType("log"      , "color: #000000;background-color: #FFFFFF");
+    addLogType("engine"   , "color: #7F0000;background-color: #FFFFFF");
+    addLogType("system"   , "color: #007F00;background-color: #FFFFFF");
+    addLogType("object"   , "color: #00007F;background-color: #FFFFFF");
+    addLogType("component", "color: #007F7F;background-color: #FFFFFF");
+    addLogType("message"  , "color: #7F7F00;background-color: #FFFFFF");
+    addLogType("frame"    , "color: #222222;background-color: #FFFFFF");
+
     LOG_OUT("system");
 }
 

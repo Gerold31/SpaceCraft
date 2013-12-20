@@ -15,7 +15,8 @@ typedef void* (*CreateMessage)(std::istream &stream);
 class Message
 {
 public:
-    Message(int id, bool sendToServer, bool sendToClient) : mID(id), mSendToServer(sendToServer), mSendToClient(sendToClient) {}
+    Message(int id, bool localToServer, bool localToClient, bool sendToServer, bool sendToClient, bool distribute) :
+        mID(id), mLocalToServer(localToServer), mLocalToClient(localToClient), mSendToServer(sendToServer), mSendToClient(sendToClient), mDistribute(distribute) {}
     virtual ~Message() {};
 
     void sendTo(MessageReceiver *receiver);
@@ -23,7 +24,8 @@ public:
     void serialize(std::ostream &stream);
     static Message *deserialize(std::istream &stream); 
 
-    int getID() {return mID;}
+    const int getID() {return mID;}
+    const bool getDistribute() {return mDistribute;}
     
     static void registerMessge(int id, CreateMessage createMessage)
     {
@@ -34,8 +36,10 @@ protected:
     static int calcID(std::string name);
     virtual void _serialize(std::ostream &stream) {};
 
-    int mID;
-    bool mSendToServer, mSendToClient;
+    const int mID;
+    const bool mLocalToServer, mLocalToClient;
+    const bool mSendToServer, mSendToClient;
+    const bool mDistribute;
     
     static std::map<int, CreateMessage> mMessages;
 };
