@@ -32,8 +32,11 @@ private:
 
     std::vector<std::pair<std::string, Object *> > mLoadedObjects;
     std::vector<ComponentServerConnection *> mConnectedPlayers;
+    std::vector<ComponentServerConnection *> mNewPlayers;
 
     int mNextPlayerID;
+
+    void onNewPlayer(ComponentServerConnection *connection);
 };
 
 };

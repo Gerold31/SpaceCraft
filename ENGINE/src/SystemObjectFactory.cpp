@@ -128,7 +128,6 @@ Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion or
         mComponents.push_back(component);
     }
     mObjects.push_back(object);
-    object->init();
     return object;
 }
 
@@ -149,6 +148,5 @@ Component *SystemObjectFactory::createComponent(Object *parent, std::string name
     Component *component = (Component *)mComponentMap[name]->createInstance(parent, params);
     parent->addComponent(component);
     mComponents.push_back(component);
-    component->init();
     return component;
 }

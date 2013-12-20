@@ -5,8 +5,11 @@
 #include "SystemServer.hpp"
 #include "MessageObjectFactory.hpp"
 #include "Object.hpp"
+#include "ComponentServerConnection.hpp"
 
 #include "OGRE/OgreSceneManager.h"
+
+#include <assert.h>
 
 using namespace ENGINE;
 
@@ -26,6 +29,11 @@ void SystemGameState::init()
     
 void SystemGameState::update(float elapsedTime)
 {
+    for(auto i=mNewPlayers.begin(); i!= mNewPlayers.end(); ++i)
+    {
+        onNewPlayer(*i);
+    }
+    mNewPlayers.clear();
 }
 
 void SystemGameState::receiveMessage(Message *msg)
@@ -39,18 +47,7 @@ ComponentServerConnection *SystemGameState::newPlayer(ParamMap &params)
 
     Object *newPlayer = SystemObjectFactory::getSingleton()->getObject(name);
     ComponentServerConnection *connection = (ComponentServerConnection *)SystemObjectFactory::getSingleton()->createComponent(newPlayer, "ComponentServerConnection", params);
-    
-    for(auto i=mLoadedObjects.begin(); i!=mLoadedObjects.end(); ++i)
-    {
-        Object *obj = (*i).second;
-        std::string type = (*i).first + "Client";
-        if(obj->getName() == name)
-            type = "Player";
-        MessageCreateObject msg(obj->getSceneNode()->getPosition(), obj->getSceneNode()->getOrientation(), obj->getSceneNode()->getParentSceneNode(), obj->getName(), type);
-        SystemServer::getSingleton()->sendTo(&msg, SystemObjectFactory::getSingleton(), connection);
-    }
-
-    mConnectedPlayers.push_back(connection);
+    mNewPlayers.push_back(connection);
 
     return connection;
 }
@@ -62,8 +59,28 @@ void SystemGameState::addObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::S
 
     Object *obj = SystemObjectFactory::getSingleton()->getObject(name);
 
+    assert(obj);
+
     mLoadedObjects.push_back(std::pair<std::string, Object *>(type, obj));
 
     MessageCreateObject msg(pos, ori, parent, name, type + "Client");
     SystemServer::getSingleton()->sendToAll(&msg, SystemObjectFactory::getSingleton());
+}
+
+void SystemGameState::onNewPlayer(ComponentServerConnection *connection)
+{
+    std::cout << "E: onNewPlayer" << std::endl;
+    // send objects to new player
+    for(auto i=mLoadedObjects.begin(); i!=mLoadedObjects.end(); ++i)
+    {
+        Object *obj = (*i).second;
+        std::string type = (*i).first + "Client";
+        if(obj == connection->getObject())
+            type = "Player";
+        MessageCreateObject msg(obj->getSceneNode()->getPosition(), obj->getSceneNode()->getOrientation(), obj->getSceneNode()->getParentSceneNode(), obj->getName(), type);
+        SystemServer::getSingleton()->sendTo(&msg, SystemObjectFactory::getSingleton(), connection);
+    }
+
+    mConnectedPlayers.push_back(connection);
+    std::cout << "X: onNewPlayer" << std::endl;
 }

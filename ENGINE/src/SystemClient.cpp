@@ -92,27 +92,47 @@ void SystemClient::run()
 void SystemClient::send(Message *msg, MessageReceiver *receiver)
 {
     // @todo remove code duplication at ComponentServerConnection::send
-    Poco::Net::SocketStream stream(*mSocket);
+    try{
+        Poco::Net::SocketStream stream(*mSocket);
 
-    switch(receiver->getReceiverType())
-    {
-    case MessageReceiver::RECEIVER_ENGINE:
-        std::cout << "ENGINE" << std::endl;
-        stream << MessageReceiver::RECEIVER_ENGINE  << std::endl << "ENGINE" << std::endl;
-        break;
-    case MessageReceiver::RECEIVER_SYSTEM:
-        std::cout << "System: " << ((System *)receiver)->getName() << std::endl;
-        stream << MessageReceiver::RECEIVER_SYSTEM << std::endl << ((System *)receiver)->getName() << std::endl;
-        break;
-    case MessageReceiver::RECEIVER_OBJECT:
-        std::cout << "Object: " << ((Object *)receiver)->getName() << std::endl;
-        stream << MessageReceiver::RECEIVER_OBJECT << std::endl << ((Object *)receiver)->getName() << std::endl;
-        break;
-    default:
-        // @todo no messages to components?
-        break;
+        std::cout << "send Message to ";
+
+        switch(receiver->getReceiverType())
+        {
+        case MessageReceiver::RECEIVER_ENGINE:
+            std::cout << "ENGINE" << std::endl;
+            stream << MessageReceiver::RECEIVER_ENGINE  << std::endl << "ENGINE" << std::endl;
+            break;
+        case MessageReceiver::RECEIVER_SYSTEM:
+            std::cout << "System: " << ((System *)receiver)->getName() << std::endl;
+            stream << MessageReceiver::RECEIVER_SYSTEM << std::endl << ((System *)receiver)->getName() << std::endl;
+            break;
+        case MessageReceiver::RECEIVER_OBJECT:
+            std::cout << "Object: " << ((Object *)receiver)->getName() << std::endl;
+            stream << MessageReceiver::RECEIVER_OBJECT << std::endl << ((Object *)receiver)->getName() << std::endl;
+            break;
+        default:
+            // @todo no messages to components?
+            break;
+        }
+
+        std::cout << "serialize msg..." << std::endl;
+        msg->serialize(stream);
+
+        std::cout << "flush" << std::endl;
+
+        stream.flush();
     }
-    msg->serialize(stream);
-
-    stream.flush();
+    catch(Poco::Exception &e)
+    {
+        std::cout << "poco exception: " << e.name() << ": " << e.message() << std::endl;
+    }
+    catch(std::exception &e)
+    {
+        std::cout << "exception: " << e.what() << std::endl;
+    }
+    catch(...)
+    {
+        std::cout << "unknown exception" << std::endl;
+    }
 }

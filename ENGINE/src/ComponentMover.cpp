@@ -20,12 +20,9 @@ ComponentMover::ComponentMover(Object *object, ParamMap &params) :
 {
     mSpeed = atof(boost::any_cast<std::string>(params["Speed"]).c_str());
     mTranslation = Ogre::Vector3(0, 0, 0);
-    
-    mYawNode = object->getSceneNode()->createChildSceneNode();
-    mPitchNode = mYawNode->createChildSceneNode();
-    mRollNode = mPitchNode->createChildSceneNode();
 
     mElapsedTime = 0.0;
+    mYawNode = mPitchNode = mRollNode = nullptr;
 }
 
 ComponentMover::~ComponentMover()
@@ -39,6 +36,11 @@ void *ComponentMover::createInstance(Object *object, ParamMap &params)
 
 void ComponentMover::init()
 {
+    std::cout << "E: ComponentMover::init" << std::endl;
+    mYawNode = mObject->getSceneNode()->createChildSceneNode();
+    mPitchNode = mYawNode->createChildSceneNode();
+    mRollNode = mPitchNode->createChildSceneNode();
+    std::cout << "X: ComponentMover::init" << std::endl;
 }
     
 void ComponentMover::update(float elapsedTime)

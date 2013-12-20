@@ -27,16 +27,13 @@ void *ComponentRenderable::createInstance(Object *object, ParamMap &params)
 
 void ComponentRenderable::init()
 {
+    mEntity = ((SystemGraphics *)SystemGraphics::getSingleton())->getSceneMgr()->createEntity(mObject->getName() + "RenderableEnt", boost::any_cast<std::string>(mParams["MeshName"]));
+    mEntity->getUserObjectBindings().setUserAny("Object", Ogre::Any(mObject));
+    mObject->getSceneNode()->attachObject(mEntity);
 }
     
 void ComponentRenderable::update(float elapsedTime)
 {
-    if(!mEntity)
-    {
-        mEntity = ((SystemGraphics *)SystemGraphics::getSingleton())->getSceneMgr()->createEntity(mObject->getName() + "RenderableEnt", boost::any_cast<std::string>(mParams["MeshName"]));
-        mEntity->getUserObjectBindings().setUserAny("Object", Ogre::Any(mObject));
-        mObject->getSceneNode()->attachObject(mEntity);
-    }
 }
 
 void ComponentRenderable::receiveMessage(Message *message)

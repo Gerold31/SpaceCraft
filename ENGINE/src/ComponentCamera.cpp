@@ -5,6 +5,7 @@
 #include "TypeInfo.hpp"
 #include "MessageMove.hpp"
 #include "ComponentMover.hpp"
+#include "SystemLog.hpp"
 
 #include "OGRE/OgreSceneManager.h"
 
@@ -15,11 +16,9 @@ TypeInfo *ComponentCamera::mType = new TypeInfo("ComponentCamera", &ComponentCam
 ComponentCamera::ComponentCamera(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
-    mCamera = SystemGraphics::getSingleton()->getSceneMgr()->createCamera(object->getName() + "Camera");
-    mCamera->lookAt(0,0,-1);
-    mCamera->setPosition(0, 0, 0);
-    mCamera->setNearClipDistance(0.3);
-    mCamera->setFarClipDistance(300.0);
+    LOG_IN("log");
+    mCamera = nullptr;
+    LOG_OUT("log");
 }
 
 ComponentCamera::~ComponentCamera()
@@ -33,6 +32,13 @@ void *ComponentCamera::createInstance(Object *object, ParamMap &params)
 
 void ComponentCamera::init()
 {
+    LOG_IN("log");
+    mCamera = SystemGraphics::getSingleton()->getSceneMgr()->createCamera(mObject->getName() + "Camera");
+    mCamera->lookAt(0,0,-1);
+    mCamera->setPosition(0, 0, 0);
+    mCamera->setNearClipDistance(0.3);
+    mCamera->setFarClipDistance(300.0);
+
     for(int i=0; i<mObject->getNumberComponents(); i++)
     {
         Component *c = mObject->getComponent(i);
@@ -43,6 +49,7 @@ void ComponentCamera::init()
         }
     }
     mObject->getSceneNode()->attachObject(mCamera);
+    LOG_OUT("log");
 }
     
 void ComponentCamera::update(float elapsedTime)

@@ -6,6 +6,8 @@
 #include "OGRE/OgreSceneNode.h"
 #include "OGRE/OgreString.h"
 
+#include <boost/thread/mutex.hpp>
+
 #include <vector>
 
 namespace ENGINE
@@ -38,6 +40,8 @@ private:
     Ogre::SceneNode *mNode;
     Ogre::String mName;
     std::vector<Component *> mComponents;
+    boost::mutex mComponentsMutex;
+    bool mInit;
 
 };
 

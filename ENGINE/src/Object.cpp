@@ -13,6 +13,7 @@ Object::Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent,
     mNode->setPosition(pos);
     mNode->setOrientation(ori);
     mNode->getUserObjectBindings().setUserAny("Object", Ogre::Any(this));
+    mInit = false;
 }
 
 Object::~Object()
@@ -27,23 +28,35 @@ Object::~Object()
     
 void Object::addComponent(Component *component)
 {
+    mComponentsMutex.lock();
     mComponents.push_back(component);
+    mComponentsMutex.unlock();
 }
 
 void Object::init()
 {
+    mComponentsMutex.lock();
     for(std::vector<Component *>::iterator i = mComponents.begin(); i!=mComponents.end(); ++i)
     {
         (*i)->init();
     }
+    mComponentsMutex.unlock();
 }
 
 void Object::update(float elapsedTime)
 {
+    if(!mInit)
+    {
+        mInit = true;
+        init();
+    }
+
+    mComponentsMutex.lock();
     for(std::vector<Component *>::iterator i = mComponents.begin(); i!=mComponents.end(); ++i)
     {
         (*i)->update(elapsedTime);
     }
+    mComponentsMutex.unlock();
 }
 
 void Object::receiveMessage(Message *message)
@@ -53,8 +66,10 @@ void Object::receiveMessage(Message *message)
         MessageSetPosition *m = (MessageSetPosition *)message;
         mNode->setPosition(m->mX, m->mY, m->mZ);
     }
+    mComponentsMutex.lock();
     for(std::vector<Component *>::iterator i = mComponents.begin(); i!=mComponents.end(); ++i)
     {
         (*i)->receiveMessage(message);
     }
+    mComponentsMutex.unlock();
 }
