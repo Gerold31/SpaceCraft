@@ -22,6 +22,9 @@
 #include "ComponentViewport.hpp"
 #include "ComponentServerConnection.hpp"
 
+#include "ComponentCPU.hpp"
+#include "ComponentMemory.hpp"
+
 #include "Message.hpp"
 #include "MessageEngine.hpp"
 #include "MessageMove.hpp"
@@ -30,6 +33,7 @@
 #include "OGRE/OgreSceneManager.h"
 
 using namespace ENGINE;
+using namespace SpaceCraft;
 
 int main(int argc, char **argv)
 {
@@ -45,6 +49,9 @@ int main(int argc, char **argv)
         SystemObjectFactory::getSingleton()->registerComponent(ComponentRenderable::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentViewport::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentServerConnection::getType());
+
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentCPU::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentMemory::getType());
         
         Message::registerMessge(MessageQuit::getID(), MessageQuit::CreateMessage);
         Message::registerMessge(MessageStartMoveForward::getID(), MessageStartMoveForward::CreateMessage);
@@ -88,6 +95,7 @@ int main(int argc, char **argv)
         Engine::getSingleton()->init();
 
         LOG("init world", "log");
+
         if(SystemConfiguration::getSingleton()->isClient())
         {
         }
