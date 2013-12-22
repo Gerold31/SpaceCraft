@@ -20,8 +20,9 @@ public:
     void init();
     void update(float elapsedTime);
     void receiveMessage(Message *message);
-
-    virtual void interrupt() = 0;
+    
+    void connect(ComponentCPU *_CPU) {mCPU = _CPU;}
+    bool isConnected() {return mCPU;}
 
     WORD getIDL() {return  mID        & 0xFFFF;}
     WORD getIDH() {return (mID >> 16) & 0xFFFF;}
@@ -30,6 +31,8 @@ public:
     WORD getMFH() {return (mMF >> 16) & 0xFFFF;}
 
 protected:
+    virtual void interrupt() = 0;
+
     ComponentCPU *mCPU;
     const unsigned int mID, mMF;
     const WORD mVER;

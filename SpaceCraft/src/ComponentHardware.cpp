@@ -2,6 +2,7 @@
 
 #include "TypeInfo.hpp"
 #include "SystemLog.hpp"
+#include "MessageCPU.hpp"
 
 using namespace SpaceCraft;
 
@@ -10,6 +11,7 @@ ComponentHardware::ComponentHardware(Object *object, ParamMap &params, unsigned 
     mID(id), mVER(ver), mMF(mf)
 {
     LOG_IN("component");
+    mCPU = nullptr;
     LOG_OUT("component");
 }
 
@@ -34,5 +36,9 @@ void ComponentHardware::update(float elapsedTime)
 void ComponentHardware::receiveMessage(Message *message)
 {
     LOG_IN_FRAME;
+    if(message->getID() == MessageInterrupt::getID())
+    {
+        interrupt();
+    }
     LOG_OUT_FRAME;
 }

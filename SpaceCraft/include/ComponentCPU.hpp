@@ -30,8 +30,6 @@ public:
     void update(float elapsedTime);
     void receiveMessage(Message *message);
 
-    void interrupt(WORD msg);
-
     void halt(int cycles){mCycles += cycles;}
 
     void start();
@@ -51,6 +49,8 @@ public:
     static TypeInfo *getType() {return mType;}
 
 private:
+    void interrupt(WORD msg);
+
     static TypeInfo *mType;
 
     const double mFrequency;

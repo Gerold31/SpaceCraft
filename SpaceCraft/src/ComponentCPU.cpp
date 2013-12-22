@@ -4,6 +4,7 @@
 #include "SystemLog.hpp"
 #include "ComponentHardware.hpp"
 #include "ComponentMemory.hpp"
+#include "MessageCPU.hpp"
 
 using namespace SpaceCraft;
 
@@ -424,7 +425,10 @@ void ComponentCPU::run()
                     {
                         ComponentHardware *dev = mDevices.at(a);
                         if(dev)
-                            dev->interrupt();
+                        {
+                            MessageInterrupt m(0);
+                            m.sendTo(dev);
+                        }
                         mCycles+=4;
                         break;
                     }
