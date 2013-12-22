@@ -1,8 +1,10 @@
 #ifndef _COMPONENTMEMORY_HPP_
 #define _COMPONENTMEMORY_HPP_
 
-#include "Component.hpp"
 #include "SpaceCraftDefines.hpp"
+#include "Component.hpp"
+
+using namespace ENGINE;
 
 namespace SpaceCraft
 {

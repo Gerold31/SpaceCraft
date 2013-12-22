@@ -1,8 +1,10 @@
 #ifndef _COMPONENTHARDWARE_HPP_
 #define _COMPONENTHARDWARE_HPP_
 
-#include "Component.hpp"
 #include "SpaceCraftDefines.hpp"
+#include "Component.hpp"
+
+using namespace ENGINE;
 
 namespace SpaceCraft
 {

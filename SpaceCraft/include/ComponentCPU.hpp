@@ -1,14 +1,16 @@
 #ifndef _COMPONENTCPU_HPP_
 #define _COMPONENTCPU_HPP_
 
-#include "Component.hpp"
 #include "SpaceCraftDefines.hpp"
+#include "Component.hpp"
 
 #include <queue>
 #include <vector>
 
 #include <boost/thread.hpp>
 #include <boost/thread/mutex.hpp>
+
+using namespace ENGINE;
 
 namespace SpaceCraft
 {
