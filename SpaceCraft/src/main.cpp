@@ -24,11 +24,16 @@
 
 #include "ComponentCPU.hpp"
 #include "ComponentMemory.hpp"
+#include "ComponentHardwareDisplay.hpp"
+#include "ComponentHardwareKeyboard.hpp"
 
 #include "Message.hpp"
 #include "MessageEngine.hpp"
 #include "MessageMove.hpp"
 #include "MessageObjectFactory.hpp"
+
+#include "MessageCPU.hpp"
+#include "MessageHardwareKeyboard.hpp"
 
 #include "OGRE/OgreSceneManager.h"
 
@@ -52,7 +57,10 @@ int main(int argc, char **argv)
 
         SystemObjectFactory::getSingleton()->registerComponent(ComponentCPU::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentMemory::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentHardwareDisplay::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentHardwareKeyboard::getType());
         
+
         Message::registerMessge(MessageQuit::getID(), MessageQuit::CreateMessage);
         Message::registerMessge(MessageStartMoveForward::getID(), MessageStartMoveForward::CreateMessage);
         Message::registerMessge(MessageStopMoveForward::getID(), MessageStopMoveForward::CreateMessage);
@@ -65,7 +73,12 @@ int main(int argc, char **argv)
         Message::registerMessge(MessageLookAtRel::getID(), MessageLookAtRel::CreateMessage);
         Message::registerMessge(MessageCreateObject::getID(), MessageCreateObject::CreateMessage);
         Message::registerMessge(MessageSetPosition::getID(), MessageSetPosition::CreateMessage);
+
+        Message::registerMessge(MessageInterrupt::getID(), MessageInterrupt::CreateMessage);
+        Message::registerMessge(MessageHardwareKeyPressed::getID(), MessageHardwareKeyPressed::CreateMessage);
+        Message::registerMessge(MessageHardwareKeyReleased::getID(), MessageHardwareKeyReleased::CreateMessage);
         
+
         Engine::getSingleton()->addSystem(SystemConfiguration::getSingleton());
 
         if(argc == 2)

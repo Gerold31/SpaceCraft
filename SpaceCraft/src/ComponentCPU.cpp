@@ -5,6 +5,7 @@
 #include "ComponentHardware.hpp"
 #include "ComponentMemory.hpp"
 #include "MessageCPU.hpp"
+#include "Object.hpp"
 
 using namespace SpaceCraft;
 
@@ -54,8 +55,7 @@ void ComponentCPU::receiveMessage(Message *message)
     LOG_OUT_FRAME;
 }
 
-
-void ComponentCPU::interrupt(WORD msg)
+void ComponentCPU::interrupt(SpaceCraft::WORD msg)
 {
     if(mIA != 0)
     {
@@ -427,7 +427,7 @@ void ComponentCPU::run()
                         if(dev)
                         {
                             MessageInterrupt m(0);
-                            m.sendTo(dev);
+                            m.sendTo(dev->getObject());
                         }
                         mCycles+=4;
                         break;

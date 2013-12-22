@@ -6,8 +6,8 @@
 
 using namespace SpaceCraft;
 
-ComponentHardware::ComponentHardware(Object *object, ParamMap &params, unsigned int id, unsigned int mf, WORD ver) :
-    Component(object, params, mType),
+ComponentHardware::ComponentHardware(Object *object, ParamMap &params, TypeInfo *type, unsigned int id, unsigned int mf, WORD ver) :
+    Component(object, params, type),
     mID(id), mVER(ver), mMF(mf)
 {
     LOG_IN("component");

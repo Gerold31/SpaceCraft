@@ -14,7 +14,7 @@ class ComponentCPU;
 class ComponentHardware : public Component
 {
 public:
-    ComponentHardware(Object *object, ParamMap &params, unsigned int id, unsigned int mf, WORD ver);
+    ComponentHardware(Object *object, ParamMap &params, TypeInfo *type, unsigned int id, unsigned int mf, WORD ver);
     ~ComponentHardware();
 
     void init();
