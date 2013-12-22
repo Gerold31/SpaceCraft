@@ -70,13 +70,14 @@ void SystemLog::createLog(std::string filename)
     mState = STATE_CREATED;
 
     addLogType("error"    , "color: #FFFF00;background-color: #FF0000");
+    addLogType("warning"  , "color: #000000;background-color: #FF7F00");
     addLogType("log"      , "color: #000000;background-color: #FFFFFF");
     addLogType("engine"   , "color: #7F0000;background-color: #FFFFFF");
     addLogType("system"   , "color: #007F00;background-color: #FFFFFF");
     addLogType("object"   , "color: #00007F;background-color: #FFFFFF");
     addLogType("component", "color: #007F7F;background-color: #FFFFFF");
     addLogType("message"  , "color: #7F7F00;background-color: #FFFFFF");
-    addLogType("frame"    , "color: #222222;background-color: #FFFFFF");
+    addLogType("frame"    , "color: #444444;background-color: #FFFFFF");
 
     LOG_OUT("system");
 }
@@ -88,6 +89,9 @@ void SystemLog::addLogType(std::string type, std::string style)
         throw "cannot add Logtype";
 
     mLogFile << "td." << type << "{text-align: left; vertical-align: middle; border-width:2px;" << style << "}" << std::endl;
+
+    LOG("Log type: \"" + type + "\"", type);
+
     LOG_OUT("system");
 }
 
