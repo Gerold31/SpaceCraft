@@ -1,5 +1,7 @@
 #include "SystemLog.hpp"
 
+#include <boost/date_time/posix_time/posix_time.hpp>
+
 #define IGNORE_BUFFER
 
 using namespace ENGINE;
@@ -30,11 +32,11 @@ void SystemLog::init()
 
 void SystemLog::update(float elapsedTime)
 {
-    LOG_IN_FRAME;
     mLogBufferMutex.lock();
     for(auto i=mLogBuffer.begin(); i!=mLogBuffer.end(); ++i)
     {
-        std::string out = "<tr><td><pre>@todo add time</pre></td>";
+        boost::posix_time::ptime t = boost::posix_time::microsec_clock::local_time();
+        std::string out = "<tr><td><pre>" + boost::posix_time::to_simple_string(t) + "</pre></td>";
         ThreadID id = (*i).first.second;
         for(auto j=mThreads.begin(); j!=mThreads.end(); ++j)
         {
@@ -47,7 +49,6 @@ void SystemLog::update(float elapsedTime)
     }
     mLogBuffer.clear();
     mLogBufferMutex.unlock();
-    LOG_OUT_FRAME;
 }
 
 void SystemLog::receiveMessage(Message *msg)
