@@ -15,7 +15,7 @@
 #include "OGRE/OgreHardwarePixelBuffer.h"
 #include "OGRE/OgreMaterial.h"
 
-#define FRAMES_PER_SEC (1.0) /*(30.0)*/
+#define FRAMES_PER_SEC (30.0)
 #define TEXTURE_WIDTH (128)
 #define TEXTURE_HEIGHT (96)
 
@@ -205,11 +205,13 @@ void ComponentHardwareDisplay::initData()
 {
 	LOG_IN("hardware");
     if(!mData)
+    {
         mData = new unsigned short[32*12];
-    for(int i=0; i<32; i++)
-        for(int j=0; j<12; j++)
-            mData[i + 32*j] = 0x20 + ((i/16 + j/6*2) << 8);
-            //mData[i + 32*j] = 0x20 + (i/2 << 8);
+        for(int i=0; i<32; i++)
+            for(int j=0; j<12; j++)
+                mData[i + 32*j] = 0x20 + ((i/16 + j/6*2) << 8);
+                //mData[i + 32*j] = 0x20 + (i/2 << 8);
+    }
 	LOG_OUT("hardware");
 }
 
@@ -285,6 +287,9 @@ void ComponentHardwareDisplay::renderImage()
     const Ogre::PixelBox &pixBox = Ogre::PixelBox(TEXTURE_WIDTH,TEXTURE_HEIGHT,0,Ogre::PF_R8G8B8, data);// pixelBuffer->getCurrentLock();
 
     Ogre::uint8* pDest = static_cast<Ogre::uint8*>(pixBox.data);
+        
+    //if(mCPU)
+    //    mCPU->stop();
 
     for(int y=0; y<TEXTURE_HEIGHT; y++)
     {
@@ -300,14 +305,20 @@ void ComponentHardwareDisplay::renderImage()
             *pDest++ = b;
             *pDest++ = g;
             *pDest++ = r;
-            *pDest++ = 0;
+            //*pDest++ = 0;
         }
     } 
+
+    //if(mCPU)
+    //    mCPU->start();
+
     //pixelBuffer->unlock();
 
     Ogre::uchar* pData = static_cast<Ogre::uchar*>(pixBox.data);
     Ogre::Image img;
     img.loadDynamicImage(pData, TEXTURE_WIDTH, TEXTURE_HEIGHT, Ogre::PF_R8G8B8);
+
+    //img.save("out.png");
 
     MessageDisplaySetImage msg(img);
     msg.sendTo(mObject);

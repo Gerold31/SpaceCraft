@@ -20,11 +20,29 @@ class MessageDisplaySetImage : public Message
 {
 public:
     MessageDisplaySetImage(Ogre::Image &img) : Message(getID(), false, true, false, true, false), mImg(img) {}
-    static void *CreateMessage(std::istream &stream) {int len; stream >> len; char *data = new char[len+1]; stream.read(data, len+1); Ogre::DataStreamPtr d(new Ogre::MemoryDataStream(data+1, len, false)); delete[] data; Ogre::Image img; img.load(d, "png"); void *m = new MessageDisplaySetImage(img); return m; }
+    static void *CreateMessage(std::istream &stream) 
+    {
+        int len;
+        stream >> len;
+        char *data = new char[len+1];
+        stream.read(data, len+1);
+        Ogre::DataStreamPtr d(new Ogre::MemoryDataStream(data+1, len, false));
+        Ogre::Image img;
+        img.load(d, "png");
+        delete[] data;
+        void *m = new MessageDisplaySetImage(img);
+        return m; 
+    }
     static int getID() {if(mID == -1) mID = calcID("MessageDisplaySetImage"); return mID;}
     Ogre::Image mImg;
 private:
-    void _serialize(std::ostream &stream) { Ogre::String data = mImg.encode("png")->getAsString(); stream << data.length() << std::endl; stream.write(data.c_str(), data.length()); stream << std::endl;}
+    void _serialize(std::ostream &stream) 
+    {
+        Ogre::String data = mImg.encode("png")->getAsString(); 
+        stream << data.length() << std::endl;
+        stream.write(data.data(), data.length());
+        stream << std::endl;
+    }
     static int mID;
 };
 

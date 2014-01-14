@@ -685,7 +685,7 @@ void ComponentCPU::run()
     LOG_OUT("hardware");
 }
 
-std::string ComponentCPU::disas(WORD i)
+std::string ComponentCPU::disas(SpaceCraft::WORD i)
 {
     BYTE op =  i          & 0x1F;
     WORD a  =  i >> 0x0A;
