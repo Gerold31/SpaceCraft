@@ -2,15 +2,22 @@
 
 #include "TypeInfo.hpp"
 #include "ComponentCPU.hpp"
+#include "ComponentRenderable.hpp"
 #include "SystemLog.hpp"
 #include "SystemGraphics.hpp"
+#include "SystemConfiguration.hpp"
 #include "Object.hpp"
+#include "MessageHardwareDisplay.hpp"
 
 #include "OGRE/OgreSceneManager.h"
 #include "OGRE/OgreRenderWindow.h"
 #include "OGRE/OgreEntity.h"
 #include "OGRE/OgreHardwarePixelBuffer.h"
 #include "OGRE/OgreMaterial.h"
+
+#define FRAMES_PER_SEC (1.0) /*(30.0)*/
+#define TEXTURE_WIDTH (128)
+#define TEXTURE_HEIGHT (96)
 
 using namespace SpaceCraft;
 
@@ -20,6 +27,10 @@ ComponentHardwareDisplay::ComponentHardwareDisplay(Object *object, ParamMap &par
     ComponentHardware(object, params, mType, 0x7349F615, 0x1C6C8B36, 0x1802)
 {
 	LOG_IN("hardware");
+    mTimeSinceFrame = 0;
+
+    mData = mPalette = mDefaultPalette = nullptr;
+    mFont = mDefaultFont= nullptr;
 	LOG_OUT("hardware");
 }
 
@@ -40,47 +51,84 @@ void ComponentHardwareDisplay::init()
 {
 	LOG_IN("hardware");
 
-    Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
-	Ogre::String textureName = mObject->getName() + "Texture";
+    if(SystemConfiguration::getSingleton()->isClient())
+    {
+        Ogre::TextureManager& textureManager = Ogre::TextureManager::getSingleton();
+        Ogre::String textureName = mObject->getName() + "DisplayTexture";
 
-    mTexture = textureManager.createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-		Ogre::TEX_TYPE_2D, 128, 96, 0,
-        Ogre::PF_R8G8B8, Ogre::TU_DEFAULT);
+        mTexture = textureManager.createManual(textureName, Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+            Ogre::TEX_TYPE_2D, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0,
+            Ogre::PF_R8G8B8, Ogre::TU_DEFAULT);
 
-    
-    Ogre::MaterialManager& materialManager = Ogre::MaterialManager::getSingleton();
-    Ogre::MaterialPtr material = materialManager.create(mObject->getName() + "Material", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
-            
-    Ogre::Technique *technique = material->getTechnique(0);
-    Ogre::Pass *pass = technique->getPass(0);
-    Ogre::TextureUnitState* textureUnit = pass->createTextureUnitState();
-    textureUnit->setTextureScale(-1, -1); // @todo fix this
-	textureUnit->setTextureName(textureName);
+        Ogre::MaterialManager& materialManager = Ogre::MaterialManager::getSingleton();
+        Ogre::MaterialPtr material = materialManager.create(mObject->getName() + "DisplayMaterial", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME);
 
-    mEntity->setMaterial(material);
+        Ogre::Technique *technique = material->getTechnique(0);
+        Ogre::Pass *pass = technique->getPass(0);
+        Ogre::TextureUnitState* textureUnit = pass->createTextureUnitState();
+        textureUnit->setTextureScale(-1, -1); // @todo fix this
+        textureUnit->setTextureName(textureName);
 
-    mData = mPalette = mDefaultPalette = NULL;
-    mFont = mDefaultFont= NULL;
-    
+        bool found = false;
+        for(int i=0; i<mObject->getNumberComponents(); i++)
+        {
+            Component *component = mObject->getComponent(i);
+            if(component->getType() == ComponentRenderable::getType())
+            {
+                ((ComponentRenderable *)component)->setMaterial(material);
+                found = true;
+                break;
+            }
+        }
+        if(!found)
+            LOG("No ComponentRenderable found!", "error");
+
+    }
+
     initData();
     initFont();
     initPalette();
-    mFont = mDefaultFont;
-    mPalette = mDefaultPalette;
-    draw();
+
+    if(!mFont)
+        mFont = mDefaultFont;
+    if(!mPalette)
+        mPalette = mDefaultPalette;
+
+    renderImage();
+
 	LOG_OUT("hardware");
 }
     
 void ComponentHardwareDisplay::update(float elapsedTime)
 {
-	LOG_IN_FRAME;
-    draw();
+    LOG_IN_FRAME;
+    if(SystemConfiguration::getSingleton()->isServer())
+    {
+        mTimeSinceFrame += elapsedTime;
+        if(mTimeSinceFrame > 1.0/FRAMES_PER_SEC)
+        {
+            mTimeSinceFrame = 0;
+            renderImage();
+        }
+    }else if(SystemConfiguration::getSingleton()->isClient())
+    {
+        mTexture->getBuffer()->blitFromMemory(mImage.getPixelBox());
+    }
 	LOG_OUT_FRAME;
 }
 
 void ComponentHardwareDisplay::receiveMessage(Message *message)
 {
 	LOG_IN_FRAME;
+    if(message->getID() == MessageDisplaySetImage::getID())
+    {
+        MessageDisplaySetImage *m = (MessageDisplaySetImage *)message;
+        mImage = m->mImg;
+    }
+    else
+    {
+        ComponentHardware::receiveMessage(message);
+    }
 	LOG_OUT_FRAME;
 }
 
@@ -194,33 +242,36 @@ void ComponentHardwareDisplay::initFont()
     if(!mDefaultFont)
         mDefaultFont = new unsigned int[128];
 	std::ifstream ifs("font.png", std::ios::binary|std::ios::in);
-	if (ifs.is_open())
+    if(ifs.is_open())
 	{
 		Ogre::DataStreamPtr data_stream(new Ogre::FileStreamDataStream("font.png", &ifs, false));
 		Ogre::Image img;
 		img.load(data_stream, "png");
-		Ogre::TextureManager::getSingleton().loadImage("font.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, img, Ogre::TEX_TYPE_2D, 0, 1.0f);
+        //Ogre::TextureManager::getSingleton().loadImage("font.png", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME, img, Ogre::TEX_TYPE_2D, 0, 1.0f);
 
-        for(size_t x=0; x<img.getWidth(); x+=4)
+        for(size_t y=0; y<img.getHeight(); y+=8)
         {
-            for(size_t y=0; y<img.getHeight(); y+=8)
+            for(size_t x=0; x<img.getWidth(); x+=4)
             {
                 int letter = 0;
-                for(int i=0; i<4; i++)
+                for(int j=0; j<8; j++)
                 {
-                    for(int j=0; j<8; j++)
+                    for(int i=0; i<4; i++)
                     {
-                        letter |= (img.getColourAt(x+i, y+j, 0) == Ogre::ColourValue(1,1,1) ? 1 : 0) << (32 - i + j*4);
+                        letter |= (img.getColourAt(x+i, y+j, 0) == Ogre::ColourValue(0,0,0) ? 0 : 1) << (32 - i + j*4);
                     }
                 }
                 mDefaultFont[x/4 + 32*y/8] = letter;
             }
         }
+    }else
+    {
+        LOG("cannot open font.png", "error");
     }
 	LOG_OUT("hardware");
 }
 
-void ComponentHardwareDisplay::draw()
+void ComponentHardwareDisplay::renderImage()
 {
 	LOG_IN_FRAME;
     Ogre::Image::Box pixelBox;
@@ -229,23 +280,23 @@ void ComponentHardwareDisplay::draw()
 
     //pixelBuffer->lock(pixelBox,Ogre::HardwareBuffer::HBL_NORMAL);
 
-    Ogre::uint8 *data = new Ogre::uint8[128*96*4]();
+    Ogre::uint8 *data = new Ogre::uint8[TEXTURE_WIDTH*TEXTURE_HEIGHT*4]();
         
-    const Ogre::PixelBox &pixBox = Ogre::PixelBox(128,96,0,Ogre::PF_R8G8B8, data);// pixelBuffer->getCurrentLock();
+    const Ogre::PixelBox &pixBox = Ogre::PixelBox(TEXTURE_WIDTH,TEXTURE_HEIGHT,0,Ogre::PF_R8G8B8, data);// pixelBuffer->getCurrentLock();
 
     Ogre::uint8* pDest = static_cast<Ogre::uint8*>(pixBox.data);
-    
-    for(int y=0; y<96; y++)
+
+    for(int y=0; y<TEXTURE_HEIGHT; y++)
     {
-        for(int x=0; x<128; x++)
+        for(int x=0; x<TEXTURE_WIDTH; x++)
         {
             int data = *(mData + x/4 + 32*(y/8));
-            int color = mFont[data & 0x7F] & (1 << (32 - x%4 + 4*(y%8))) ? mPalette[(data >> 12) & 0xF] : mPalette[(data >> 8) & 0xF];
+            int color = (mFont[data & 0x7F] & (1 << (32 - x%4 + 4*(y%8)))) ? mPalette[(data >> 12) & 0xF] : mPalette[(data >> 8) & 0xF];
 
-            int b = (((color >> 0) & 0xF) << 4) | (color >> 0) & 0xF;
-            int g = (((color >> 4) & 0xF) << 4) | (color >> 4) & 0xF;
-            int r = (((color >> 8) & 0xF) << 4) | (color >> 8) & 0xF;
-                                    
+            Ogre::uint8 b = (((color >> 0) & 0xF) << 4) | (color >> 0) & 0xF;
+            Ogre::uint8 g = (((color >> 4) & 0xF) << 4) | (color >> 4) & 0xF;
+            Ogre::uint8 r = (((color >> 8) & 0xF) << 4) | (color >> 8) & 0xF;
+
             *pDest++ = b;
             *pDest++ = g;
             *pDest++ = r;
@@ -256,11 +307,10 @@ void ComponentHardwareDisplay::draw()
 
     Ogre::uchar* pData = static_cast<Ogre::uchar*>(pixBox.data);
     Ogre::Image img;
-    img.loadDynamicImage(pData, mTexture->getWidth(), mTexture->getHeight(), mTexture->getDepth() ,mTexture->getFormat());
+    img.loadDynamicImage(pData, TEXTURE_WIDTH, TEXTURE_HEIGHT, Ogre::PF_R8G8B8);
 
-    //img.save("screen.png");
-
-    mTexture->getBuffer()->blitFromMemory(img.getPixelBox());
+    MessageDisplaySetImage msg(img);
+    msg.sendTo(mObject);
     
     delete[] data;
 	LOG_OUT_FRAME;

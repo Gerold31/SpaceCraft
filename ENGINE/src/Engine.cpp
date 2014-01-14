@@ -69,7 +69,7 @@ void Engine::run()
         boost::posix_time::time_duration diff = t1 - t0;
         t0 = t1;
 
-        update(diff.total_milliseconds() / 1000.0f);
+        update(diff.total_nanoseconds() * 1e-9);
     }
     LOG_OUT("engine");
 }

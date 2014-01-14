@@ -34,6 +34,9 @@
 
 #include "MessageCPU.hpp"
 #include "MessageHardwareKeyboard.hpp"
+#include "MessageHardwareDisplay.hpp"
+
+#include "Object.hpp"
 
 #include "OGRE/OgreSceneManager.h"
 
@@ -77,6 +80,7 @@ int main(int argc, char **argv)
         Message::registerMessge(MessageInterrupt::getID(), MessageInterrupt::CreateMessage);
         Message::registerMessge(MessageHardwareKeyPressed::getID(), MessageHardwareKeyPressed::CreateMessage);
         Message::registerMessge(MessageHardwareKeyReleased::getID(), MessageHardwareKeyReleased::CreateMessage);
+        Message::registerMessge(MessageDisplaySetImage::getID(), MessageDisplaySetImage::CreateMessage);
         
 
         Engine::getSingleton()->addSystem(SystemConfiguration::getSingleton());
@@ -115,12 +119,60 @@ int main(int argc, char **argv)
 
         if(SystemConfiguration::getSingleton()->isServer())
         {
-            SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu1", "CPU");
-            SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, 0,  5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu2", "CPU");
-            SystemGameState::getSingleton()->addObject(Ogre::Vector3(-5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu3", "CPU");
-            SystemGameState::getSingleton()->addObject(Ogre::Vector3( 5, 0, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu4", "CPU");
-            SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, -5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu5", "CPU");
-            SystemGameState::getSingleton()->addObject(Ogre::Vector3(0,  5, 0), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu6", "CPU");
+            SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu", "CPU");
+            SystemGameState::getSingleton()->addObject(Ogre::Vector3(5, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "memory", "Memory");
+            SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, 2,  -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "display", "HardwareDisplay");
+
+            Object *cpuo = SystemObjectFactory::getSingleton()->getObject("cpu");
+            Object *memoryo = SystemObjectFactory::getSingleton()->getObject("memory");
+            Object *displayo = SystemObjectFactory::getSingleton()->getObject("display");
+
+            assert(cpuo);
+            assert(memoryo);
+            assert(displayo);
+
+            ComponentCPU *cpuc;
+            ComponentMemory *memoryc;
+            ComponentHardwareDisplay *displayc;
+
+            for(int i=0; i<cpuo->getNumberComponents(); i++)
+            {
+                Component *c = cpuo->getComponent(i);
+                if(c->getType() == ComponentCPU::getType())
+                {
+                    cpuc = (ComponentCPU*)c;
+                    break;
+                }
+            }
+            for(int i=0; i<memoryo->getNumberComponents(); i++)
+            {
+                Component *c = memoryo->getComponent(i);
+                if(c->getType() == ComponentMemory::getType())
+                {
+                    memoryc = (ComponentMemory*)c;
+                    break;
+                }
+            }
+            for(int i=0; i<displayo->getNumberComponents(); i++)
+            {
+                Component *c = displayo->getComponent(i);
+                if(c->getType() == ComponentHardwareDisplay::getType())
+                {
+                    displayc = (ComponentHardwareDisplay*)c;
+                    break;
+                }
+            }
+
+            assert(cpuc);
+            assert(memoryc);
+            assert(displayc);
+
+            cpuc->setMemory(memoryc);
+            cpuc->addDevice(displayc);
+            displayc->connect(cpuc);
+
+            cpuc->start();
+
         }
         LOG("init finished", "log");
 

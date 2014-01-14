@@ -31,7 +31,7 @@ public:
 private:
 	void interrupt();
     
-    void draw();
+    void renderImage();
     
     void initData();
     void initFont();
@@ -40,12 +40,15 @@ private:
     Ogre::Entity *mEntity;
     Ogre::TexturePtr mTexture;
     Ogre::Light *mLight[4];
+    Ogre::Image mImage;
 
     unsigned short *mData;
     unsigned int *mFont;
     unsigned short *mPalette;
     unsigned int *mDefaultFont;         // @todo static?
     unsigned short *mDefaultPalette;    // @todo static?
+
+    float mTimeSinceFrame;
 	
     static TypeInfo *mType;
 

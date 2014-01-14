@@ -27,7 +27,6 @@ SystemGraphics::SystemGraphics() :
         
         if(SystemConfiguration::getSingleton()->getConfiguration("Rendering") == "true")
         {
-
             const Ogre::RenderSystemList& renderSystemList = mRoot->getAvailableRenderers();
             if( renderSystemList.size() == 0 )
             {
@@ -53,19 +52,19 @@ SystemGraphics::SystemGraphics() :
 
         mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC, "SceneMgr");
         mRootSceneNode = mSceneMgr->getRootSceneNode();
-        
+
+
+        // set up resources
+        // Load resource paths from config file
         if(mWindow)
         {
-
-            // set up resources
-            // Load resource paths from config file
             Ogre::ConfigFile cf;
 
             cf.load("resources.cfg");
- 
+
             // Go through all sections & settings in the file
             Ogre::ConfigFile::SectionIterator seci = cf.getSectionIterator();
- 
+
             Ogre::String secName, typeName, archName;
             while (seci.hasMoreElements())
             {
@@ -79,10 +78,11 @@ SystemGraphics::SystemGraphics() :
                     Ogre::ResourceGroupManager::getSingleton().addResourceLocation(archName, typeName, secName);
                 }
             }
-            Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
         }
 
-        mSceneMgr->setAmbientLight(Ogre::ColourValue(0,0,0));
+        Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+
+        mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
         mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_TEXTURE_ADDITIVE);
         mSceneMgr->setShadowFarDistance(500);
 
@@ -131,12 +131,12 @@ void SystemGraphics::update(float elapsedTime)
     if(mWindow)
     {
         mWindow->update(false);
- 
+
         mWindow->swapBuffers();
 
         mRoot->renderOneFrame();
     }
- 
+
     Ogre::WindowEventUtilities::messagePump();
     LOG_OUT_FRAME;
 }

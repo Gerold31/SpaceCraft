@@ -14,8 +14,9 @@ std::map<int, CreateMessage> Message::mMessages;
 void Message::sendTo(MessageReceiver *receiver)
 {
     if((mLocalToServer && SystemConfiguration::getSingleton()->isServer()) || (mLocalToClient && SystemConfiguration::getSingleton()->isClient()))
+    {
         receiver->receiveMessage(this);
-
+    }
     if(mSendToServer && !SystemConfiguration::getSingleton()->isServer())
     {
         assert(SystemConfiguration::getSingleton()->isClient());
@@ -36,7 +37,6 @@ int Message::calcID(std::string name)
     {
         id += name[i] << (i % 38);
     }
-    //LOG("Message " +  id + ": " + name, "log");
     LOG_OUT("message");
     return id;
 }
@@ -50,9 +50,12 @@ void Message::serialize(std::ostream &stream)
 
 Message *Message::deserialize(std::istream &stream)
 {
+    LOG_IN_FRAME;
     int id;
     stream >> id;
-    //LOG("deserialize: " << std::hex << id << std::endl;
 
-    return (Message *)mMessages.at(id)(stream);
+    Message *m = (Message *)mMessages.at(id)(stream);
+
+    LOG_OUT_FRAME;
+    return m;
 }

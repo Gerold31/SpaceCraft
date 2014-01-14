@@ -37,7 +37,7 @@ public:
     void reset();
     void run();
 
-    void addDevice(ComponentHardware *dev);
+    void addDevice(ComponentHardware *dev) {mDevices.push_back(dev);}
     int getNumberDevices();
     ComponentHardware *getDevice(int i);
 
@@ -50,6 +50,7 @@ public:
 
 private:
     void interrupt(WORD msg);
+    std::string disas(WORD i);
 
     static TypeInfo *mType;
 

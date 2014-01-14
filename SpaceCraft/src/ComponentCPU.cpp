@@ -15,32 +15,32 @@ ComponentCPU::ComponentCPU(Object *object, ParamMap &params) :
     Component(object, params, mType),
     mFrequency(1000000.0)
 {
-    LOG_IN("component");
+    LOG_IN("hardware");
     mRunning = false;
     mInterrupQueuing = false;
     mInstructionsSinceInterrupt = 0;
     mInterrupts = 0;
     reset();
-    LOG_OUT("component");
+    LOG_OUT("hardware");
 }
 
 ComponentCPU::~ComponentCPU()
 {
-    LOG_IN("component");
-    LOG_OUT("component");
+    LOG_IN("hardware");
+    LOG_OUT("hardware");
 }
 
 void *ComponentCPU::createInstance(Object *object, ParamMap &params)
 {
-    LOG_IN("component");
-    LOG_OUT("component");
+    LOG_IN("hardware");
+    LOG_OUT("hardware");
     return new ComponentCPU(object, params);
 }
 
 void ComponentCPU::init()
 {
-    LOG_IN("component");
-    LOG_OUT("component");
+    LOG_IN("hardware");
+    LOG_OUT("hardware");
 }
 
 void ComponentCPU::update(float elapsedTime)
@@ -57,6 +57,7 @@ void ComponentCPU::receiveMessage(Message *message)
 
 void ComponentCPU::interrupt(SpaceCraft::WORD msg)
 {
+    LOG_IN("hardware");
     if(mIA != 0)
     {
         if(mIdle)
@@ -82,27 +83,35 @@ void ComponentCPU::interrupt(SpaceCraft::WORD msg)
             mMutex.unlock();
         }
     }
+    LOG_OUT("hardware");
 }
 
 void ComponentCPU::setMemory(ComponentMemory *mem)
 {
+    LOG_IN("hardware");
     mRam = mem->getMemory();
+    LOG_OUT("hardware");
 }
 
 void ComponentCPU::start()
 {
+    LOG_IN("hardware");
     mRunning = true;
     mThread = boost::thread(boost::bind(&ComponentCPU::run, this));
+    LOG_OUT("hardware");
 }
 
 void ComponentCPU::stop()
 {
+    LOG_IN("hardware");
     mRunning = false;
     mThread.join();
+    LOG_OUT("hardware");
 }
 
 void ComponentCPU::reset()
 {
+    LOG_IN("hardware");
     for(int i=0; i<8; i++)
         mRegister[i] = 0;
     mPC = mSP = mEX = mIA = 0;
@@ -112,10 +121,12 @@ void ComponentCPU::reset()
         mInterruptQueue.pop();
     mInterrupts = 0;
     mIdle = false;
+    LOG_OUT("hardware");
 }
 
 void ComponentCPU::run()
 {
+    LOG_IN("hardware");
     unsigned int cycle = 0;
     unsigned int instr = 0;
     boost::posix_time::ptime t0 = boost::posix_time::microsec_clock::local_time();
@@ -401,6 +412,10 @@ void ComponentCPU::run()
                     case 0x10: // HWN a
                     {
                         (*pa) = mDevices.size();
+                        char c[2];
+                        c[0] = (mDevices.size() + '0');
+                        c[1] = 0;
+                        SystemLog::getSingleton()->log(c);
                         mCycles+=2;
                         break;
                     }
@@ -667,4 +682,349 @@ void ComponentCPU::run()
     printf("MHZ:  %f\n", 1.0*cycle/diff.total_microseconds());
     printf("MIPS: %f\n", 1.0*instr/diff.total_microseconds());
     printf("ms:   %lld\n", diff.total_milliseconds());
+    LOG_OUT("hardware");
+}
+
+std::string ComponentCPU::disas(WORD i)
+{
+    BYTE op =  i          & 0x1F;
+    WORD a  =  i >> 0x0A;
+    WORD b  = (i >> 0x05) & 0x1F;
+
+    std::string ops = "", as = "", bs = "";
+
+    switch(a)
+    {
+        case 0x00:
+            as = "A";
+            break;
+        case 0x01:
+            as = "B";
+            break;
+        case 0x02:
+            as = "C";
+            break;
+        case 0x03:
+            as = "X";
+            break;
+        case 0x04:
+            as = "Y";
+            break;
+        case 0x05:
+            as = "Z";
+            break;
+        case 0x06:
+            as = "I";
+            break;
+        case 0x07:
+            as = "J";
+            break;
+        case 0x08:
+            as = "[A]";
+            break;
+        case 0x09:
+            as = "[B]";
+            break;
+        case 0x0A:
+            as = "[C]";
+            break;
+        case 0x0B:
+            as = "[X]";
+            break;
+        case 0x0C:
+            as = "[Y]";
+            break;
+        case 0x0D:
+            as = "[Z]";
+            break;
+        case 0x0E:
+            as = "[I]";
+            break;
+        case 0x0F:
+            as = "[J]";
+            break;
+        case 0x10:
+            as = "[A + next]";
+            break;
+        case 0x11:
+            as = "[B + next]";
+            break;
+        case 0x12:
+            as = "[C + next]";
+            break;
+        case 0x13:
+            as = "[X + next]";
+            break;
+        case 0x14:
+            as = "[Y + next]";
+            break;
+        case 0x15:
+            as = "[Z + next]";
+            break;
+        case 0x16:
+            as = "[I + next]";
+            break;
+        case 0x17:
+            as = "[J + next]";
+            break;
+        case 0x18:
+            if(op == 0 && (b == 0x09 || b == 0x10))
+                as = "PUSH";
+            else
+                as = "POP";
+            break;
+        case 0x19:
+            as = "PEEK";
+            break;
+        case 0x1A:
+            as = "PICK";
+            break;
+        case 0x1B:
+            as = "SP";
+            break;
+        case 0x1C:
+            as = "PC";
+            break;
+        case 0x1D:
+            as = "EX";
+            break;
+        case 0x1E:
+            as = "[next]";
+            break;
+        case 0x1F:
+            as = "next";
+            break;
+        default:
+            as = "a-0x21";
+            break;
+    }
+    switch(b)
+    {
+        case 0x00:
+            bs = "A";
+            break;
+        case 0x01:
+            bs = "B";
+            break;
+        case 0x02:
+            bs = "C";
+            break;
+        case 0x03:
+            bs = "X";
+            break;
+        case 0x04:
+            bs = "Y";
+            break;
+        case 0x05:
+            bs = "Z";
+            break;
+        case 0x06:
+            bs = "I";
+            break;
+        case 0x07:
+            bs = "J";
+            break;
+        case 0x08:
+            bs = "[A]";
+            break;
+        case 0x09:
+            bs = "[B]";
+            break;
+        case 0x0A:
+            bs = "[C]";
+            break;
+        case 0x0B:
+            bs = "[X]";
+            break;
+        case 0x0C:
+            bs = "[Y]";
+            break;
+        case 0x0D:
+            bs = "[Z]";
+            break;
+        case 0x0E:
+            bs = "[I]";
+            break;
+        case 0x0F:
+            bs = "[J]";
+            break;
+        case 0x10:
+            bs = "[A + next]";
+            break;
+        case 0x11:
+            bs = "[B + next]";
+            break;
+        case 0x12:
+            bs = "[C + next]";
+            break;
+        case 0x13:
+            bs = "[X + next]";
+            break;
+        case 0x14:
+            bs = "[Y + next]";
+            break;
+        case 0x15:
+            bs = "[Z + next]";
+            break;
+        case 0x16:
+            bs = "[I + next]";
+            break;
+        case 0x17:
+            bs = "[J + next]";
+            break;
+        case 0x18:
+            bs = "PUSH";
+            break;
+        case 0x19:
+            bs = "PEEK";
+            break;
+        case 0x1A:
+            bs = "PICK";
+            break;
+        case 0x1B:
+            bs = "SP";
+            break;
+        case 0x1C:
+            bs = "PC";
+            break;
+        case 0x1D:
+            bs = "EX";
+            break;
+        case 0x1E:
+            bs = "[next]";
+            break;
+        case 0x1F:
+            bs = "next";
+            break;
+        default:
+            bs = "a-0x21";
+            break;
+    }
+
+    switch(op)
+    {
+    case 0x00: // special
+    {
+        switch(b)
+        {
+        case 0x01: // JSR a
+            ops = "JSR";
+            break;
+        case 0x08: // INT a
+            ops = "INT";
+            break;
+        case 0x09: // IAG a
+            ops = "IAG";
+            break;
+        case 0x0A: // IAS a
+            ops = "IAS";
+            break;
+        case 0x0B: // RFI a
+            ops = "RFI";
+            break;
+        case 0x0C: // IAQ a
+            ops = "IAQ";
+            break;
+        case 0x10: // HWN a
+            ops = "HWN";
+            break;
+        case 0x11: // HWQ a
+            ops = "HWQ";
+            break;
+        case 0x12: // HWI a
+            ops = "HWI";
+            break;
+        default:
+            return "invalid";
+            break;
+        }
+        return ops + " " + as;
+        break;
+    }
+    case 0x01: // SET b, a
+        ops = "SET";
+        break;
+    case 0x02: // ADD b, a
+        ops = "ADD";
+        break;
+    case 0x03: // SUB b, a
+        ops = "SUB";
+        break;
+    case 0x04: // MUL b, a
+        ops = "MUL";
+        break;
+    case 0x05: // MLI b, a
+        ops = "MLI";
+        break;
+    case 0x06: // DIV b, a
+        ops = "DIV";
+        break;
+    case 0x07: // DVI b, a
+        ops = "DVI";
+        break;
+    case 0x08: // MOD b, a
+        ops = "MOD";
+        break;
+    case 0x09: // MDI b, a
+        ops = "MDI";
+        break;
+    case 0x0A: // AND b, a
+        ops = "AND";
+        break;
+    case 0x0B: // BOR b, a
+        ops = "BOR";
+        break;
+    case 0x0C: // XOR b, a
+        ops = "XOR";
+        break;
+    case 0x0D: // SHR b, a
+        ops = "SHR";
+        break;
+    case 0x0E: // ASR b, a
+        ops = "ASR";
+        break;
+    case 0x0F: // SHL b, a
+        ops = "SHL";
+        break;
+    case 0x10: // IFB b, a
+        ops = "IFB";
+        break;
+    case 0x11: // IFC b, a
+        ops = "IFC";
+        break;
+    case 0x12: // IFE b, a
+        ops = "IFE";
+        break;
+    case 0x13: // IFN b, a
+        ops = "IFN";
+        break;
+    case 0x14: // IFG b, a
+        ops = "IFG";
+        break;
+    case 0x15: // IFA b, a
+        ops = "IFA";
+        break;
+    case 0x16: // IFL b, a
+        ops = "IFL";
+        break;
+    case 0x17: // IFU b, a
+        ops = "IFU";
+        break;
+    case 0x1A: // ADX b, a
+        ops = "ADX";
+        break;
+    case 0x1B: // SBX b, a
+        ops = "SBX";
+        break;
+    case 0x1E: // STI b, a
+        ops = "STI";
+        break;
+    case 0x1F: // STD b, a
+        ops = "STD";
+        break;
+    default:
+        return "invalid";
+        break;
+    }
+    return ops + " " + bs + " " + as;
 }
