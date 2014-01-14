@@ -19,6 +19,8 @@ public:
     void init();
     void update(float elapsedTime);
     void receiveMessage(Message *message);
+
+    void setMaterial(const Ogre::MaterialPtr &material);
     
     static TypeInfo *getType() {return mType;}
 

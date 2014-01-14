@@ -52,3 +52,13 @@ void ComponentRenderable::receiveMessage(Message *message)
     LOG_IN_FRAME;
     LOG_OUT_FRAME;
 }
+
+void ComponentRenderable::setMaterial(const Ogre::MaterialPtr &material)
+{
+    LOG_IN("component");
+    if(mEntity)
+        mEntity->setMaterial(material);
+    else
+        LOG("mEntity == nulptr", "error");
+    LOG_OUT("component");
+}
