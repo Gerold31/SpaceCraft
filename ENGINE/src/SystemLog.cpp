@@ -2,6 +2,8 @@
 
 #include <boost/date_time/posix_time/posix_time.hpp>
 
+#include <iostream>
+
 #define IGNORE_BUFFER
 
 using namespace ENGINE;
@@ -111,6 +113,8 @@ void SystemLog::log(std::string message, std::string type)
     if(mState == STATE_INITED)
         update(0);
 #endif
+
+    //std::cout << prefix + message << std::endl;
 }
 
 void SystemLog::enter(std::string message, std::string type)

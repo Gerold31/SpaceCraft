@@ -3,8 +3,6 @@
 
 #include "Message.hpp"
 
-#include <OIS/OIS.h>
-
 namespace ENGINE
 {
 

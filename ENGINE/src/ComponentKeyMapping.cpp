@@ -5,6 +5,7 @@
 #include "MessageInput.hpp"
 #include "MessageMove.hpp"
 #include "MessageEngine.hpp"
+#include "MessageUse.hpp"
 #include "Engine.hpp"
 #include "SystemLog.hpp"
 
@@ -76,6 +77,12 @@ void ComponentKeyMapping::receiveMessage(Message *message)
         case OIS::KC_D:
         {
             MessageStartMoveRight msg;
+            msg.sendTo(mObject);
+            break;
+        }
+        case OIS::KC_E:
+        {
+            MessageUse msg;
             msg.sendTo(mObject);
             break;
         }

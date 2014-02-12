@@ -21,6 +21,7 @@
 #include "ComponentRenderable.hpp"
 #include "ComponentViewport.hpp"
 #include "ComponentServerConnection.hpp"
+#include "ComponentUse.hpp"
 
 #include "ComponentCPU.hpp"
 #include "ComponentMemory.hpp"
@@ -31,6 +32,7 @@
 #include "MessageEngine.hpp"
 #include "MessageMove.hpp"
 #include "MessageObjectFactory.hpp"
+#include "MessageUse.hpp"
 
 #include "MessageCPU.hpp"
 #include "MessageHardwareKeyboard.hpp"
@@ -57,6 +59,7 @@ int main(int argc, char **argv)
         SystemObjectFactory::getSingleton()->registerComponent(ComponentRenderable::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentViewport::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentServerConnection::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentUse::getType());
 
         SystemObjectFactory::getSingleton()->registerComponent(ComponentCPU::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentMemory::getType());
@@ -76,6 +79,7 @@ int main(int argc, char **argv)
         Message::registerMessge(MessageLookAtRel::getID(), MessageLookAtRel::CreateMessage);
         Message::registerMessge(MessageCreateObject::getID(), MessageCreateObject::CreateMessage);
         Message::registerMessge(MessageSetPosition::getID(), MessageSetPosition::CreateMessage);
+        Message::registerMessge(MessageUse::getID(), MessageUse::CreateMessage);
 
         Message::registerMessge(MessageInterrupt::getID(), MessageInterrupt::CreateMessage);
         Message::registerMessge(MessageHardwareKeyPressed::getID(), MessageHardwareKeyPressed::CreateMessage);
