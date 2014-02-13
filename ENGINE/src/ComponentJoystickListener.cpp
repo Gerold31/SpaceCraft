@@ -3,6 +3,7 @@
 #include "TypeInfo.hpp"
 #include "SystemInput.hpp"
 #include "SystemLog.hpp"
+#include "MessageInput.hpp"
 
 using namespace ENGINE;
 
@@ -12,6 +13,7 @@ ComponentJoystickListener::ComponentJoystickListener(Object *object, ParamMap &p
     Component(object, params, mType)
 {
     LOG_IN("component");
+    mEnabled = true;
     LOG_OUT("component");
 }
 
@@ -43,6 +45,11 @@ void ComponentJoystickListener::update(float elapsedTime)
 
 void ComponentJoystickListener::receiveMessage(Message *message)
 {
-    LOG_IN_FRAME;
-    LOG_OUT_FRAME;
+    LOG_IN_MSG;
+    if(message->getID() == MessageJoystickEnable::getID())
+    {
+        MessageJoystickEnable *msg = (MessageJoystickEnable *)message;
+        enable(msg->mEnable);
+    }
+    LOG_OUT_MSG;
 }

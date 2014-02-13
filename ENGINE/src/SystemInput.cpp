@@ -143,8 +143,8 @@ void SystemInput::update(float elapsedTime)
 
 void SystemInput::receiveMessage(Message *msg)
 {
-    LOG_IN_FRAME;
-    LOG_OUT_FRAME;
+    LOG_IN_MSG;
+    LOG_OUT_MSG;
 }
  
 void SystemInput::addKeyListener(ComponentKeyboardListener *keyListener)
@@ -300,7 +300,8 @@ bool SystemInput::keyPressed(const OIS::KeyEvent &e)
     MessageKeyPressed msg(e);
 
     for(; mKeyListenerBeg != mKeyListenerEnd; ++mKeyListenerBeg) {
-        msg.sendTo((*mKeyListenerBeg)->getObject());
+        if((*mKeyListenerBeg)->isEnabled())
+            msg.sendTo((*mKeyListenerBeg)->getObject());
     }
 
     LOG_OUT_FRAME;
@@ -316,7 +317,8 @@ bool SystemInput::keyReleased(const OIS::KeyEvent &e)
     MessageKeyReleased msg(e);
 
     for(; mKeyListenerBeg != mKeyListenerEnd; ++mKeyListenerBeg) {
-        msg.sendTo((*mKeyListenerBeg)->getObject());
+        if((*mKeyListenerBeg)->isEnabled())
+            msg.sendTo((*mKeyListenerBeg)->getObject());
     }
 
     LOG_OUT_FRAME;
@@ -332,7 +334,8 @@ bool SystemInput::mouseMoved(const OIS::MouseEvent &e)
     MessageMouseMoved msg(e);
 
     for(; mMouseListenerBeg != mMouseListenerEnd; ++mMouseListenerBeg) {
-        msg.sendTo((*mMouseListenerBeg)->getObject());
+        if((*mMouseListenerBeg)->isEnabled())
+            msg.sendTo((*mMouseListenerBeg)->getObject());
     }
 
     LOG_OUT_FRAME;
@@ -348,7 +351,8 @@ bool SystemInput::mousePressed(const OIS::MouseEvent &e, OIS::MouseButtonID id)
     MessageMousePressed msg(e, id);
 
     for(; mMouseListenerBeg != mMouseListenerEnd; ++mMouseListenerBeg) {
-        msg.sendTo((*mMouseListenerBeg)->getObject());
+        if((*mMouseListenerBeg)->isEnabled())
+            msg.sendTo((*mMouseListenerBeg)->getObject());
     }
 
     LOG_OUT_FRAME;
@@ -364,7 +368,8 @@ bool SystemInput::mouseReleased(const OIS::MouseEvent &e, OIS::MouseButtonID id)
     MessageMouseReleased msg(e, id);
 
     for(; mMouseListenerBeg != mMouseListenerEnd; ++mMouseListenerBeg) {
-        msg.sendTo((*mMouseListenerBeg)->getObject());
+        if((*mMouseListenerBeg)->isEnabled())
+            msg.sendTo((*mMouseListenerBeg)->getObject());
     }
 
     LOG_OUT_FRAME;
@@ -377,6 +382,8 @@ bool SystemInput::povMoved(const OIS::JoyStickEvent &e, int pov)
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
+        if((*mJoystickListenerBeg)->isEnabled())
+            ;
     }
 
     LOG_OUT_FRAME;
@@ -389,6 +396,8 @@ bool SystemInput::axisMoved(const OIS::JoyStickEvent &e, int axis)
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
+        if((*mJoystickListenerBeg)->isEnabled())
+            ;
     }
 
     LOG_OUT_FRAME;
@@ -401,6 +410,8 @@ bool SystemInput::sliderMoved(const OIS::JoyStickEvent &e, int sliderID)
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
+        if((*mJoystickListenerBeg)->isEnabled())
+            ;
     }
 
     LOG_OUT_FRAME;
@@ -413,6 +424,8 @@ bool SystemInput::buttonPressed(const OIS::JoyStickEvent &e, int button)
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
+        if((*mJoystickListenerBeg)->isEnabled())
+            ;
     }
 
     LOG_OUT_FRAME;
@@ -425,6 +438,8 @@ bool SystemInput::buttonReleased(const OIS::JoyStickEvent &e, int button)
     mJoystickListenerBeg = mJoystickListeners.begin();
     mJoystickListenerEnd = mJoystickListeners.end();
     for(; mJoystickListenerBeg != mJoystickListenerEnd; ++mJoystickListenerBeg) {
+        if((*mJoystickListenerBeg)->isEnabled())
+            ;
     }
 
     LOG_OUT_FRAME;

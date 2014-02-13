@@ -3,6 +3,7 @@
 #include "TypeInfo.hpp"
 #include "SystemInput.hpp"
 #include "SystemLog.hpp"
+#include "MessageInput.hpp"
 
 using namespace ENGINE;
 
@@ -12,6 +13,7 @@ ComponentMouseListener::ComponentMouseListener(Object *object, ParamMap &params)
     Component(object, params, mType)
 {
     LOG_IN("component");
+    mEnabled = true;
     LOG_OUT("component");
 }
 
@@ -43,6 +45,11 @@ void ComponentMouseListener::update(float elapsedTime)
 
 void ComponentMouseListener::receiveMessage(Message *message)
 {
-    LOG_IN_FRAME;
-    LOG_OUT_FRAME;
+    LOG_IN_MSG;
+    if(message->getID() == MessageMouseEnable::getID())
+    {
+        MessageMouseEnable *msg = (MessageMouseEnable *)message;
+        enable(msg->mEnable);
+    }
+    LOG_OUT_MSG;
 }

@@ -17,11 +17,16 @@ public:
     void init();
     void update(float elapsedTime);
     void receiveMessage(Message *message);
+    
+    void enable(bool enable) {mEnabled = enable;}
+    bool isEnabled() {return mEnabled;}
 
     static TypeInfo *getType() {return mType;}
 
 private:
     static TypeInfo *mType;
+
+    bool mEnabled;
 
 };
 
