@@ -59,7 +59,7 @@ void ComponentUse::update(float elapsedTime)
 
 void ComponentUse::receiveMessage(Message *message)
 {
-    LOG_IN_FRAME;
+    LOG_IN_MSG;
     if(message->getID() == MessageUse::getID())
     {
         Ogre::Ray ray(mParent->getCamera()->getDerivedPosition(), mParent->getCamera()->getDerivedDirection());
@@ -81,7 +81,7 @@ void ComponentUse::receiveMessage(Message *message)
                 if(obj && obj != mObject)
                 {
                     LOG("use " + obj->getName(), "component");
-                    MessageUse msg;
+                    MessageUse msg(mObject->getName());
                     msg.sendTo(obj);
                     break;
                 }
@@ -90,5 +90,5 @@ void ComponentUse::receiveMessage(Message *message)
         }
         SystemGraphics::getSingleton()->getSceneMgr()->destroyQuery(raySceneQuery);
     }
-    LOG_OUT_FRAME;
+    LOG_OUT_MSG;
 }

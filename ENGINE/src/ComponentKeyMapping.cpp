@@ -47,13 +47,15 @@ void ComponentKeyMapping::update(float elapsedTime)
 
 void ComponentKeyMapping::receiveMessage(Message *message)
 {
-    LOG_IN_FRAME;
-    if(MessageMouseMoved *m = dynamic_cast<MessageMouseMoved *>(message))
+    LOG_IN_MSG;
+    if(message->getID() == MessageMouseMoved::getID())
     {
+        MessageMouseMoved *m = (MessageMouseMoved *)message;
         MessageLookAtRel msg(m->mEvent.state.X.rel, m->mEvent.state.Y.rel);
         msg.sendTo(mObject);
-    }else if(MessageKeyPressed *m = dynamic_cast<MessageKeyPressed *>(message))
+    }else if(message->getID() == MessageKeyPressed::getID())
     {
+        MessageKeyPressed *m = (MessageKeyPressed *)message;
         switch(m->mEvent.key)
         {
         case OIS::KC_W:
@@ -82,7 +84,7 @@ void ComponentKeyMapping::receiveMessage(Message *message)
         }
         case OIS::KC_E:
         {
-            MessageUse msg;
+            MessageUse msg(mObject->getName());
             msg.sendTo(mObject);
             break;
         }
@@ -90,10 +92,12 @@ void ComponentKeyMapping::receiveMessage(Message *message)
         {
             MessageQuit msg;
             msg.sendTo(Engine::getSingleton());
+            break;
         }
         }
-    }else if(MessageKeyReleased *m = dynamic_cast<MessageKeyReleased *>(message))
+    }else if(message->getID() == MessageKeyReleased::getID())
     {
+        MessageKeyReleased *m = (MessageKeyReleased *)message;
         switch(m->mEvent.key)
         {
         case OIS::KC_W:
@@ -121,6 +125,18 @@ void ComponentKeyMapping::receiveMessage(Message *message)
             break;
         }
         }
+    }else if(message->getID() == MessageMousePressed::getID())
+    {
+        MessageMousePressed *m = (MessageMousePressed *)message;
+        switch(m->mButtonID)
+        {
+        case OIS::MB_Right:
+        {
+            MessageUse msg(mObject->getName());
+            msg.sendTo(mObject);
+            break;
+        }
+        }
     }
-    LOG_OUT_FRAME;
+    LOG_OUT_MSG;
 }
