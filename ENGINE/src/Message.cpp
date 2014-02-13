@@ -35,7 +35,7 @@ int Message::calcID(std::string name)
     int id = 0;
     for(int i=0; i<name.size(); i++)
     {
-        id += name[i] << (i % 38);
+        id += name[i] << (i % (32-7));
     }
     LOG_OUT("message");
     return id;
@@ -43,19 +43,21 @@ int Message::calcID(std::string name)
 
 void Message::serialize(std::ostream &stream) 
 {
+    LOG_IN_MSG;
     stream << mID << std::endl;
     //LOG("serialize: " << std::hex << mID << std::endl;
     _serialize(stream);
+    LOG_OUT_MSG;
 }
 
 Message *Message::deserialize(std::istream &stream)
 {
-    LOG_IN_FRAME;
+    LOG_IN_MSG;
     int id;
     stream >> id;
 
     Message *m = (Message *)mMessages.at(id)(stream);
 
-    LOG_OUT_FRAME;
+    LOG_OUT_MSG;
     return m;
 }

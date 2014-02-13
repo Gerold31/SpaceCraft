@@ -74,7 +74,7 @@ void ComponentMover::update(float elapsedTime)
 
 void ComponentMover::receiveMessage(Message *message)
 {
-    LOG_IN_FRAME;
+    LOG_IN_MSG;
     if(MessageStartMoveForward *m = dynamic_cast<MessageStartMoveForward *>(message))
     {
         mTranslation += Ogre::Vector3(0, 0, -1);
@@ -130,5 +130,5 @@ void ComponentMover::receiveMessage(Message *message)
                 mPitchNode->setOrientation(Ogre::Quaternion(Ogre::Math::Sqrt(0.5f), -Ogre::Math::Sqrt(0.5f), 0, 0));
         }
     }
-    LOG_OUT_FRAME;
+    LOG_OUT_MSG;
 }

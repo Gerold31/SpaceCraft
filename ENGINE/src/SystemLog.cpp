@@ -55,8 +55,8 @@ void SystemLog::update(float elapsedTime)
 
 void SystemLog::receiveMessage(Message *msg)
 {
-    LOG_IN_FRAME;
-    LOG_OUT_FRAME;
+    LOG_IN_MSG;
+    LOG_OUT_MSG;
 }
 
 void SystemLog::createLog(std::string filename)

@@ -49,8 +49,8 @@ void ComponentRenderable::update(float elapsedTime)
 
 void ComponentRenderable::receiveMessage(Message *message)
 {
-    LOG_IN_FRAME;
-    LOG_OUT_FRAME;
+    LOG_IN_MSG;
+    LOG_OUT_MSG;
 }
 
 void ComponentRenderable::setMaterial(const Ogre::MaterialPtr &material)

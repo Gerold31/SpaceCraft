@@ -9,8 +9,8 @@ namespace ENGINE
 class MessageQuit : public Message
 {
 public:
-    MessageQuit() : Message(getID(), true, true, true, true, false) {}
-    static void *CreateMessage(std::istream &stream) { return new MessageQuit(); }
+    MessageQuit() : Message(getID(), true, true, true, true, false) {LOG_IN_MSG; LOG_OUT_MSG;}
+    static void *CreateMessage(std::istream &stream) {LOG_IN_MSG; LOG_OUT_MSG; return new MessageQuit();}
     static int getID() {if(mID == -1) mID = calcID("MessageQuit"); return mID;}
 private:
     static int mID;

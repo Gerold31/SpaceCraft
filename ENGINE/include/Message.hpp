@@ -5,6 +5,8 @@
 #include <iostream>
 #include <map>
 
+#include "Defines.hpp"
+#include "SystemLog.hpp"
 #include "MessageReceiver.hpp"
 
 namespace ENGINE
@@ -29,7 +31,9 @@ public:
     
     static void registerMessge(int id, CreateMessage createMessage)
     {
+        LOG_IN_MSG;
         mMessages[id] = createMessage;
+        LOG_OUT_MSG;
     }
 
 protected:

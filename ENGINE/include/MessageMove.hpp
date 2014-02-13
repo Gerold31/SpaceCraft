@@ -13,7 +13,7 @@ namespace ENGINE
 class MessageStartMoveForward : public Message
 {
 public:
-    MessageStartMoveForward() : Message(getID(), true, true, true, true, true) {}
+    MessageStartMoveForward() : Message(getID(), true, true, true, true, true) {LOG_IN_MSG; LOG_OUT_MSG;}
     static void *CreateMessage(std::istream &stream) { return new MessageStartMoveForward(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStartMoveForward"); return mID;}
 private:
@@ -23,7 +23,7 @@ private:
 class MessageStopMoveForward : public Message
 {
 public:
-    MessageStopMoveForward() : Message(getID(), true, true, true, true, true) {}
+    MessageStopMoveForward() : Message(getID(), true, true, true, true, true) {LOG_IN_MSG; LOG_OUT_MSG;}
     static void *CreateMessage(std::istream &stream) { return new MessageStopMoveForward(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStopMoveForward"); return mID;}
 private:
@@ -33,7 +33,7 @@ private:
 class MessageStartMoveBackward : public Message
 {
 public:
-    MessageStartMoveBackward() : Message(getID(), true, true, true, true, true) {}
+    MessageStartMoveBackward() : Message(getID(), true, true, true, true, true) {LOG_IN_MSG; LOG_OUT_MSG;}
     static void *CreateMessage(std::istream &stream) { return new MessageStartMoveBackward(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStartMoveBackward"); return mID;}
 private:
@@ -43,7 +43,7 @@ private:
 class MessageStopMoveBackward : public Message
 {
 public:
-    MessageStopMoveBackward() : Message(getID(), true, true, true, true, true) {}
+    MessageStopMoveBackward() : Message(getID(), true, true, true, true, true) {LOG_IN_MSG; LOG_OUT_MSG;}
     static void *CreateMessage(std::istream &stream) { return new MessageStopMoveBackward(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStopMoveBackward"); return mID;}
 private:
@@ -53,7 +53,7 @@ private:
 class MessageStartMoveLeft : public Message
 {
 public:
-    MessageStartMoveLeft() : Message(getID(), true, true, true, true, true) {}
+    MessageStartMoveLeft() : Message(getID(), true, true, true, true, true) {LOG_IN_MSG; LOG_OUT_MSG;}
     static void *CreateMessage(std::istream &stream) { return new MessageStartMoveLeft(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStartMoveLeft"); return mID;}
 private:
@@ -63,7 +63,7 @@ private:
 class MessageStopMoveLeft : public Message
 {
 public:
-    MessageStopMoveLeft() : Message(getID(), true, true, true, true, true) {}
+    MessageStopMoveLeft() : Message(getID(), true, true, true, true, true) {LOG_IN_MSG; LOG_OUT_MSG;}
     static void *CreateMessage(std::istream &stream) { return new MessageStopMoveLeft(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStopMoveLeft"); return mID;}
 private:
@@ -73,7 +73,7 @@ private:
 class MessageStartMoveRight : public Message
 {
 public:
-    MessageStartMoveRight() : Message(getID(), true, true, true, true, true) {}
+    MessageStartMoveRight() : Message(getID(), true, true, true, true, true) {LOG_IN_MSG; LOG_OUT_MSG;}
     static void *CreateMessage(std::istream &stream) { return new MessageStartMoveRight(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStartMoveRight"); return mID;}
 private:
@@ -83,7 +83,7 @@ private:
 class MessageStopMoveRight : public Message
 {
 public:
-    MessageStopMoveRight() : Message(getID(), true, true, true, true, true) {}
+    MessageStopMoveRight() : Message(getID(), true, true, true, true, true) {LOG_IN_MSG; LOG_OUT_MSG;}
     static void *CreateMessage(std::istream &stream) { return new MessageStopMoveRight(); }
     static int getID() {if(mID == -1) mID = calcID("MessageStopMoveRight"); return mID;}
 private:
@@ -93,24 +93,24 @@ private:
 class MessageLookAtRel : public Message
 {
 public:
-    MessageLookAtRel(int x, int y) : Message(getID(), true, true, true, true, true), mX(x), mY(y) {}
-    static void *CreateMessage(std::istream &stream) {int x,y; stream >> x >> y; /*std::cout << "read: " << x << " " << y << std::endl;*/ return new MessageLookAtRel(x, y); }
+    MessageLookAtRel(int x, int y) : Message(getID(), true, true, true, true, true), mX(x), mY(y) {LOG_IN_MSG; LOG_OUT_MSG;}
+    static void *CreateMessage(std::istream &stream) {LOG_IN_MSG; int x,y; stream >> x >> y; /*std::cout << "read: " << x << " " << y << std::endl;*/ LOG_OUT_MSG; return new MessageLookAtRel(x, y);}
     static int getID() {if(mID == -1) mID = calcID("MessageLookAtRel"); return mID;}
     int mX, mY;
 private:
-    void _serialize(std::ostream &stream) {/*std::cout << "write: " << mX << " " << mY << std::endl; */stream << mX << std::endl << mY << std::endl;}
+    void _serialize(std::ostream &stream) {LOG_IN_MSG;/*std::cout << "write: " << mX << " " << mY << std::endl; */stream << mX << std::endl << mY << std::endl; LOG_OUT_MSG;}
     static int mID;
 };
 
 class MessageSetPosition : public Message
 {
 public:
-    MessageSetPosition(double x, double y, double z) : Message(getID(), true, false, false, true, false), mX(x), mY(y), mZ(z) {}
-    static void *CreateMessage(std::istream &stream) {double x,y,z; stream >> x >> y >> z; /*std::cout << "read: " << x << " " << y << " " << z << std::endl; */return new MessageSetPosition(x, y, z); }
+    MessageSetPosition(double x, double y, double z) : Message(getID(), true, false, false, true, false), mX(x), mY(y), mZ(z) {LOG_IN_MSG; LOG_OUT_MSG;}
+    static void *CreateMessage(std::istream &stream) {LOG_IN_MSG; double x,y,z; stream >> x >> y >> z; /*std::cout << "read: " << x << " " << y << " " << z << std::endl; */LOG_OUT_MSG; return new MessageSetPosition(x, y, z); }
     static int getID() {if(mID == -1) mID = calcID("MessageSetPosition"); return mID;}
     double mX, mY, mZ;
 private:
-    void _serialize(std::ostream &stream) {/*std::cout << "write: " << mX << " " << mY << " " << mZ << std::endl; */stream << mX << std::endl << mY << std::endl << mZ << std::endl;}
+    void _serialize(std::ostream &stream) {LOG_IN_MSG; /*std::cout << "write: " << mX << " " << mY << " " << mZ << std::endl; */stream << mX << std::endl << mY << std::endl << mZ << std::endl; LOG_OUT_MSG;}
     static int mID;
 };
 

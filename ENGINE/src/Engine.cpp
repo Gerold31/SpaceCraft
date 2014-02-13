@@ -27,7 +27,7 @@ Engine::~Engine()
 void Engine::addSystem(System *system)
 {
     LOG_IN("engine");
-    LOG("add System" + system->getName(), "log");
+    LOG("add System " + system->getName(), "log");
     mSystems.push_back(system);
     LOG_OUT("engine");
 }
@@ -76,12 +76,12 @@ void Engine::run()
 
 void Engine::receiveMessage(Message *msg)
 {
-    LOG_IN_FRAME;
+    LOG_IN_MSG;
     if(MessageQuit *m = dynamic_cast<MessageQuit *>(msg))
     {
         mQuit = true;
     }
-    LOG_OUT_FRAME;
+    LOG_OUT_MSG;
 }
 
 void Engine::update(float elapsedTime)

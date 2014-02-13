@@ -14,7 +14,7 @@ namespace ENGINE
 class MessageCreateObject : public Message
 {
 public:
-    MessageCreateObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, std::string type = "") : Message(getID(), true, true, false, false, false) {mPos = pos; mOri = ori, mParent = parent; mName = name; mType = type;}
+    MessageCreateObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, std::string type = "") : Message(getID(), true, true, false, false, false) {LOG_IN_MSG; mPos = pos; mOri = ori, mParent = parent; mName = name; mType = type; LOG_OUT_MSG;}
     static void *CreateMessage(std::istream &stream);
     static int getID() {if(mID == -1) mID = calcID("MessageCreateObject"); return mID;}
 

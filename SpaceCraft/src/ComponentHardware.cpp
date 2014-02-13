@@ -35,10 +35,10 @@ void ComponentHardware::update(float elapsedTime)
 
 void ComponentHardware::receiveMessage(Message *message)
 {
-    LOG_IN_FRAME;
+    LOG_IN_MSG;
     if(message->getID() == MessageInterrupt::getID())
     {
         interrupt();
     }
-    LOG_OUT_FRAME;
+    LOG_OUT_MSG;
 }

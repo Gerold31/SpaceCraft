@@ -19,9 +19,10 @@ namespace SpaceCraft
 class MessageDisplaySetImage : public Message
 {
 public:
-    MessageDisplaySetImage(Ogre::Image &img) : Message(getID(), false, true, false, true, false), mImg(img) {}
+    MessageDisplaySetImage(Ogre::Image &img) : Message(getID(), false, true, false, true, false), mImg(img) {LOG_IN_MSG; LOG_OUT_MSG;}
     static void *CreateMessage(std::istream &stream) 
     {
+        LOG_IN_MSG;
         int len;
         stream >> len;
         char *data = new char[len+1];
@@ -31,6 +32,7 @@ public:
         img.load(d, "png");
         delete[] data;
         void *m = new MessageDisplaySetImage(img);
+        LOG_OUT_MSG;
         return m; 
     }
     static int getID() {if(mID == -1) mID = calcID("MessageDisplaySetImage"); return mID;}
@@ -38,10 +40,12 @@ public:
 private:
     void _serialize(std::ostream &stream) 
     {
+        LOG_IN_MSG;
         Ogre::String data = mImg.encode("png")->getAsString(); 
         stream << data.length() << std::endl;
         stream.write(data.data(), data.length());
         stream << std::endl;
+        LOG_OUT_MSG;
     }
     static int mID;
 };

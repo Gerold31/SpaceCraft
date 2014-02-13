@@ -8,6 +8,7 @@ int MessageCreateObject::mID = -1;
 
 void *MessageCreateObject::CreateMessage(std::istream &stream) 
 {
+    LOG_IN_MSG;
     Ogre::String name; std::string type;
     std::string px, py, pz, ow, ox, oy, oz, parentName;
 
@@ -23,12 +24,15 @@ void *MessageCreateObject::CreateMessage(std::istream &stream)
         parent = SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode();
     else
         parent = SystemGraphics::getSingleton()->getSceneMgr()->getSceneNode(parentName);
-
+    
+    LOG_OUT_MSG;
     return new MessageCreateObject(pos, ori, parent, name, type); 
 }
 
 void MessageCreateObject::_serialize(std::ostream &stream) 
 {
+    LOG_IN_MSG;
     stream << mPos.x << std::endl << mPos.y << std::endl << mPos.z << std::endl << mOri.w << std::endl << mOri.x << std::endl << mOri.y << std::endl << mOri.z << std::endl << mParent->getName().c_str() << std::endl << mName << std::endl << mType << std::endl;
     //LOG("px: " << mPos.x << "\npy: " << mPos.y << "\npz: " << mPos.z << "\now: " << mOri.w << "\nox: " << mOri.x << "\noy: " << mOri.y << "\noz: " << mOri.z << "\nparentName: " << mParent->getName().c_str() << "\nname: " << mName << "\ntype: " << mType << std::endl;
+    LOG_OUT_MSG;
 }

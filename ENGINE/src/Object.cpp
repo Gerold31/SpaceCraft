@@ -77,7 +77,7 @@ void Object::update(float elapsedTime)
 
 void Object::receiveMessage(Message *message)
 {
-    LOG_IN_FRAME;
+    LOG_IN_MSG;
     if(message->getID() == MessageSetPosition::getID())
     {
         MessageSetPosition *m = (MessageSetPosition *)message;
@@ -87,7 +87,7 @@ void Object::receiveMessage(Message *message)
     {
         (*i)->receiveMessage(message);
     }
-    LOG_OUT_FRAME;
+    LOG_OUT_MSG;
 }
 
 void Object::ready()

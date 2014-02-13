@@ -119,7 +119,7 @@ void ComponentHardwareDisplay::update(float elapsedTime)
 
 void ComponentHardwareDisplay::receiveMessage(Message *message)
 {
-	LOG_IN_FRAME;
+	LOG_IN_MSG;
     if(message->getID() == MessageDisplaySetImage::getID())
     {
         MessageDisplaySetImage *m = (MessageDisplaySetImage *)message;
@@ -129,7 +129,7 @@ void ComponentHardwareDisplay::receiveMessage(Message *message)
     {
         ComponentHardware::receiveMessage(message);
     }
-	LOG_OUT_FRAME;
+	LOG_OUT_MSG;
 }
 
 void ComponentHardwareDisplay::interrupt()

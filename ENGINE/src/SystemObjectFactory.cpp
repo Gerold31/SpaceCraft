@@ -107,14 +107,14 @@ void SystemObjectFactory::update(float elapsedTime)
 
 void SystemObjectFactory::receiveMessage(Message *msg)
 {
-    LOG_IN_FRAME;
+    LOG_IN_MSG;
     // @todo destroyObject
     if(msg->getID() == MessageCreateObject::getID())
     {
         MessageCreateObject *m = (MessageCreateObject *)msg;
         createObject(m->mPos, m->mOri, m->mParent, m->mName, m->mType);
     }
-    LOG_OUT_FRAME;
+    LOG_OUT_MSG;
 }
 
 void SystemObjectFactory::registerComponent(TypeInfo *type)
