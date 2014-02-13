@@ -126,25 +126,29 @@ int main(int argc, char **argv)
             SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu", "CPU");
             SystemGameState::getSingleton()->addObject(Ogre::Vector3(5, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "memory", "Memory");
             SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, 2,  -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "display", "HardwareDisplay");
+            SystemGameState::getSingleton()->addObject(Ogre::Vector3(-2, 0,  -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "keyboard", "HardwareKeyboard");
 
             Object *cpuo = SystemObjectFactory::getSingleton()->getObject("cpu");
             Object *memoryo = SystemObjectFactory::getSingleton()->getObject("memory");
             Object *displayo = SystemObjectFactory::getSingleton()->getObject("display");
+            Object *keyboardo = SystemObjectFactory::getSingleton()->getObject("keyboard");
 
             assert(cpuo);
             assert(memoryo);
             assert(displayo);
+            assert(keyboardo);
 
             ComponentCPU *cpuc;
             ComponentMemory *memoryc;
             ComponentHardwareDisplay *displayc;
+            ComponentHardwareKeyboard *keyboardc;
 
             for(int i=0; i<cpuo->getNumberComponents(); i++)
             {
                 Component *c = cpuo->getComponent(i);
                 if(c->getType() == ComponentCPU::getType())
                 {
-                    cpuc = (ComponentCPU*)c;
+                    cpuc = (ComponentCPU *)c;
                     break;
                 }
             }
@@ -153,7 +157,7 @@ int main(int argc, char **argv)
                 Component *c = memoryo->getComponent(i);
                 if(c->getType() == ComponentMemory::getType())
                 {
-                    memoryc = (ComponentMemory*)c;
+                    memoryc = (ComponentMemory *)c;
                     break;
                 }
             }
@@ -162,7 +166,16 @@ int main(int argc, char **argv)
                 Component *c = displayo->getComponent(i);
                 if(c->getType() == ComponentHardwareDisplay::getType())
                 {
-                    displayc = (ComponentHardwareDisplay*)c;
+                    displayc = (ComponentHardwareDisplay *)c;
+                    break;
+                }
+            }
+            for(int i=0; i<keyboardo->getNumberComponents(); i++)
+            {
+                Component *c = keyboardo->getComponent(i);
+                if(c->getType() == ComponentHardwareKeyboard::getType())
+                {
+                    keyboardc = (ComponentHardwareKeyboard *)c;
                     break;
                 }
             }
@@ -170,10 +183,13 @@ int main(int argc, char **argv)
             assert(cpuc);
             assert(memoryc);
             assert(displayc);
+            assert(keyboardc);
 
             cpuc->setMemory(memoryc);
             cpuc->addDevice(displayc);
             displayc->connect(cpuc);
+            cpuc->addDevice(keyboardc);
+            keyboardc->connect(cpuc);
 
             cpuc->start();
 

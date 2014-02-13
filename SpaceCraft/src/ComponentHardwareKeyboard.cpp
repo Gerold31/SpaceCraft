@@ -7,7 +7,11 @@
 #include "ComponentCPU.hpp"
 #include "MessageHardwareKeyboard.hpp"
 #include "MessageCPU.hpp"
+#include "MessageUse.hpp"
+#include "MessageInput.hpp"
 #include "Object.hpp"
+#include "ComponentKeyboardListener.hpp"
+#include "SystemObjectFactory.hpp"
 
 using namespace SpaceCraft;
 
@@ -18,6 +22,7 @@ ComponentHardwareKeyboard::ComponentHardwareKeyboard(Object *object, ParamMap &p
 {
 	LOG_IN("hardware");
     mInterruptMsg = 0;
+    mKeyboard = nullptr;
 	LOG_OUT("hardware");
 }
 
@@ -37,6 +42,18 @@ void *ComponentHardwareKeyboard::createInstance(Object *object, ParamMap &params
 void ComponentHardwareKeyboard::init()
 {
 	LOG_IN("hardware");
+    for(int i=0; i<mObject->getNumberComponents(); i++)
+    {
+        Component *c = mObject->getComponent(i);
+        if(c->getType() == ComponentKeyboardListener::getType())
+        {
+            mKeyboard = (ComponentKeyboardListener *)c;
+            mKeyboard->enable(false);
+            break;
+        }
+    }
+    if(!mKeyboard)
+        LOG("No ComponentKeyboardListener found!", "error");
 	LOG_OUT("hardware");
 }
     
@@ -48,7 +65,7 @@ void ComponentHardwareKeyboard::update(float elapsedTime)
 
 void ComponentHardwareKeyboard::receiveMessage(Message *message)
 {
-	LOG_IN_FRAME;
+    LOG_IN_MSG;
     if(message->getID() == MessageKeyPressed::getID())
     {
         MessageKeyPressed *m = (MessageKeyPressed *)message;
@@ -83,7 +100,32 @@ void ComponentHardwareKeyboard::receiveMessage(Message *message)
             msg.sendTo(mCPU->getObject());
         }
     }
-	LOG_OUT_FRAME;
+    else if(message->getID() == MessageUse::getID())
+    {
+        if(mKeyboard)
+        {
+            MessageUse *m = (MessageUse *)message;
+
+            if(mKeyboard->isEnabled())
+            {
+                mKeyboard->enable(false);
+                Object *obj = SystemObjectFactory::getSingleton()->getObject(m->mUser);
+                MessageKeyboardEnable msg(true);
+                msg.sendTo(obj);
+            }else
+            {
+                mKeyboard->enable(true);
+                Object *obj = SystemObjectFactory::getSingleton()->getObject(m->mUser);
+                MessageKeyboardEnable msg(false);
+                msg.sendTo(obj);    
+            }
+        }
+    }
+    else
+    {
+        ComponentHardware::receiveMessage(message);
+    }
+    LOG_OUT_MSG;
 }
 
 void ComponentHardwareKeyboard::interrupt()

@@ -7,6 +7,11 @@
 
 #include "OIS/OIS.h"
 
+namespace ENGINE
+{
+    class ComponentKeyboardListener;
+};
+
 namespace SpaceCraft
 {
 
@@ -31,6 +36,8 @@ private:
     
     std::queue<WORD > mKeyBuffer;
     WORD mInterruptMsg;
+
+    ComponentKeyboardListener *mKeyboard;
     
     OIS::KeyCode keyToCode(WORD key);
     WORD codeToKey(OIS::KeyCode code);
