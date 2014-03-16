@@ -21,7 +21,8 @@ class TypeInfo;
 
 typedef std::pair<TypeInfo *, ParamMap> ComponentListElement;
 typedef std::vector<ComponentListElement> ComponentList;
-typedef std::map<std::string, ComponentList> ObjectMap;
+typedef std::vector<std::string> ObjectList;
+typedef std::map<std::string, std::pair<ComponentList, ObjectList> > ObjectMap;
 
 class SystemObjectFactory : public System, public Singleton<SystemObjectFactory>
 {
@@ -41,7 +42,9 @@ private:
     SystemObjectFactory(const SystemObjectFactory &) : System("SystemObjectFactory") {}
     ~SystemObjectFactory();
 
-    Object *createObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, std::string type = "");
+    Object *createObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parentNode, Ogre::String name, std::string type = "", Object *parent = nullptr);
+
+    std::string parseObject(std::fstream &file, std::string name, int depth);
 
     std::vector<Object *> mObjects;
     std::vector<Component *> mComponents;

@@ -26,7 +26,7 @@ SystemObjectFactory::~SystemObjectFactory()
 void SystemObjectFactory::init()
 {
     LOG_IN("system");
-    mObjectMap[""] = ComponentList();
+    mObjectMap[""] = std::pair<ComponentList, ObjectList>(ComponentList(), ObjectList());
 
     std::fstream file;
 
@@ -44,49 +44,9 @@ void SystemObjectFactory::init()
 
     while(!file.eof())
     {
-        std::string name = line;
-
-        ComponentList entityList;
-
-        LOG("add Object " + name, "log");
-        
-        std::getline(file, line);
-
-        while(!file.eof())
-        {
-            if(line[0] != '\t')
-                break;
-
-            ComponentListElement element;
-            ParamMap params;
-
-            line = line.substr(1);
-
-            if(mComponentMap.find(line) == mComponentMap.end())
-                throw "no \"" + line + "\" found";
-            
-            LOG("\tadd Component " + line, "log");
-            
-            element.first = mComponentMap[line];
-
-            while(!file.eof())
-            {
-                std::getline(file, line);
-                if(line[0] != '\t' || line[1] != '\t')
-                    break;
-
-                line = line.substr(2);
-                line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
-                std::string param, value;
-                param = line.substr(0, line.find_first_of('='));
-                value = line.substr(line.find_first_of('=')+1);
-                LOG("\t\tadd Param " + param + ", value = " + value, "log");
-                params[param] = value;
-            }
-            element.second = params;
-            entityList.push_back(element);
-        }
-        mObjectMap[name] = entityList;
+        line = parseObject(file, line.substr(1), 0);
+        if(line == "")
+            break;
     }
 
     file.close();
@@ -125,7 +85,7 @@ void SystemObjectFactory::registerComponent(TypeInfo *type)
     LOG_OUT("system");
 }
 
-Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name, std::string type)
+Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parentNode, Ogre::String name, std::string type, Object *parent)
 {
     LOG_IN("system");
     LOG("add Object:", "log");
@@ -137,13 +97,19 @@ Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion or
         LOG_OUT("system");
         return nullptr;
     }
-    Object *object = new Object(pos, ori, parent, name);
-    for(ComponentList::iterator i = components->second.begin(); i!= components->second.end(); ++i)
+    Object *object = new Object(pos, ori, parentNode, name);
+    for(ComponentList::iterator i = components->second.first.begin(); i!= components->second.first.end(); ++i)
     {
         LOG("\tadd Component " + (*i).first->getName(), "log");
         Component *component = (Component *)(*i).first->createInstance(object, (*i).second);
         object->addComponent(component);
         mComponents.push_back(component);
+    }
+    for(ObjectList::iterator i = components->second.second.begin(); i!= components->second.second.end(); ++i)
+    {
+        LOG("\tadd Child Object " + (*i), "log");
+        Object *child = createObject(pos, ori, parentNode, name + '#' + (*i), (*i), object);
+        object->addChild(child);
     }
     mComponentsMutex.lock();
     mObjects.push_back(object);
@@ -182,4 +148,64 @@ Component *SystemObjectFactory::createComponent(Object *parent, std::string name
 
     LOG_OUT("system");
     return component;
+}
+
+std::string SystemObjectFactory::parseObject(std::fstream &file, std::string name, int depth)
+{
+    LOG_IN("sytem");
+    ComponentList componentList;
+    std::string line;
+
+    LOG("add Object " + name, "log");
+
+    std::getline(file, line);
+
+    ObjectList childList;
+
+    while(!file.eof())
+    {
+        if(line[depth] == '\t')
+        {
+            if(line[depth+1] == '-')
+            {
+                childList.push_back(line.substr(depth+1));
+                line = parseObject(file, line.substr(depth+1), depth+1);
+            }else
+            {
+                ComponentListElement element;
+                ParamMap params;
+
+                line = line.substr(1);
+
+                if(mComponentMap.find(line) == mComponentMap.end())
+                    throw "no \"" + line + "\" found";
+
+                LOG("\tadd Component " + line, "log");
+
+                element.first = mComponentMap[line];
+
+                while(!file.eof())
+                {
+                    std::getline(file, line);
+                    if(line[depth] != '\t' || line[1] != '\t')
+                        break;
+
+                    line = line.substr(2);
+                    line.erase(std::remove_if(line.begin(), line.end(), isspace), line.end());
+                    std::string param, value;
+                    param = line.substr(0, line.find_first_of('='));
+                    value = line.substr(line.find_first_of('=')+1);
+                    LOG("\t\tadd Param " + param + ", value = " + value, "log");
+                    params[param] = value;
+                }
+                element.second = params;
+                componentList.push_back(element);
+            }
+        }else
+            break;
+    }
+    mObjectMap[name] = std::pair<ComponentList, ObjectList>(componentList, childList);
+
+    LOG_OUT("sytem");
+    return line;
 }

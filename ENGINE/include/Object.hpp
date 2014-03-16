@@ -19,7 +19,7 @@ class Message;
 class Object : public MessageReceiver
 {
 public:
-    Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name);
+    Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parentNode, Ogre::String name, Object *parent = nullptr);
     ~Object();
     
     /**
@@ -38,9 +38,17 @@ public:
     Ogre::SceneNode *getSceneNode() {return mNode;}
     Ogre::String getName() {return mName;}
 
+    Object *getParent() {return mParent;}
+    void addChild(Object *obj) {mChilds.push_back(obj);}
+    Object *getChild(size_t i) {return mChilds.at(i);}
+    size_t getNumberChilds() {return mChilds.size();}
+    void removeChild(Object *obj);
+
 private:
     Ogre::SceneNode *mNode;
     Ogre::String mName;
+    Object *mParent;
+    std::vector<Object *> mChilds;
     std::vector<Component *> mComponents;
     boost::mutex mComponentsMutex;
     bool mInit;

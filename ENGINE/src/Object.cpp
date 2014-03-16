@@ -6,16 +6,17 @@
 
 using namespace ENGINE;
 
-Object::Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parent, Ogre::String name) :
+Object::Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parentNode, Ogre::String name, Object *parent) :
     MessageReceiver(MessageReceiver::RECEIVER_OBJECT),
     mName(name)
 {
     LOG_IN("object");
-    mNode = parent->createChildSceneNode(name);
+    mNode = parentNode->createChildSceneNode(name);
     mNode->setPosition(pos);
     mNode->setOrientation(ori);
     mNode->getUserObjectBindings().setUserAny("Object", Ogre::Any(this));
     mInit = mReady = false;
+    mParent = parent;
     LOG_OUT("object");
 }
 
@@ -95,4 +96,16 @@ void Object::ready()
     LOG_IN("object");
     mReady = true;
     LOG_OUT("object");
+}
+
+void Object::removeChild(Object *obj)
+{
+    for(std::vector<Object *>::iterator i=mChilds.begin(); i!=mChilds.end(); ++i)
+    {
+        if(*i == obj)
+        {
+            mChilds.erase(i);
+            break;
+        }
+    }
 }
