@@ -9,6 +9,7 @@
 #include "SystemServer.hpp"
 #include "SystemConfiguration.hpp"
 #include "SystemGameState.hpp"
+#include "SystemGUI.hpp"
 #include "SystemLog.hpp"
 
 #include "ComponentCamera.hpp"
@@ -27,6 +28,11 @@
 #include "ComponentMemory.hpp"
 #include "ComponentHardwareDisplay.hpp"
 #include "ComponentHardwareKeyboard.hpp"
+#include "ComponentSpaceShipPartFloor.hpp"
+#include "ComponentSpaceShipPartFloorMount.hpp"
+#include "ComponentSpaceShipPartCeilMount.hpp"
+#include "ComponentSpaceShipPartWall.hpp"
+#include "ComponentSpaceShipPartWallMount.hpp"
 
 #include "Message.hpp"
 #include "MessageEngine.hpp"
@@ -65,6 +71,11 @@ int main(int argc, char **argv)
         SystemObjectFactory::getSingleton()->registerComponent(ComponentMemory::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentHardwareDisplay::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentHardwareKeyboard::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentSpaceShipPartFloor::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentSpaceShipPartFloorMount::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentSpaceShipPartCeilMount::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentSpaceShipPartWall::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentSpaceShipPartWallMount::getType());
         
 
         Message::registerMessge(MessageQuit::getID(), MessageQuit::CreateMessage);
@@ -109,6 +120,7 @@ int main(int argc, char **argv)
         {
             Engine::getSingleton()->addSystem(SystemInput::getSingleton());
             Engine::getSingleton()->addSystem(SystemClient::getSingleton());
+            Engine::getSingleton()->addSystem(SystemGUI::getSingleton());
         }
 
         SystemLog::getSingleton()->createLog(SystemConfiguration::getSingleton()->getConfiguration("NetworkType") + ".html");
@@ -125,8 +137,8 @@ int main(int argc, char **argv)
         {
             SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "cpu", "CPU");
             SystemGameState::getSingleton()->addObject(Ogre::Vector3(5, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "memory", "Memory");
-            SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, 2,  -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "display", "HardwareDisplay");
-            SystemGameState::getSingleton()->addObject(Ogre::Vector3(-2, 0,  -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "keyboard", "HardwareKeyboard");
+            SystemGameState::getSingleton()->addObject(Ogre::Vector3(0, 2, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "display", "HardwareDisplay");
+            SystemGameState::getSingleton()->addObject(Ogre::Vector3(-2, 0, -5), Ogre::Quaternion(), SystemGraphics::getSingleton()->getSceneMgr()->getRootSceneNode(), "keyboard", "HardwareKeyboard");
 
             Object *cpuo = SystemObjectFactory::getSingleton()->getObject("cpu");
             Object *memoryo = SystemObjectFactory::getSingleton()->getObject("memory");
