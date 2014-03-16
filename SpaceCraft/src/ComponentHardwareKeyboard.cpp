@@ -12,6 +12,7 @@
 #include "Object.hpp"
 #include "ComponentKeyboardListener.hpp"
 #include "SystemObjectFactory.hpp"
+#include "SystemConfiguration.hpp"
 
 using namespace SpaceCraft;
 
@@ -52,7 +53,7 @@ void ComponentHardwareKeyboard::init()
             break;
         }
     }
-    if(!mKeyboard)
+    if(!mKeyboard && SystemConfiguration::getSingleton()->isClient())
         LOG("No ComponentKeyboardListener found!", "error");
 	LOG_OUT("hardware");
 }
