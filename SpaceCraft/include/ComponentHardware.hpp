@@ -17,7 +17,7 @@ public:
     ComponentHardware(Object *object, ParamMap &params, TypeInfo *type, unsigned int id, unsigned int mf, WORD ver);
     ~ComponentHardware();
 
-    void init();
+    bool init();
     void update(float elapsedTime);
     void receiveMessage(Message *message);
     

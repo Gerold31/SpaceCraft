@@ -12,5 +12,6 @@ Component::Component(Object *object, ParamMap &params, TypeInfo *type) :
     mType(type)
 {
     LOG_IN("component");
+    mReady = false;
     LOG_OUT("component");
 }

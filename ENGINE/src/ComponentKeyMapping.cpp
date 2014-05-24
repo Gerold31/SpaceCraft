@@ -33,10 +33,12 @@ void *ComponentKeyMapping::createInstance(Object *object, ParamMap &params)
     return new ComponentKeyMapping(object, params);
 }
 
-void ComponentKeyMapping::init()
+bool ComponentKeyMapping::init()
 {
     LOG_IN("component");
+    mReady = true;
     LOG_OUT("component");
+    return true;
 }
     
 void ComponentKeyMapping::update(float elapsedTime)

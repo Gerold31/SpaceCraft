@@ -50,7 +50,7 @@ public:
     ComponentSpaceShipPart(Object *object, ParamMap &params, TypeInfo *type, PART_TYPE partType);
     ~ComponentSpaceShipPart();
     
-    void init();
+    bool init();
     void update(float elapsedTime);
     void receiveMessage(Message *message);
 

@@ -33,10 +33,12 @@ void *ComponentSpaceShipPartFloorMount::createInstance(Object *object, ParamMap 
     return new ComponentSpaceShipPartFloorMount(object, params);
 }
 
-void ComponentSpaceShipPartFloorMount::init()
+bool ComponentSpaceShipPartFloorMount::init()
 {
 	LOG_IN("component");
+    mReady = true;
 	LOG_OUT("component");
+    return true;
 }
     
 void ComponentSpaceShipPartFloorMount::update(float elapsedTime)

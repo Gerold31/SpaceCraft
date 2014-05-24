@@ -15,6 +15,7 @@ namespace ENGINE
     
 class Component;
 class Message;
+class TypeInfo;
 
 class Object : public MessageReceiver
 {
@@ -26,10 +27,11 @@ public:
         \note Ownership of the component goes to the object
      */
     void addComponent(Component *component);
-    int getNumberComponents() {return mComponents.size();}
-    Component *getComponent(int i) {return mComponents.at(i);}
+    size_t getNumberComponents() {return mComponents.size();}
+    Component *getComponent(size_t i) {return mComponents.at(i);}
+    Component *getComponent(TypeInfo *type, size_t i = 0);
 
-    void init();
+    bool init();
     void update(float elapsedTime);
     void receiveMessage(Message *message);
 
@@ -50,7 +52,7 @@ private:
     Object *mParent;
     std::vector<Object *> mChilds;
     std::vector<Component *> mComponents;
-    boost::mutex mComponentsMutex;
+    boost::recursive_mutex mComponentsMutex;
     bool mInit;
     bool mReady;
 

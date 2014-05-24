@@ -10,21 +10,23 @@ ComponentHardware::ComponentHardware(Object *object, ParamMap &params, TypeInfo 
     Component(object, params, type),
     mID(id), mVER(ver), mMF(mf)
 {
-    LOG_IN("component");
+    LOG_IN("hardware");
     mCPU = nullptr;
-    LOG_OUT("component");
+    LOG_OUT("hardware");
 }
 
 ComponentHardware::~ComponentHardware()
 {
-    LOG_IN("component");
-    LOG_OUT("component");
+    LOG_IN("hardware");
+    LOG_OUT("hardware");
 }
 
-void ComponentHardware::init()
+bool ComponentHardware::init()
 {
-    LOG_IN("component");
-    LOG_OUT("component");
+    LOG_IN("hardware");
+    mReady = true;
+    LOG_OUT("hardware");
+    return true;
 }
 
 void ComponentHardware::update(float elapsedTime)

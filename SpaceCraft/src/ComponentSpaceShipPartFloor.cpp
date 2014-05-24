@@ -49,10 +49,12 @@ void *ComponentSpaceShipPartFloor::createInstance(Object *object, ParamMap &para
     return new ComponentSpaceShipPartFloor(object, params);
 }
 
-void ComponentSpaceShipPartFloor::init()
+bool ComponentSpaceShipPartFloor::init()
 {
 	LOG_IN("component");
+    mReady = true;
 	LOG_OUT("component");
+    return true;
 }
     
 void ComponentSpaceShipPartFloor::update(float elapsedTime)

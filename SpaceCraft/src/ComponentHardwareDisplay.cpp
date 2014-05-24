@@ -47,7 +47,7 @@ void *ComponentHardwareDisplay::createInstance(Object *object, ParamMap &params)
     return new ComponentHardwareDisplay(object, params);
 }
 
-void ComponentHardwareDisplay::init()
+bool ComponentHardwareDisplay::init()
 {
 	LOG_IN("hardware");
 
@@ -95,8 +95,10 @@ void ComponentHardwareDisplay::init()
         mPalette = mDefaultPalette;
 
     renderImage();
-
+    
+    mReady = true;
 	LOG_OUT("hardware");
+    return true;
 }
     
 void ComponentHardwareDisplay::update(float elapsedTime)
@@ -238,6 +240,7 @@ void ComponentHardwareDisplay::initPalette()
     mDefaultPalette[0xF] = 0x0FFF;
 	LOG_OUT("hardware");
 }
+
 void ComponentHardwareDisplay::initFont()
 {
 	LOG_IN("hardware");

@@ -40,10 +40,12 @@ void *ComponentServerConnection::createInstance(Object *object, ParamMap &params
     return new ComponentServerConnection(object, params);
 }
 
-void ComponentServerConnection::init()
+bool ComponentServerConnection::init()
 {
     LOG_IN("component");
+    mReady = true;
     LOG_OUT("component");
+    return true;
 }
     
 void ComponentServerConnection::update(float elapsedTime)

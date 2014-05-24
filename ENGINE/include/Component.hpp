@@ -18,17 +18,20 @@ public:
     Component(Object *object, ParamMap &params, TypeInfo *type);
     virtual ~Component() {};
 
-    virtual void init() = 0;
+    virtual bool init() = 0;
     virtual void update(float elapsedTime) = 0;
     virtual void receiveMessage(Message *message) = 0;
 
     TypeInfo *getType() {return mType;}
     Object *getObject() {return mObject;}
 
+    bool isReady() {return mReady;}
+
 protected:
     Object *mObject;
     ParamMap mParams;
     TypeInfo *mType;
+    bool mReady;
 };
 
 };

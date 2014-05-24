@@ -37,10 +37,12 @@ void *ComponentCPU::createInstance(Object *object, ParamMap &params)
     return new ComponentCPU(object, params);
 }
 
-void ComponentCPU::init()
+bool ComponentCPU::init()
 {
     LOG_IN("hardware");
+    mReady = true;
     LOG_OUT("hardware");
+    return true;
 }
 
 void ComponentCPU::update(float elapsedTime)

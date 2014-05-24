@@ -41,13 +41,15 @@ void *ComponentMover::createInstance(Object *object, ParamMap &params)
     return new ComponentMover(object, params);
 }
 
-void ComponentMover::init()
+bool ComponentMover::init()
 {
     LOG_IN("component");
     mYawNode = mObject->getSceneNode()->createChildSceneNode(mObject->getName() + "YawNode");
     mPitchNode = mYawNode->createChildSceneNode(mObject->getName() + "PitchNode");
     mRollNode = mPitchNode->createChildSceneNode(mObject->getName() + "RollNode");
+    mReady = true;
     LOG_OUT("component");
+    return true;
 }
     
 void ComponentMover::update(float elapsedTime)

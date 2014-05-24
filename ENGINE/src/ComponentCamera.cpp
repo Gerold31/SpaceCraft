@@ -34,7 +34,7 @@ void *ComponentCamera::createInstance(Object *object, ParamMap &params)
     return new ComponentCamera(object, params);
 }
 
-void ComponentCamera::init()
+bool ComponentCamera::init()
 {
     LOG_IN("component");
     mCamera = SystemGraphics::getSingleton()->getSceneMgr()->createCamera(mObject->getName() + "Camera");
@@ -49,12 +49,15 @@ void ComponentCamera::init()
         if(c->getType() == ComponentMover::getType())
         {
             ((ComponentMover *)c)->getRollNode()->attachObject(mCamera);
+            mReady = true;
             LOG_OUT("component");
-            return;
+            return true;
         }
     }
     mObject->getSceneNode()->attachObject(mCamera);
+    mReady = true;
     LOG_OUT("component");
+    return true;
 }
     
 void ComponentCamera::update(float elapsedTime)

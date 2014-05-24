@@ -30,11 +30,13 @@ void *ComponentMouseListener::createInstance(Object *object, ParamMap &params)
     return new ComponentMouseListener(object, params);
 }
 
-void ComponentMouseListener::init()
+bool ComponentMouseListener::init()
 {
     LOG_IN("component");
     SystemInput::getSingleton()->addMouseListener(this);
+    mReady = true;
     LOG_OUT("component");
+    return true;
 }
     
 void ComponentMouseListener::update(float elapsedTime)

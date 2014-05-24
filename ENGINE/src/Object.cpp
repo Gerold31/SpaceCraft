@@ -23,12 +23,14 @@ Object::Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parentN
 Object::~Object()
 {
     LOG_IN("object");
+    mComponentsMutex.lock();
     for(std::vector<Component *>::iterator i = mComponents.begin(); i!=mComponents.end(); ++i)
     {
         delete (*i);
         (*i) = nullptr;
     }
     mComponents.clear();
+    mComponentsMutex.unlock();
     LOG_OUT("object");
 }
     
@@ -41,16 +43,20 @@ void Object::addComponent(Component *component)
     LOG_OUT("object");
 }
 
-void Object::init()
+bool Object::init()
 {
     LOG_IN("object");
+    bool ret = true;
     mComponentsMutex.lock();
     for(std::vector<Component *>::iterator i = mComponents.begin(); i!=mComponents.end(); ++i)
     {
-        (*i)->init();
+        if(!(*i)->isReady() && !(*i)->init())
+            ret = false;
     }
     mComponentsMutex.unlock();
+    mInit = ret;
     LOG_OUT("object");
+    return ret;
 }
 
 void Object::update(float elapsedTime)
@@ -61,16 +67,16 @@ void Object::update(float elapsedTime)
         LOG_OUT_FRAME;
         return;
     }
-    if(!mInit)
+    if(!mInit && !init())
     {
-        mInit = true;
-        init();
+        LOG_OUT_FRAME;
+        return;
     }
 
     mComponentsMutex.lock();
-    for(std::vector<Component *>::iterator i = mComponents.begin(); i!=mComponents.end(); ++i)
+    for(size_t i = 0; i<mComponents.size(); i++)
     {
-        (*i)->update(elapsedTime);
+        mComponents.at(i)->update(elapsedTime);
     }
     mComponentsMutex.unlock();
     LOG_OUT_FRAME;
@@ -91,6 +97,28 @@ void Object::receiveMessage(Message *message)
     LOG_OUT_MSG;
 }
 
+Component *Object::getComponent(TypeInfo *type, size_t i)
+{
+    LOG_IN("object");
+    mComponentsMutex.lock();
+    for(std::vector<Component *>::iterator j = mComponents.begin(); j!=mComponents.end(); ++j)
+    {
+        if((*j)->getType() == type)
+        {
+            if(i == 0)
+            {
+                mComponentsMutex.unlock();
+                LOG_OUT("object");
+                return *j;
+            }
+            i--;
+        }
+    }
+    mComponentsMutex.unlock();
+    LOG_OUT("object");
+    return nullptr;
+}
+
 void Object::ready()
 {
     LOG_IN("object");
@@ -100,6 +128,7 @@ void Object::ready()
 
 void Object::removeChild(Object *obj)
 {
+    LOG_IN("object");
     for(std::vector<Object *>::iterator i=mChilds.begin(); i!=mChilds.end(); ++i)
     {
         if(*i == obj)
@@ -108,4 +137,5 @@ void Object::removeChild(Object *obj)
             break;
         }
     }
+    LOG_OUT("object");
 }

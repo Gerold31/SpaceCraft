@@ -30,11 +30,13 @@ void *ComponentKeyboardListener::createInstance(Object *object, ParamMap &params
     return new ComponentKeyboardListener(object, params);
 }
 
-void ComponentKeyboardListener::init()
+bool ComponentKeyboardListener::init()
 {
     LOG_IN("component");
     SystemInput::getSingleton()->addKeyListener(this);
+    mReady = true;
     LOG_OUT("component");
+    return true;
 }
     
 void ComponentKeyboardListener::update(float elapsedTime)

@@ -40,7 +40,7 @@ void *ComponentHardwareKeyboard::createInstance(Object *object, ParamMap &params
     return new ComponentHardwareKeyboard(object, params);
 }
 
-void ComponentHardwareKeyboard::init()
+bool ComponentHardwareKeyboard::init()
 {
 	LOG_IN("hardware");
     for(int i=0; i<mObject->getNumberComponents(); i++)
@@ -55,7 +55,10 @@ void ComponentHardwareKeyboard::init()
     }
     if(!mKeyboard && SystemConfiguration::getSingleton()->isClient())
         LOG("No ComponentKeyboardListener found!", "error");
+    
+    mReady = true;
 	LOG_OUT("hardware");
+    return true;
 }
     
 void ComponentHardwareKeyboard::update(float elapsedTime)

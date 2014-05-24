@@ -70,10 +70,12 @@ void *ComponentMemory::createInstance(Object *object, ParamMap &params)
     return new ComponentMemory(object, params);
 }
 
-void ComponentMemory::init()
+bool ComponentMemory::init()
 {
     LOG_IN("component");
+    mReady = true;
     LOG_OUT("component");
+    return true;
 }
 
 void ComponentMemory::update(float elapsedTime)

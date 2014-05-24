@@ -33,10 +33,12 @@ void *ComponentSpaceShipPartCeilMount::createInstance(Object *object, ParamMap &
     return new ComponentSpaceShipPartCeilMount(object, params);
 }
 
-void ComponentSpaceShipPartCeilMount::init()
+bool ComponentSpaceShipPartCeilMount::init()
 {
 	LOG_IN("component");
+    mReady = true;
 	LOG_OUT("component");
+    return true;
 }
     
 void ComponentSpaceShipPartCeilMount::update(float elapsedTime)

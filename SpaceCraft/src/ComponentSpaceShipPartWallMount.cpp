@@ -33,10 +33,12 @@ void *ComponentSpaceShipPartWallMount::createInstance(Object *object, ParamMap &
     return new ComponentSpaceShipPartWallMount(object, params);
 }
 
-void ComponentSpaceShipPartWallMount::init()
+bool ComponentSpaceShipPartWallMount::init()
 {
 	LOG_IN("component");
+    mReady = true;
 	LOG_OUT("component");
+    return true;
 }
     
 void ComponentSpaceShipPartWallMount::update(float elapsedTime)

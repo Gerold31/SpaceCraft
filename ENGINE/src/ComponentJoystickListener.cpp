@@ -30,11 +30,13 @@ void *ComponentJoystickListener::createInstance(Object *object, ParamMap &params
     return new ComponentJoystickListener(object, params);
 }
 
-void ComponentJoystickListener::init()
+bool ComponentJoystickListener::init()
 {
     LOG_IN("component");
     SystemInput::getSingleton()->addJoystickListener(this);
+    mReady = true;
     LOG_OUT("component");
+    return true;
 }
     
 void ComponentJoystickListener::update(float elapsedTime)

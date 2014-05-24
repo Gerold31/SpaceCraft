@@ -14,7 +14,7 @@ public:
 
     static void *createInstance(Object *object, ParamMap &params);
     
-    void init();
+    bool init();
     void update(float elapsedTime);
     void receiveMessage(Message *message);
 

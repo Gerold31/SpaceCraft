@@ -5,6 +5,7 @@
 #include "SystemGraphics.hpp"
 #include "TypeInfo.hpp"
 #include "SystemLog.hpp"
+#include "SystemGUI.hpp"
 
 #include "OGRE/OgreRenderWindow.h"
 
@@ -33,11 +34,11 @@ void *ComponentViewport::createInstance(Object *object, ParamMap &params)
     return new ComponentViewport(object, params);
 }
 
-void ComponentViewport::init()
+bool ComponentViewport::init()
 {
     LOG_IN("component");
     Ogre::Camera *cam = nullptr;
-    for(int i=0; i<mObject->getNumberComponents(); i++)
+    for(size_t i=0; i<mObject->getNumberComponents(); i++)
     {
         Component *c = mObject->getComponent(i);
         if(c->getType() == ComponentCamera::getType())
@@ -48,19 +49,26 @@ void ComponentViewport::init()
     }
     if(cam)
     {
+        unsigned short i = SystemGraphics::getSingleton()->getWindow()->getNumViewports();
         mViewport = SystemGraphics::getSingleton()->getWindow()->addViewport(cam, 100, 0, 0, 1, 1);
 
         mViewport->setAutoUpdated(true);
         mViewport->setBackgroundColour(Ogre::ColourValue(0.5,0,0));
+        mViewport->setOverlaysEnabled(true);
 
         cam->setAspectRatio(1.0f * mViewport->getActualWidth() / mViewport->getActualHeight());
+        
+        SystemGUI::getSingleton()->setActiveViewport(i);
 
     }else
     {
         LOG_OUT("component");
         throw "ComponentViewport requires a ComponentCamera";
     }
+
+    mReady = true;
     LOG_OUT("component");
+    return true;
 }
     
 void ComponentViewport::update(float elapsedTime)
@@ -72,5 +80,6 @@ void ComponentViewport::update(float elapsedTime)
 void ComponentViewport::receiveMessage(Message *message)
 {
     LOG_IN_MSG;
+    SystemGUI::getSingleton()->receiveMessage(message);
     LOG_OUT_MSG;
 }

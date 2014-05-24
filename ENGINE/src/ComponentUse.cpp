@@ -35,7 +35,7 @@ void *ComponentUse::createInstance(Object *object, ParamMap &params)
     return new ComponentUse(object, params);
 }
 
-void ComponentUse::init()
+bool ComponentUse::init()
 {
     LOG_IN("component");
     for(int i=0; i<mObject->getNumberComponents(); i++)
@@ -44,11 +44,15 @@ void ComponentUse::init()
         if(c->getType() == ComponentCamera::getType())
         {
             mParent = (ComponentCamera *)c;
+            break;
         }
     }
     if(!mParent)
         LOG("No ComponentCamera found!", "error");
+    
+    mReady = true;
     LOG_OUT("component");
+    return true;
 }
     
 void ComponentUse::update(float elapsedTime)

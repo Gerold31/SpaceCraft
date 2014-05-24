@@ -19,10 +19,12 @@ ComponentSpaceShipPart::~ComponentSpaceShipPart()
 	LOG_OUT("component");
 }
 
-void ComponentSpaceShipPart::init()
+bool ComponentSpaceShipPart::init()
 {
 	LOG_IN("component");
+    mReady = true;
 	LOG_OUT("component");
+    return true;
 }
     
 void ComponentSpaceShipPart::update(float elapsedTime)

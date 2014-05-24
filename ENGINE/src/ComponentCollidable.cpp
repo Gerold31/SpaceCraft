@@ -27,10 +27,12 @@ void *ComponentCollidable::createInstance(Object *object, ParamMap &params)
     return new ComponentCollidable(object, params);
 }
 
-void ComponentCollidable::init()
+bool ComponentCollidable::init()
 {
     LOG_IN("component");
+    mReady = true;
     LOG_OUT("component");
+    return true;
 }
     
 void ComponentCollidable::update(float elapsedTime)

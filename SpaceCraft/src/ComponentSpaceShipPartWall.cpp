@@ -50,10 +50,12 @@ void *ComponentSpaceShipPartWall::createInstance(Object *object, ParamMap &param
     return new ComponentSpaceShipPartWall(object, params);
 }
 
-void ComponentSpaceShipPartWall::init()
+bool ComponentSpaceShipPartWall::init()
 {
 	LOG_IN("component");
+    mReady = true;
 	LOG_OUT("component");
+    return true;
 }
     
 void ComponentSpaceShipPartWall::update(float elapsedTime)
