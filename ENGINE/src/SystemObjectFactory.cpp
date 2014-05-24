@@ -56,12 +56,12 @@ void SystemObjectFactory::init()
 void SystemObjectFactory::update(float elapsedTime)
 {
     LOG_IN_FRAME;
-    mComponentsMutex.lock();
-    for(auto i = mObjects.begin(); i!=mObjects.end(); ++i)
+    mObjectsMutex.lock();
+    for(size_t i=0; i<mObjects.size(); i++)
     {
-        (*i)->update(elapsedTime);
+        mObjects.at(i)->update(elapsedTime);
     }
-    mComponentsMutex.unlock();
+    mObjectsMutex.unlock();
     LOG_OUT_FRAME;
 }
 
@@ -111,9 +111,9 @@ Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion or
         Object *child = createObject(pos, ori, parentNode, name + '#' + (*i), (*i), object);
         object->addChild(child);
     }
-    mComponentsMutex.lock();
+    mObjectsMutex.lock();
     mObjects.push_back(object);
-    mComponentsMutex.unlock();
+    mObjectsMutex.unlock();
     object->ready();
     LOG_OUT("system");
     return object;
@@ -122,17 +122,17 @@ Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion or
 Object *SystemObjectFactory::getObject(std::string name)
 {
     LOG_IN_FRAME;
-    mComponentsMutex.lock();
+    mObjectsMutex.lock();
     for(auto i = mObjects.begin(); i!=mObjects.end(); ++i)
     {
         if((*i)->getName() == name)
         {
-            mComponentsMutex.unlock();
+            mObjectsMutex.unlock();
             LOG_OUT_FRAME;
             return *i;
         }
     }
-    mComponentsMutex.unlock();
+    mObjectsMutex.unlock();
     LOG_OUT_FRAME;
     return nullptr;
 }

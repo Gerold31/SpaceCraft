@@ -51,7 +51,7 @@ private:
     ObjectMap mObjectMap;
     std::map<std::string, TypeInfo *> mComponentMap;
 
-    boost::mutex mComponentsMutex;
+    boost::recursive_mutex mObjectsMutex;
     
 };
 
