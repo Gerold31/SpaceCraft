@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Widget" skin="Default" position="0 0 70 70" layer="Main" name="ItemMain">
+        <Property key="NeedMouse" value="false"/>
+        <Property key="NeedKey" value="false"/>
+        <Widget type="ImageBox" skin="ImageBox" position="0 0 70 70" align="Stretch" name="image_border">
+            <Property key="ImageTexture" value="ItemBorders.png"/>
+			<Property key="ImageCoord" value="0 0 70 70"/>
+        </Widget>
+		<Widget type="TextBox" skin="TextBox" position="1 1 68 68" align="Stretch" name="text_count">
+			<Property key="TextAlign" value="Right Bottom"/>
+			<Property key="TextColour" value="1 1 1"/>
+		</Widget>
+		<Widget type="ImageBox" skin="ImageBox" position="3 3 64 64" align="Stretch" name="image_item"/>
+    </Widget>
+</MyGUI>

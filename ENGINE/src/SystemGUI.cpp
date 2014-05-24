@@ -5,17 +5,16 @@
 #include "Message.hpp"
 #include "MessageInput.hpp"
 
+#include "OGRE/OgreRenderWindow.h"
+
 using namespace ENGINE;
 
 SystemGUI::SystemGUI() :
     System("SystemGUI")
 {
     LOG_IN("system");
-    MyGUI::OgrePlatform* mPlatform = new MyGUI::OgrePlatform();
-    mPlatform->initialise(SystemGraphics::getSingleton()->getWindow(), SystemGraphics::getSingleton()->getSceneMgr());
-
-    mGUI = new MyGUI::Gui();
-    mGUI->initialise();
+    mPlatform = nullptr;
+    mGUI = nullptr;
     LOG_OUT("system");
 }
 
@@ -67,19 +66,41 @@ void SystemGUI::receiveMessage(Message *msg)
     LOG_OUT_MSG;
 }
 
-MyGUI::VectorWidgetPtr SystemGUI::createGUI(std::string fileName)
+MyGUI::VectorWidgetPtr SystemGUI::loadLayout(std::string fileName)
 {
-    MyGUI::VectorWidgetPtr window = MyGUI::LayoutManager::getInstance().loadLayout(fileName);
-    return window;
+    LOG_IN("system");
+    LOG_OUT("system");
+    return MyGUI::LayoutManager::getInstance().loadLayout(fileName);
 }
 
 void SystemGUI::setEnable(bool enable)
 {
+    LOG_IN_FRAME;
     mEnable = enable;
     MyGUI::PointerManager::getInstancePtr()->setVisible(enable);
+    LOG_OUT_FRAME;
 }
 
 MyGUI::IntPoint SystemGUI::getMousePos()
 {
+    LOG_IN_FRAME;
+    LOG_OUT("system");
     return MyGUI::InputManager::getInstancePtr()->getMousePosition();
+}
+
+void SystemGUI::setActiveViewport(unsigned short index)
+{
+    LOG_IN("system");
+    if(!mPlatform)
+    {
+        MyGUI::OgrePlatform* mPlatform = new MyGUI::OgrePlatform();
+        mPlatform->initialise(SystemGraphics::getSingleton()->getWindow(), SystemGraphics::getSingleton()->getSceneMgr());
+
+        mGUI = new MyGUI::Gui();
+        mGUI->initialise();
+    }else
+    {
+        mPlatform->getRenderManagerPtr()->setActiveViewport(index);
+    }
+    LOG_OUT("system");
 }

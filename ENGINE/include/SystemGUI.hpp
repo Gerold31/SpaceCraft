@@ -17,17 +17,20 @@ public:
     void update(float elapsedTime);
     void receiveMessage(Message *msg);
 
-    MyGUI::VectorWidgetPtr createGUI(std::string fileName);
+    MyGUI::VectorWidgetPtr loadLayout(std::string fileName);
     MyGUI::Gui *getGUI() {return mGUI;}
 
     void setEnable(bool enable);
 
     MyGUI::IntPoint getMousePos();
 
+    void setActiveViewport(unsigned short index);
+
 private:
     SystemGUI();
     SystemGUI(const SystemGUI &) : System("SystemGUI") {}
     ~SystemGUI();
+    
 
     MyGUI::OgrePlatform *mPlatform;
     MyGUI::Gui          *mGUI;

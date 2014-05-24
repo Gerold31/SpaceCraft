@@ -23,6 +23,9 @@
 #include "ComponentViewport.hpp"
 #include "ComponentServerConnection.hpp"
 #include "ComponentUse.hpp"
+#include "ComponentInventory.hpp"
+#include "ComponentInventoryGUI.hpp"
+#include "ComponentItem.hpp"
 
 #include "ComponentCPU.hpp"
 #include "ComponentMemory.hpp"
@@ -66,6 +69,9 @@ int main(int argc, char **argv)
         SystemObjectFactory::getSingleton()->registerComponent(ComponentViewport::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentServerConnection::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentUse::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentInventory::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentInventoryGUI::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentItem::getType());
 
         SystemObjectFactory::getSingleton()->registerComponent(ComponentCPU::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentMemory::getType());
