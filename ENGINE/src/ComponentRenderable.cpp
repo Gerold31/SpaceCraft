@@ -55,7 +55,7 @@ void ComponentRenderable::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentRenderable::receiveMessage(Message *message)
+void ComponentRenderable::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     LOG_OUT_MSG;

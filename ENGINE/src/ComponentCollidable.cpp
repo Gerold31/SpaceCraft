@@ -41,7 +41,7 @@ void ComponentCollidable::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentCollidable::receiveMessage(Message *message)
+void ComponentCollidable::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     LOG_OUT_MSG;

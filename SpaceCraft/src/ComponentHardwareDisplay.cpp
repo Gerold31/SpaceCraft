@@ -119,7 +119,7 @@ void ComponentHardwareDisplay::update(float elapsedTime)
 	LOG_OUT_FRAME;
 }
 
-void ComponentHardwareDisplay::receiveMessage(Message *message)
+void ComponentHardwareDisplay::_receiveMessage(Message *message)
 {
 	LOG_IN_MSG;
     if(message->getID() == MessageDisplaySetImage::getID())
@@ -129,7 +129,7 @@ void ComponentHardwareDisplay::receiveMessage(Message *message)
     }
     else
     {
-        ComponentHardware::receiveMessage(message);
+        ComponentHardware::_receiveMessage(message);
     }
 	LOG_OUT_MSG;
 }

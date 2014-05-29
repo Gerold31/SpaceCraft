@@ -61,7 +61,7 @@ void ComponentUse::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentUse::receiveMessage(Message *message)
+void ComponentUse::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     if(message->getID() == MessageUse::getID())

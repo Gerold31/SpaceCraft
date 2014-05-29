@@ -16,7 +16,6 @@ public:
     
     bool init();
     void update(float elapsedTime);
-    void receiveMessage(Message *message);
 
     void enable(bool enable) {mEnabled = enable;}
     bool isEnabled() {return mEnabled;}
@@ -24,6 +23,7 @@ public:
     static TypeInfo *getType() {return mType;}
 
 private:
+    void _receiveMessage(Message *message);
     static TypeInfo *mType;
     
     bool mEnabled;

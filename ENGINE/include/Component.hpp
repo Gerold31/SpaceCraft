@@ -20,7 +20,7 @@ public:
 
     virtual bool init() = 0;
     virtual void update(float elapsedTime) = 0;
-    virtual void receiveMessage(Message *message) = 0;
+    void receiveMessage(Message *message);
 
     TypeInfo *getType() {return mType;}
     Object *getObject() {return mObject;}
@@ -28,10 +28,12 @@ public:
     bool isReady() {return mReady;}
 
 protected:
+    virtual void _receiveMessage(Message *message) = 0;
     Object *mObject;
     ParamMap mParams;
     TypeInfo *mType;
     bool mReady;
+    bool mEnable;
 };
 
 };

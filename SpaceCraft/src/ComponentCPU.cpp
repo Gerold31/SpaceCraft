@@ -51,7 +51,7 @@ void ComponentCPU::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentCPU::receiveMessage(Message *message)
+void ComponentCPU::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     if(message->getID() == MessageInterrupt::getID())

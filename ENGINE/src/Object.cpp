@@ -2,6 +2,7 @@
 
 #include "Component.hpp"
 #include "MessageMove.hpp"
+#include "MessageObject.hpp"
 #include "SystemLog.hpp"
 
 using namespace ENGINE;
@@ -16,6 +17,7 @@ Object::Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parentN
     mNode->setOrientation(ori);
     mNode->getUserObjectBindings().setUserAny("Object", Ogre::Any(this));
     mInit = mReady = false;
+    mEnable = true;
     mParent = parent;
     LOG_OUT("object");
 }
@@ -62,7 +64,7 @@ bool Object::init()
 void Object::update(float elapsedTime)
 {
     LOG_IN_FRAME;
-    if(!mReady)
+    if(!mReady || !mEnable)
     {
         LOG_OUT_FRAME;
         return;
@@ -85,11 +87,32 @@ void Object::update(float elapsedTime)
 void Object::receiveMessage(Message *message)
 {
     LOG_IN_MSG;
+    if(message->getID() == MessageEnable::getID())
+    {
+        mEnable = true;
+    }
+    else if(message->getID() == MessageDisable::getID())
+    {
+        mEnable = false;
+        
+        for(std::vector<Component *>::iterator i = mComponents.begin(); i!=mComponents.end(); ++i)
+        {
+            (*i)->receiveMessage(message);
+        }
+    }
+
+    if(!mEnable)
+    {
+        LOG_OUT_MSG;
+        return;
+    }
+
     if(message->getID() == MessageSetPosition::getID())
     {
         MessageSetPosition *m = (MessageSetPosition *)message;
         mNode->setPosition(m->mX, m->mY, m->mZ);
     }
+
     for(std::vector<Component *>::iterator i = mComponents.begin(); i!=mComponents.end(); ++i)
     {
         (*i)->receiveMessage(message);

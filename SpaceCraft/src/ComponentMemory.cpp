@@ -84,7 +84,7 @@ void ComponentMemory::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentMemory::receiveMessage(Message *message)
+void ComponentMemory::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     LOG_OUT_MSG;

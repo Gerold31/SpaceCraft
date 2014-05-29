@@ -66,7 +66,7 @@ void ComponentCamera::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentCamera::receiveMessage(Message *message)
+void ComponentCamera::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     LOG_OUT_MSG;

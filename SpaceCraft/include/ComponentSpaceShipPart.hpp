@@ -52,7 +52,6 @@ public:
     
     bool init();
     void update(float elapsedTime);
-    void receiveMessage(Message *message);
 
     static TypeInfo *getType() {return mType;}
 
@@ -66,6 +65,7 @@ protected:
     std::vector<std::pair<ComponentSpaceShipPart *, SpaceShipPartInfo *> > mNeighbor;
 
 private:
+    void _receiveMessage(Message *message);
     static TypeInfo *mType;
 
 

@@ -45,7 +45,7 @@ void ComponentJoystickListener::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentJoystickListener::receiveMessage(Message *message)
+void ComponentJoystickListener::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     if(message->getID() == MessageJoystickEnable::getID())

@@ -43,7 +43,7 @@ void ComponentItem::update(float elapsedTime)
 	LOG_OUT_FRAME;
 }
 
-void ComponentItem::receiveMessage(Message *message)
+void ComponentItem::_receiveMessage(Message *message)
 {
 	LOG_IN_FRAME;
 	LOG_OUT_FRAME;

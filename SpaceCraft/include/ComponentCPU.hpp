@@ -28,7 +28,6 @@ public:
 
     bool init();
     void update(float elapsedTime);
-    void receiveMessage(Message *message);
 
     void halt(int cycles){mCycles += cycles;}
 
@@ -49,6 +48,7 @@ public:
     static TypeInfo *getType() {return mType;}
 
 private:
+    void _receiveMessage(Message *message);
     void interrupt(WORD msg);
     std::string disas(WORD i);
 

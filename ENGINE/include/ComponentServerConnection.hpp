@@ -18,7 +18,6 @@ public:
     
     bool init();
     void update(float elapsedTime);
-    void receiveMessage(Message *message);
 
     void run();
 
@@ -27,6 +26,7 @@ public:
     static TypeInfo *getType() {return mType;}
 
 private:
+    void _receiveMessage(Message *message);
     static TypeInfo *mType;
 
 };

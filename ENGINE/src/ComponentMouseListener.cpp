@@ -45,7 +45,7 @@ void ComponentMouseListener::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentMouseListener::receiveMessage(Message *message)
+void ComponentMouseListener::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     if(message->getID() == MessageMouseEnable::getID())

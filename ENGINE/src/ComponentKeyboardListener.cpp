@@ -45,7 +45,7 @@ void ComponentKeyboardListener::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentKeyboardListener::receiveMessage(Message *message)
+void ComponentKeyboardListener::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     if(message->getID() == MessageKeyboardEnable::getID())

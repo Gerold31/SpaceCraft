@@ -54,7 +54,7 @@ void ComponentServerConnection::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentServerConnection::receiveMessage(Message *message)
+void ComponentServerConnection::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     LOG_OUT_MSG;

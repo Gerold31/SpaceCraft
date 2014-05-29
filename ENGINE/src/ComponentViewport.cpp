@@ -77,7 +77,7 @@ void ComponentViewport::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentViewport::receiveMessage(Message *message)
+void ComponentViewport::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     SystemGUI::getSingleton()->receiveMessage(message);

@@ -18,7 +18,6 @@ public:
     
     bool init();
     void update(float elapsedTime);
-    void receiveMessage(Message *message);
 
     static TypeInfo *getType() {return mType;}
 	
@@ -28,6 +27,7 @@ public:
     ComponentItem *getItem(size_t slot) { if(slot<mNumberItems) return mItems[slot]; return nullptr; }
 
 private:
+    void _receiveMessage(Message *message);
     static TypeInfo *mType;
 
     ComponentItem **mItems;

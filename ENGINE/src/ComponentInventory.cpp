@@ -44,7 +44,9 @@ bool ComponentInventory::init()
     {    
         LOG("First try Server, adding Items...", "component");
 
-        if(!mObject->getComponent(ComponentServerConnection::getType()))
+        ComponentServerConnection *con = (ComponentServerConnection *)mObject->getComponent(ComponentServerConnection::getType());
+
+        if(!con)
         {
             LOG("No ServerConnection", "component");
 	        LOG_OUT("component");
@@ -68,7 +70,7 @@ bool ComponentInventory::init()
             msg.sendTo(SystemObjectFactory::getSingleton());
 
             msg.mType = type + "Client";
-            SystemServer::getSingleton()->sendTo(&msg, SystemObjectFactory::getSingleton(), (ComponentServerConnection *)mObject->getComponent(ComponentServerConnection::getType()));
+            SystemServer::getSingleton()->sendTo(&msg, SystemObjectFactory::getSingleton(), con);
         }
         SystemLog::getSingleton()->exit("for", "component");
         firstTry = false;
@@ -102,7 +104,7 @@ void ComponentInventory::update(float elapsedTime)
 	LOG_OUT_FRAME;
 }
 
-void ComponentInventory::receiveMessage(Message *message)
+void ComponentInventory::_receiveMessage(Message *message)
 {
 	LOG_IN_FRAME;
 	LOG_OUT_FRAME;

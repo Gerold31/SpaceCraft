@@ -47,7 +47,7 @@ void ComponentSpaceShipPartWallMount::update(float elapsedTime)
 	LOG_OUT_FRAME;
 }
 
-void ComponentSpaceShipPartWallMount::receiveMessage(Message *message)
+void ComponentSpaceShipPartWallMount::_receiveMessage(Message *message)
 {
 	LOG_IN_MSG;
 	LOG_OUT_MSG;

@@ -19,7 +19,6 @@ public:
 
     bool init();
     void update(float elapsedTime);
-    void receiveMessage(Message *message);
     
     void connect(ComponentCPU *_CPU) {mCPU = _CPU;}
     bool isConnected() {return mCPU;}
@@ -31,6 +30,7 @@ public:
     WORD getMFH() {return (mMF >> 16) & 0xFFFF;}
 
 protected:
+    void _receiveMessage(Message *message);
     virtual void interrupt() = 0;
 
     ComponentCPU *mCPU;

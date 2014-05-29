@@ -1,5 +1,5 @@
-#ifndef _MESSAGEQUIT_HPP_
-#define _MESSAGEQUIT_HPP_
+#ifndef _MESSAGEENGINE_HPP_
+#define _MESSAGEENGINE_HPP_
 
 #include "Message.hpp"
 

@@ -55,6 +55,7 @@ private:
     boost::recursive_mutex mComponentsMutex;
     bool mInit;
     bool mReady;
+    bool mEnable;
 
 };
 

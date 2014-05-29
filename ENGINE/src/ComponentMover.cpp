@@ -74,7 +74,7 @@ void ComponentMover::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentMover::receiveMessage(Message *message)
+void ComponentMover::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     if(MessageStartMoveForward *m = dynamic_cast<MessageStartMoveForward *>(message))

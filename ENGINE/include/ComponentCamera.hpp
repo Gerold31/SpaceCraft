@@ -18,13 +18,13 @@ public:
     
     bool init();
     void update(float elapsedTime);
-    void receiveMessage(Message *message);
 
     static TypeInfo *getType() {return mType;}
 
     Ogre::Camera *getCamera() {return mCamera;}
 
 private:
+    void _receiveMessage(Message *message);
     static TypeInfo *mType;
 
     Ogre::Camera *mCamera;

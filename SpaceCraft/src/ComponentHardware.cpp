@@ -35,7 +35,7 @@ void ComponentHardware::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentHardware::receiveMessage(Message *message)
+void ComponentHardware::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     if(message->getID() == MessageInterrupt::getID())

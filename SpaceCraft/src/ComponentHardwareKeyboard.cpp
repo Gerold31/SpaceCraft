@@ -67,7 +67,7 @@ void ComponentHardwareKeyboard::update(float elapsedTime)
 	LOG_OUT_FRAME;
 }
 
-void ComponentHardwareKeyboard::receiveMessage(Message *message)
+void ComponentHardwareKeyboard::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     if(message->getID() == MessageKeyPressed::getID())
@@ -127,7 +127,7 @@ void ComponentHardwareKeyboard::receiveMessage(Message *message)
     }
     else
     {
-        ComponentHardware::receiveMessage(message);
+        ComponentHardware::_receiveMessage(message);
     }
     LOG_OUT_MSG;
 }

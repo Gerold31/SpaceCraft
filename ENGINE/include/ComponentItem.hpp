@@ -16,7 +16,6 @@ public:
     
     bool init();
     void update(float elapsedTime);
-    void receiveMessage(Message *message);
 
     static TypeInfo *getType() {return mType;}
 
@@ -30,6 +29,7 @@ public:
 	void move(ComponentItem *other);
 
 private:
+    void _receiveMessage(Message *message);
     static TypeInfo *mType;
 
 	std::string mName;
