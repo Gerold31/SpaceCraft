@@ -42,6 +42,8 @@
 #include "MessageMove.hpp"
 #include "MessageObjectFactory.hpp"
 #include "MessageUse.hpp"
+#include "MessageObject.hpp"
+#include "MessageInventory.hpp"
 
 #include "MessageCPU.hpp"
 #include "MessageHardwareKeyboard.hpp"
@@ -97,6 +99,9 @@ int main(int argc, char **argv)
         Message::registerMessge(MessageCreateObject::getID(), MessageCreateObject::CreateMessage);
         Message::registerMessge(MessageSetPosition::getID(), MessageSetPosition::CreateMessage);
         Message::registerMessge(MessageUse::getID(), MessageUse::CreateMessage);
+        Message::registerMessge(MessageEnable::getID(), MessageEnable::CreateMessage);
+        Message::registerMessge(MessageDisable::getID(), MessageDisable::CreateMessage);
+        Message::registerMessge(MessageEnableInventory::getID(), MessageEnableInventory::CreateMessage);
 
         Message::registerMessge(MessageInterrupt::getID(), MessageInterrupt::CreateMessage);
         Message::registerMessge(MessageHardwareKeyPressed::getID(), MessageHardwareKeyPressed::CreateMessage);

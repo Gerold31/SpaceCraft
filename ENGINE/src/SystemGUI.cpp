@@ -15,6 +15,7 @@ SystemGUI::SystemGUI() :
     LOG_IN("system");
     mPlatform = nullptr;
     mGUI = nullptr;
+    mMouseEnable = mKeyboardEnable = false;
     LOG_OUT("system");
 }
 
@@ -39,17 +40,9 @@ void SystemGUI::update(float elapsedTime)
 void SystemGUI::receiveMessage(Message *msg)
 {
     LOG_IN_MSG;
-    if(mEnable)
+    if(mMouseEnable)
     {
-        if(msg->getID() == MessageKeyPressed::getID())
-        {
-            MessageKeyPressed *m = (MessageKeyPressed *)msg;
-            MyGUI::InputManager::getInstance().injectKeyPress(MyGUI::KeyCode::Enum(m->mEvent.key), m->mEvent.text);
-        }else if(msg->getID() == MessageKeyReleased::getID())
-        {
-            MessageKeyReleased *m = (MessageKeyReleased *)msg;
-            MyGUI::InputManager::getInstance().injectKeyRelease(MyGUI::KeyCode::Enum(m->mEvent.key));
-        }else if(msg->getID() == MessageMousePressed::getID())
+        if(msg->getID() == MessageMousePressed::getID())
         {
             MessageMousePressed *m = (MessageMousePressed *)msg;
             MyGUI::InputManager::getInstance().injectMousePress(m->mEvent.state.X.abs, m->mEvent.state.Y.abs, MyGUI::MouseButton::Enum(m->mButtonID));
@@ -63,6 +56,18 @@ void SystemGUI::receiveMessage(Message *msg)
             MyGUI::InputManager::getInstance().injectMouseMove(m->mEvent.state.X.abs, m->mEvent.state.Y.abs, m->mEvent.state.Y.abs);
         }
     }
+    if(mKeyboardEnable)
+    {
+        if(msg->getID() == MessageKeyPressed::getID())
+        {
+            MessageKeyPressed *m = (MessageKeyPressed *)msg;
+            MyGUI::InputManager::getInstance().injectKeyPress(MyGUI::KeyCode::Enum(m->mEvent.key), m->mEvent.text);
+        }else if(msg->getID() == MessageKeyReleased::getID())
+        {
+            MessageKeyReleased *m = (MessageKeyReleased *)msg;
+            MyGUI::InputManager::getInstance().injectKeyRelease(MyGUI::KeyCode::Enum(m->mEvent.key));
+        }
+    }
     LOG_OUT_MSG;
 }
 
@@ -73,18 +78,25 @@ MyGUI::VectorWidgetPtr SystemGUI::loadLayout(std::string fileName)
     return MyGUI::LayoutManager::getInstance().loadLayout(fileName);
 }
 
-void SystemGUI::setEnable(bool enable)
+void SystemGUI::setMouseEnable(bool enable)
 {
     LOG_IN_FRAME;
-    mEnable = enable;
+    mMouseEnable = enable;
     MyGUI::PointerManager::getInstancePtr()->setVisible(enable);
+    LOG_OUT_FRAME;
+}
+
+void SystemGUI::setKeyboardEnable(bool enable)
+{
+    LOG_IN_FRAME;
+    mKeyboardEnable = enable;
     LOG_OUT_FRAME;
 }
 
 MyGUI::IntPoint SystemGUI::getMousePos()
 {
     LOG_IN_FRAME;
-    LOG_OUT("system");
+    LOG_OUT_FRAME;
     return MyGUI::InputManager::getInstancePtr()->getMousePosition();
 }
 
@@ -98,6 +110,8 @@ void SystemGUI::setActiveViewport(unsigned short index)
 
         mGUI = new MyGUI::Gui();
         mGUI->initialise();
+        
+        MyGUI::PointerManager::getInstancePtr()->setVisible(false);
     }else
     {
         mPlatform->getRenderManagerPtr()->setActiveViewport(index);

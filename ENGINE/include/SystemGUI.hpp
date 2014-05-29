@@ -19,8 +19,9 @@ public:
 
     MyGUI::VectorWidgetPtr loadLayout(std::string fileName);
     MyGUI::Gui *getGUI() {return mGUI;}
-
-    void setEnable(bool enable);
+    
+    void setMouseEnable(bool enable);
+    void setKeyboardEnable(bool enable);
 
     MyGUI::IntPoint getMousePos();
 
@@ -35,7 +36,7 @@ private:
     MyGUI::OgrePlatform *mPlatform;
     MyGUI::Gui          *mGUI;
 
-    bool mEnable;
+    bool mMouseEnable, mKeyboardEnable;
 };
 
 };

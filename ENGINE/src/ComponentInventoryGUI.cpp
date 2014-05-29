@@ -8,6 +8,7 @@
 #include "SystemGUI.hpp"
 #include "SystemGraphics.hpp"
 #include "MessageInput.hpp"
+#include "MessageInventory.hpp"
 
 using namespace ENGINE;
 
@@ -111,9 +112,8 @@ bool ComponentInventoryGUI::init()
     }
     
     mLayoutRoot.at(0)->setSize(SystemGraphics::getSingleton()->getWindow()->getWidth(), SystemGraphics::getSingleton()->getWindow()->getHeight());
-
-    // debug
-    SystemGUI::getSingleton()->setEnable(true);
+    mLayoutRoot.at(0)->setVisible(false);
+    mEnable = false;
 
     mReady = true;
 	LOG_OUT("component");
@@ -126,13 +126,19 @@ void ComponentInventoryGUI::update(float elapsedTime)
 	LOG_OUT_FRAME;
 }
 
-void ComponentInventoryGUI::receiveMessage(Message *message)
+void ComponentInventoryGUI::_receiveMessage(Message *message)
 {
 	LOG_IN_FRAME;
     if(message->getID() == MessageMouseMoved::getID())
     {
         if(mDragging)
             mDragItem->setPosition(SystemGUI::getSingleton()->getMousePos() - mItemBox->getPosition() - mDragOff);
+    }else if(message->getID() == MessageEnableInventory::getID())
+    {
+        MessageEnableInventory *msg = (MessageEnableInventory *)message;
+        mEnable = !mEnable;
+        mLayoutRoot.at(0)->setVisible(mEnable); // @todo: msg->mEnable
+        SystemGUI::getSingleton()->setMouseEnable(mEnable); // @todo: msg->mEnable
     }
 	LOG_OUT_FRAME;
 }

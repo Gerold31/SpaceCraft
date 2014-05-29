@@ -20,18 +20,18 @@ public:
     
     bool init();
     void update(float elapsedTime);
-    void receiveMessage(Message *message);
 
 	static TypeInfo *getType() { return mType; }
 
 	MyGUI::ItemBox* getItemBox() { return mItemBox; }
 
 private:
-	void notifyStartDrop(MyGUI::DDContainer *sender, const MyGUI::DDItemInfo &info, bool &result);
-	void notifyRequestDrop(MyGUI::DDContainer *sender, const MyGUI::DDItemInfo &info, bool &result);
-	void notifyEndDrop(MyGUI::DDContainer *sender, const MyGUI::DDItemInfo &info, bool result);
-	void notifyDropState(MyGUI::DDContainer *sender, MyGUI::DDItemState state);
-	void notifyNotifyItem(MyGUI::ItemBox *sender, const MyGUI::IBNotifyItemData &info);
+    void _receiveMessage(Message *message);
+    void notifyStartDrop(MyGUI::DDContainer *sender, const MyGUI::DDItemInfo &info, bool &result);
+    void notifyRequestDrop(MyGUI::DDContainer *sender, const MyGUI::DDItemInfo &info, bool &result);
+    void notifyEndDrop(MyGUI::DDContainer *sender, const MyGUI::DDItemInfo &info, bool result);
+    void notifyDropState(MyGUI::DDContainer *sender, MyGUI::DDItemState state);
+    void notifyNotifyItem(MyGUI::ItemBox *sender, const MyGUI::IBNotifyItemData &info);
 
     void requestCreateWidgetItem(MyGUI::ItemBox *sender, MyGUI::Widget *item);
     void requestDrawItem(MyGUI::ItemBox *sender, MyGUI::Widget *item, const MyGUI::IBDrawItemInfo &info);
@@ -45,6 +45,7 @@ private:
     MyGUI::Widget *mDragItem;
     MyGUI::IntPoint mDragOff;
     bool mDragging;
+    bool mEnable;
 
 };
 

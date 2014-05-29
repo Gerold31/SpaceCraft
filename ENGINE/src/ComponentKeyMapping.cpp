@@ -6,6 +6,7 @@
 #include "MessageMove.hpp"
 #include "MessageEngine.hpp"
 #include "MessageUse.hpp"
+#include "MessageInventory.hpp"
 #include "Engine.hpp"
 #include "SystemLog.hpp"
 
@@ -47,7 +48,7 @@ void ComponentKeyMapping::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentKeyMapping::receiveMessage(Message *message)
+void ComponentKeyMapping::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     if(message->getID() == MessageMouseMoved::getID())
@@ -87,6 +88,13 @@ void ComponentKeyMapping::receiveMessage(Message *message)
         case OIS::KC_E:
         {
             MessageUse msg(mObject->getName());
+            msg.sendTo(mObject);
+            break;
+        }
+        case OIS::KC_TAB:
+        case OIS::KC_I:
+        {
+            MessageEnableInventory msg(true);
             msg.sendTo(mObject);
             break;
         }
