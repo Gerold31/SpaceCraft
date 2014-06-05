@@ -26,6 +26,7 @@
 #include "ComponentInventory.hpp"
 #include "ComponentInventoryGUI.hpp"
 #include "ComponentItem.hpp"
+#include "ComponentMultiUse.hpp"
 
 #include "ComponentCPU.hpp"
 #include "ComponentMemory.hpp"
@@ -40,6 +41,7 @@
 #include "Message.hpp"
 #include "MessageEngine.hpp"
 #include "MessageMove.hpp"
+#include "MessageObject.hpp"
 #include "MessageObjectFactory.hpp"
 #include "MessageUse.hpp"
 #include "MessageObject.hpp"
@@ -53,12 +55,24 @@
 
 #include "OGRE/OgreSceneManager.h"
 
+#include <signal.h>
+
+void sigHandler(int param)
+{
+    if(param == SIGSEGV)
+    {
+        LOG("Segfault", "error");
+        exit(1);
+    }
+}
+
 using namespace ENGINE;
 using namespace SpaceCraft;
 
 int main(int argc, char **argv)
 {
     LOG_IN("log");
+    signal(SIGSEGV, sigHandler);
     try{
         SystemObjectFactory::getSingleton()->registerComponent(ComponentCamera::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentCollidable::getType());
@@ -74,6 +88,7 @@ int main(int argc, char **argv)
         SystemObjectFactory::getSingleton()->registerComponent(ComponentInventory::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentInventoryGUI::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentItem::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentMultiUse::getType());
 
         SystemObjectFactory::getSingleton()->registerComponent(ComponentCPU::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentMemory::getType());
@@ -102,6 +117,10 @@ int main(int argc, char **argv)
         Message::registerMessge(MessageEnable::getID(), MessageEnable::CreateMessage);
         Message::registerMessge(MessageDisable::getID(), MessageDisable::CreateMessage);
         Message::registerMessge(MessageEnableInventory::getID(), MessageEnableInventory::CreateMessage);
+        Message::registerMessge(MessageMultiUse::getID(), MessageMultiUse::CreateMessage);
+        Message::registerMessge(MessageRegisterMultiUse::getID(), MessageRegisterMultiUse::CreateMessage);
+        Message::registerMessge(MessageRequestMultiUse::getID(), MessageRequestMultiUse::CreateMessage);
+        Message::registerMessge(MessageSetState::getID(), MessageSetState::CreateMessage);
 
         Message::registerMessge(MessageInterrupt::getID(), MessageInterrupt::CreateMessage);
         Message::registerMessge(MessageHardwareKeyPressed::getID(), MessageHardwareKeyPressed::CreateMessage);
@@ -214,7 +233,7 @@ int main(int argc, char **argv)
             cpuc->addDevice(keyboardc);
             keyboardc->connect(cpuc);
 
-            cpuc->start();
+            //cpuc->start();
 
         }
         LOG("init finished", "log");
