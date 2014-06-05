@@ -3,12 +3,12 @@
 
 #include "MessageReceiver.hpp"
 
+#include "Defines.hpp"
+
 #include "OGRE/OgreSceneNode.h"
 #include "OGRE/OgreString.h"
 
 #include <boost/thread/mutex.hpp>
-
-#include <vector>
 
 namespace ENGINE
 {
@@ -45,6 +45,8 @@ public:
     Object *getChild(size_t i) {return mChilds.at(i);}
     size_t getNumberChilds() {return mChilds.size();}
     void removeChild(Object *obj);
+
+    StateMap getState();
 
 private:
     Ogre::SceneNode *mNode;

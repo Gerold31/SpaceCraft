@@ -162,3 +162,18 @@ void Object::removeChild(Object *obj)
     }
     LOG_OUT("object");
 }
+
+StateMap Object::getState()
+{
+    LOG_IN("object");
+    mComponentsMutex.lock();
+    StateMap map;
+    for(size_t i = 0; i<mComponents.size(); i++)
+    {
+        StateMap m = mComponents.at(i)->getState();
+        map.insert(m.begin(), m.end());
+    }
+    mComponentsMutex.unlock();
+    LOG_OUT("object");
+    return map;
+}

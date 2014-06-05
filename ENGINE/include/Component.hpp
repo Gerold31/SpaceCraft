@@ -27,6 +27,8 @@ public:
 
     bool isReady() {return mReady;}
 
+    virtual StateMap getState() { return StateMap(); }
+
 protected:
     virtual void _receiveMessage(Message *message) = 0;
     Object *mObject;

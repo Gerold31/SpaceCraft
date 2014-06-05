@@ -39,9 +39,11 @@ namespace ENGINE
 {
 
 class Object;
-    
+
 typedef std::map<std::string, boost::any> ParamMap;
 typedef void* (*CreateInstance)(Object *object, ParamMap &params);
+
+typedef std::map<std::string, std::string> StateMap;
 
 };
 

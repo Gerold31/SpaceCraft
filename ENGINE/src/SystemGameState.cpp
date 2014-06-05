@@ -3,6 +3,7 @@
 #include "SystemObjectFactory.hpp"
 #include "SystemGraphics.hpp"
 #include "SystemServer.hpp"
+#include "MessageObject.hpp"
 #include "MessageObjectFactory.hpp"
 #include "Object.hpp"
 #include "ComponentServerConnection.hpp"
@@ -85,15 +86,29 @@ void SystemGameState::addObject(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::S
 void SystemGameState::onNewPlayer(ComponentServerConnection *connection)
 {
     LOG_IN("system");
+
+    Object *obj = connection->getObject();
+
+    MessageCreateObject msg(obj->getSceneNode()->getPosition(), obj->getSceneNode()->getOrientation(), obj->getSceneNode()->getParentSceneNode(), obj->getName(), "Player");
+    SystemServer::getSingleton()->sendTo(&msg, SystemObjectFactory::getSingleton(), connection);
+
+    StateMap state = obj->getState();
+    MessageSetState m(state);
+    SystemServer::getSingleton()->sendTo(&m, obj, connection);
+
     // send objects to new player
     for(auto i=mLoadedObjects.begin(); i!=mLoadedObjects.end(); ++i)
     {
-        Object *obj = (*i).second;
+        obj = (*i).second;
         std::string type = (*i).first + "Client";
         if(obj == connection->getObject())
-            type = "Player";
+            continue;
         MessageCreateObject msg(obj->getSceneNode()->getPosition(), obj->getSceneNode()->getOrientation(), obj->getSceneNode()->getParentSceneNode(), obj->getName(), type);
         SystemServer::getSingleton()->sendTo(&msg, SystemObjectFactory::getSingleton(), connection);
+
+        StateMap state = obj->getState();
+        MessageSetState m(state);
+        SystemServer::getSingleton()->sendTo(&m, obj, connection);
     }
 
     mConnectedPlayers.push_back(connection);
