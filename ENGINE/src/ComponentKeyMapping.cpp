@@ -87,7 +87,7 @@ void ComponentKeyMapping::_receiveMessage(Message *message)
         }
         case OIS::KC_E:
         {
-            MessageUse msg(mObject->getName());
+            MessageUse msg(mObject->getName().c_str());
             msg.sendTo(mObject);
             break;
         }

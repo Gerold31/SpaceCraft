@@ -6,6 +6,7 @@
 #include "ComponentMemory.hpp"
 #include "MessageCPU.hpp"
 #include "Object.hpp"
+#include "MessageUse.hpp"
 
 using namespace SpaceCraft;
 
@@ -40,6 +41,12 @@ void *ComponentCPU::createInstance(Object *object, ParamMap &params)
 bool ComponentCPU::init()
 {
     LOG_IN("hardware");
+    MessageRegisterMultiUse msg("start");
+    msg.sendTo(mObject);
+    msg.mName = "stop";
+    msg.sendTo(mObject);
+    msg.mName = "reset";
+    msg.sendTo(mObject);
     mReady = true;
     LOG_OUT("hardware");
     return true;
@@ -56,8 +63,17 @@ void ComponentCPU::_receiveMessage(Message *message)
     LOG_IN_MSG;
     if(message->getID() == MessageInterrupt::getID())
     {
-        MessageInterrupt *m = (MessageInterrupt *)message;
-        interrupt(m->mMsg);
+        MessageInterrupt *msg = (MessageInterrupt *)message;
+        interrupt(msg->mMsg);
+    }else if(message->getID() == MessageMultiUse::getID())
+    {
+        MessageMultiUse *msg = (MessageMultiUse *)message;
+        if(msg->mName == "start")
+            start();
+        else if(msg->mName == "stop")
+            stop();
+        else if(msg->mName == "reset")
+            reset();
     }
     LOG_OUT_MSG;
 }

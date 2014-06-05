@@ -6,6 +6,7 @@
 #include "MessageUse.hpp"
 #include "ComponentCamera.hpp"
 #include "Object.hpp"
+#include "ComponentMultiUse.hpp"
 
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreRay.h>
@@ -85,8 +86,15 @@ void ComponentUse::_receiveMessage(Message *message)
                 if(obj && obj != mObject)
                 {
                     LOG("use " + obj->getName(), "component");
-                    MessageUse msg(mObject->getName());
-                    msg.sendTo(obj);
+                    if(obj->getComponent(ComponentMultiUse::getType()))
+                    {
+                        MessageRequestMultiUse msg(mObject->getName());
+                        msg.sendTo(obj);
+                    }else
+                    {
+                        MessageUse msg(mObject->getName());
+                        msg.sendTo(obj);
+                    }
                     break;
                 }
             }

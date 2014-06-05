@@ -110,8 +110,7 @@ void SystemGUI::setActiveViewport(unsigned short index)
 
         mGUI = new MyGUI::Gui();
         mGUI->initialise();
-        
-        MyGUI::PointerManager::getInstancePtr()->setVisible(false);
+        setEnable(false);
     }else
     {
         mPlatform->getRenderManagerPtr()->setActiveViewport(index);
