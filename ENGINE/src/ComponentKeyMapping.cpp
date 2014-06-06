@@ -9,8 +9,11 @@
 #include "MessageInventory.hpp"
 #include "Engine.hpp"
 #include "SystemLog.hpp"
+#include "SystemInput.hpp"
 
 using namespace ENGINE;
+
+#define LONG_PRESS_TIME (0.5)
 
 TypeInfo *ComponentKeyMapping::mType = new TypeInfo("ComponentKeyMapping", &ComponentKeyMapping::createInstance);
 
@@ -18,6 +21,50 @@ ComponentKeyMapping::ComponentKeyMapping(Object *object, ParamMap &params) :
     Component(object, params, mType)
 {
     LOG_IN("component");
+    std::fstream file;
+
+    file.open(boost::any_cast<std::string>(mParams["FileName"]).c_str());
+
+    if(file.eof() || !file.is_open())
+    {
+        file.close();
+        LOG_OUT("component");
+        return;
+    }
+
+    std::string line;
+
+    while(std::getline(file, line))
+    {
+        char *str = strdup(line.c_str());
+        std::string key, event, message;
+        key = strtok(str, " \t\n\r");
+        event = strtok(NULL, " \t\n\r");
+        message = strtok(NULL, " \t\n\r");
+
+        OIS::KeyCode code = SystemInput::getSingleton()->textToKeyCode(key);
+        int id =  Message::calcID(message);
+
+        char log[128];
+        sprintf(log, "%s: %d, %s, %s", key.c_str(), code, event.c_str(), message.c_str());
+        LOG(log, "component");
+
+        if(event == "down")
+            mKeyMap[std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(code, DOWN)] = id;
+        else if(event == "up")
+            mKeyMap[std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(code, UP)] = id;
+        else if(event == "press")
+        {
+            mKeyMap[std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(code, PRESS)] = id;
+            mKeyTime[code] = -1.0;
+        }else if(event == "longpress")
+        {
+            mKeyMap[std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(code, LONG_PRESS)] = id;
+            mKeyTime[code] = -1.0;
+        }
+    }
+
+    file.close();
     LOG_OUT("component");
 }
 
@@ -45,6 +92,13 @@ bool ComponentKeyMapping::init()
 void ComponentKeyMapping::update(float elapsedTime)
 {
     LOG_IN_FRAME;
+    for(auto i=mKeyTime.begin(); i!=mKeyTime.end(); ++i)
+    {
+        if(i->second >= 0.0)
+        {
+            i->second += elapsedTime;
+        }
+    }
     LOG_OUT_FRAME;
 }
 
@@ -59,81 +113,45 @@ void ComponentKeyMapping::_receiveMessage(Message *message)
     }else if(message->getID() == MessageKeyPressed::getID())
     {
         MessageKeyPressed *m = (MessageKeyPressed *)message;
-        switch(m->mEvent.key)
+
+        if(mKeyMap.count(std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(m->mEvent.key, DOWN)))
         {
-        case OIS::KC_W:
+            std::stringstream s;
+            Message *msg = Message::createMessage(mKeyMap.at(std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(m->mEvent.key, DOWN)), s);
+            msg->sendTo(mObject);
+            delete msg;
+        }
+        if(mKeyTime.count(m->mEvent.key))
         {
-            MessageStartMoveForward msg;
-            msg.sendTo(mObject);
-            break;
+            mKeyTime.at(m->mEvent.key) = 0.0;
         }
-        case OIS::KC_S:
-        {
-            MessageStartMoveBackward msg;
-            msg.sendTo(mObject);
-            break;
-        }
-        case OIS::KC_A:
-        {
-            MessageStartMoveLeft msg;
-            msg.sendTo(mObject);
-            break;
-        }
-        case OIS::KC_D:
-        {
-            MessageStartMoveRight msg;
-            msg.sendTo(mObject);
-            break;
-        }
-        case OIS::KC_E:
-        {
-            MessageUse msg(mObject->getName().c_str());
-            msg.sendTo(mObject);
-            break;
-        }
-        case OIS::KC_TAB:
-        case OIS::KC_I:
-        {
-            MessageEnableInventory msg(true);
-            msg.sendTo(mObject);
-            break;
-        }
-        case OIS::KC_ESCAPE:
-        {
-            MessageQuit msg;
-            msg.sendTo(Engine::getSingleton());
-            break;
-        }
-        }
+
     }else if(message->getID() == MessageKeyReleased::getID())
     {
         MessageKeyReleased *m = (MessageKeyReleased *)message;
-        switch(m->mEvent.key)
+
+        if(mKeyMap.count(std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(m->mEvent.key, UP)))
         {
-        case OIS::KC_W:
-        {
-            MessageStopMoveForward msg;
-            msg.sendTo(mObject);
-            break;
+            std::stringstream s;
+            Message *msg = Message::createMessage(mKeyMap.at(std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(m->mEvent.key, UP)), s);
+            msg->sendTo(mObject);
+            delete msg;
         }
-        case OIS::KC_S:
+        if(mKeyTime.count(m->mEvent.key))
         {
-            MessageStopMoveBackward msg;
-            msg.sendTo(mObject);
-            break;
-        }
-        case OIS::KC_A:
-        {
-            MessageStopMoveLeft msg;
-            msg.sendTo(mObject);
-            break;
-        }
-        case OIS::KC_D:
-        {
-            MessageStopMoveRight msg;
-            msg.sendTo(mObject);
-            break;
-        }
+            std::stringstream s;
+            if(mKeyTime.at(m->mEvent.key) >= LONG_PRESS_TIME && mKeyMap.count(std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(m->mEvent.key, LONG_PRESS)))
+            {
+                Message *msg = Message::createMessage(mKeyMap.at(std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(m->mEvent.key, LONG_PRESS)), s);
+                msg->sendTo(mObject);
+                delete msg;
+            }else if(mKeyMap.count(std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(m->mEvent.key, PRESS)))
+            {
+                Message *msg = Message::createMessage(mKeyMap.at(std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(m->mEvent.key, PRESS)), s);
+                msg->sendTo(mObject);
+                delete msg;
+            }
+            mKeyTime.at(m->mEvent.key) = -1.0;
         }
     }else if(message->getID() == MessageMousePressed::getID())
     {
@@ -142,7 +160,7 @@ void ComponentKeyMapping::_receiveMessage(Message *message)
         {
         case OIS::MB_Right:
         {
-            MessageUse msg(mObject->getName());
+            MessageUse msg;
             msg.sendTo(mObject);
             break;
         }

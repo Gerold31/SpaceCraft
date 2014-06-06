@@ -37,6 +37,9 @@ int Message::calcID(std::string name)
     {
         id += name[i] << (i % (32-7));
     }
+    char str[128];
+    sprintf(str, "%s has id: %d", name.c_str(), id);
+    LOG(str, "message");
     LOG_OUT("message");
     return id;
 }

@@ -46,6 +46,9 @@ public:
     OIS::JoyStick *getJoystick(unsigned int index);
  
     int getNumOfJoysticks(void);
+    
+    OIS::KeyCode textToKeyCode(std::string text);
+    std::string keyCodeToText(OIS::KeyCode code);
 
 private:
     SystemInput();
@@ -84,6 +87,8 @@ private:
     std::vector<ComponentKeyboardListener*>::iterator mKeyListenerEnd;
     std::vector<ComponentMouseListener*>::iterator mMouseListenerEnd;
     std::vector<ComponentJoystickListener*>::iterator mJoystickListenerEnd;
+
+    std::map<std::string, OIS::KeyCode> mKeyCodes;
 };
 
 };

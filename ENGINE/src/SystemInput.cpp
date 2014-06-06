@@ -9,7 +9,9 @@
 #include "SystemLog.hpp"
 
 using namespace ENGINE;
- 
+
+#define MAX_KEY (0xED)
+
 SystemInput::SystemInput(void) :
     System("SystemInput"),
     mMouse(0),
@@ -115,6 +117,11 @@ void SystemInput::init()
                 (*mJoystickBeg) = static_cast<OIS::JoyStick*>(mInputSystem->createInputObject(OIS::OISJoyStick, true));
                 (*mJoystickBeg)->setEventCallback(this);
             }
+        }
+
+        for(int i=0; i<=MAX_KEY; i++)
+        {
+            mKeyCodes[keyCodeToText((OIS::KeyCode)i)] = (OIS::KeyCode)i;
         }
     }
     LOG_OUT("system");
@@ -444,4 +451,19 @@ bool SystemInput::buttonReleased(const OIS::JoyStickEvent &e, int button)
 
     LOG_OUT_FRAME;
     return true;
+}
+
+OIS::KeyCode SystemInput::textToKeyCode(std::string text)
+{
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
+    return mKeyCodes.at(text);
+}
+
+
+std::string SystemInput::keyCodeToText(OIS::KeyCode code)
+{
+    LOG_IN_FRAME;
+    LOG_OUT_FRAME;
+    return mKeyboard->getAsString(code);
 }

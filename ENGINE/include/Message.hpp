@@ -36,8 +36,16 @@ public:
         LOG_OUT_MSG;
     }
 
-protected:
+    static Message *createMessage(int id, std::istream &stream)
+    {
+        LOG_IN_MSG;
+        return (Message *)mMessages.at(id)(stream);
+        LOG_OUT_MSG;
+    }
+
     static int calcID(std::string name);
+
+protected:
     virtual void _serialize(std::ostream &stream) {};
 
     const int mID;
