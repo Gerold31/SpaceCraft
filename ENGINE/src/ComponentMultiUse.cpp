@@ -73,7 +73,7 @@ void ComponentMultiUse::update(float elapsedTime)
     LOG_OUT_FRAME;
 }
 
-void ComponentMultiUse::receiveMessage(Message *message)
+void ComponentMultiUse::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
     if(message->getID() == MessageRequestMultiUse::getID())

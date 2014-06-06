@@ -78,6 +78,15 @@ MyGUI::VectorWidgetPtr SystemGUI::loadLayout(std::string fileName)
     return MyGUI::LayoutManager::getInstance().loadLayout(fileName);
 }
 
+void SystemGUI::setEnable(bool enable)
+{
+    LOG_IN_FRAME;
+    mMouseEnable = enable;
+    mMouseEnable = enable;
+    MyGUI::PointerManager::getInstancePtr()->setVisible(enable);
+    LOG_OUT_FRAME;
+}
+
 void SystemGUI::setMouseEnable(bool enable)
 {
     LOG_IN_FRAME;

@@ -18,13 +18,13 @@ public:
     
     bool init();
     void update(float elapsedTime);
-    void receiveMessage(Message *message);
 
     StateMap getState();
 
     static TypeInfo *getType() {return mType;}
 
 private:
+    void _receiveMessage(Message *message);
     void eventListClick(MyGUI::ListBox* sender, size_t index);
 
     static TypeInfo *mType;

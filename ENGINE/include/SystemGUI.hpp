@@ -20,6 +20,7 @@ public:
     MyGUI::VectorWidgetPtr loadLayout(std::string fileName);
     MyGUI::Gui *getGUI() {return mGUI;}
     
+    void setEnable(bool enable);
     void setMouseEnable(bool enable);
     void setKeyboardEnable(bool enable);
 
