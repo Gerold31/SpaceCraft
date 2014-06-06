@@ -2,4 +2,4 @@
 
 using namespace ENGINE;
 
-int MessageEnableInventory::mID = -1;
+int MessageToggleInventory::mID = -1;

@@ -133,12 +133,11 @@ void ComponentInventoryGUI::_receiveMessage(Message *message)
     {
         if(mDragging)
             mDragItem->setPosition(SystemGUI::getSingleton()->getMousePos() - mItemBox->getPosition() - mDragOff);
-    }else if(message->getID() == MessageEnableInventory::getID())
+    }else if(message->getID() == MessageToggleInventory::getID())
     {
-        MessageEnableInventory *msg = (MessageEnableInventory *)message;
         mEnable = !mEnable;
-        mLayoutRoot.at(0)->setVisible(mEnable); // @todo: msg->mEnable
-        SystemGUI::getSingleton()->setMouseEnable(mEnable); // @todo: msg->mEnable
+        mLayoutRoot.at(0)->setVisible(mEnable);
+        SystemGUI::getSingleton()->setMouseEnable(mEnable);
     }
 	LOG_OUT_FRAME;
 }

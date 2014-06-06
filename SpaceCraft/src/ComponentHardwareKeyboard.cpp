@@ -104,11 +104,11 @@ void ComponentHardwareKeyboard::_receiveMessage(Message *message)
             msg.sendTo(mCPU->getObject());
         }
     }
-    else if(message->getID() == MessageUse::getID())
+    else if(message->getID() == MessageOnUse::getID())
     {
         if(mKeyboard)
         {
-            MessageUse *m = (MessageUse *)message;
+            MessageOnUse *m = (MessageOnUse *)message;
 
             if(mKeyboard->isEnabled())
             {

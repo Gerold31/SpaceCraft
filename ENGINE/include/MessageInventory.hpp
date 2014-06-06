@@ -6,15 +6,14 @@
 namespace ENGINE
 {
 
-class MessageEnableInventory : public Message
+class MessageToggleInventory : public Message
 {
 public:
-    MessageEnableInventory(bool enable) : Message(getID(), true, true, true, true, false) {LOG_IN_MSG; mEnable = enable; LOG_OUT_MSG;}
-    static void *CreateMessage(std::istream &stream) {LOG_IN_MSG; bool enable; stream >> enable; LOG_OUT_MSG; return new MessageEnableInventory(enable);}
-    static int getID() {if(mID == -1) mID = calcID("MessageEnableInventory"); return mID;}
-    bool mEnable;
+    MessageToggleInventory() : Message(getID(), true, true, true, true, false) {LOG_IN_MSG; LOG_OUT_MSG;}
+    static void *CreateMessage(std::istream &stream) {LOG_IN_MSG; LOG_OUT_MSG; return new MessageToggleInventory();}
+    static int getID() {if(mID == -1) mID = calcID("MessageToggleInventory"); return mID;}
 private:
-    void _serialize(std::ostream &stream) {LOG_IN_MSG; stream << mEnable << std::endl; LOG_OUT_MSG;}
+    void _serialize(std::ostream &stream) {LOG_IN_MSG; LOG_OUT_MSG;}
     static int mID;
 };
 

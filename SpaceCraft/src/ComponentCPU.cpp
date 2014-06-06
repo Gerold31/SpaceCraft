@@ -65,9 +65,9 @@ void ComponentCPU::_receiveMessage(Message *message)
     {
         MessageInterrupt *msg = (MessageInterrupt *)message;
         interrupt(msg->mMsg);
-    }else if(message->getID() == MessageMultiUse::getID())
+    }else if(message->getID() == MessageRequestMultiUse::getID())
     {
-        MessageMultiUse *msg = (MessageMultiUse *)message;
+        MessageRequestMultiUse *msg = (MessageRequestMultiUse *)message;
         if(msg->mName == "start")
             start();
         else if(msg->mName == "stop")

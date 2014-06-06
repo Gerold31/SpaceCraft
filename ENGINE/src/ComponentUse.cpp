@@ -65,7 +65,7 @@ void ComponentUse::update(float elapsedTime)
 void ComponentUse::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
-    if(message->getID() == MessageUse::getID())
+    if(message->getID() == MessageUse::getID() || message->getID() == MessageMultiUse::getID())
     {
         Ogre::Ray ray(mParent->getCamera()->getDerivedPosition(), mParent->getCamera()->getDerivedDirection());
         Ogre::RaySceneQuery *raySceneQuery = SystemGraphics::getSingleton()->getSceneMgr()->createRayQuery(ray);
@@ -85,14 +85,15 @@ void ComponentUse::_receiveMessage(Message *message)
                 Object *obj = Ogre::any_cast<Object *>(i->movable->getUserObjectBindings().getUserAny("Object"));
                 if(obj && obj != mObject)
                 {
-                    LOG("use " + obj->getName(), "component");
-                    if(obj->getComponent(ComponentMultiUse::getType()))
+                    if(message->getID() == MessageMultiUse::getID() && obj->getComponent(ComponentMultiUse::getType()))
                     {
-                        MessageRequestMultiUse msg(mObject->getName());
+                        LOG("multiuse " + obj->getName(), "component");
+                        MessageOnMultiUse msg(mObject->getName());
                         msg.sendTo(obj);
                     }else
                     {
-                        MessageUse msg(mObject->getName());
+                        LOG("use " + obj->getName(), "component");
+                        MessageOnUse msg(mObject->getName());
                         msg.sendTo(obj);
                     }
                     break;

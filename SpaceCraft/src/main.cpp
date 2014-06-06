@@ -116,11 +116,13 @@ int main(int argc, char **argv)
         Message::registerMessge(MessageUse::getID(), MessageUse::CreateMessage);
         Message::registerMessge(MessageEnable::getID(), MessageEnable::CreateMessage);
         Message::registerMessge(MessageDisable::getID(), MessageDisable::CreateMessage);
-        Message::registerMessge(MessageEnableInventory::getID(), MessageEnableInventory::CreateMessage);
+        Message::registerMessge(MessageToggleInventory::getID(), MessageToggleInventory::CreateMessage);
         Message::registerMessge(MessageMultiUse::getID(), MessageMultiUse::CreateMessage);
         Message::registerMessge(MessageRegisterMultiUse::getID(), MessageRegisterMultiUse::CreateMessage);
         Message::registerMessge(MessageRequestMultiUse::getID(), MessageRequestMultiUse::CreateMessage);
         Message::registerMessge(MessageSetState::getID(), MessageSetState::CreateMessage);
+        Message::registerMessge(MessageOnUse::getID(), MessageOnUse::CreateMessage);
+        Message::registerMessge(MessageOnMultiUse::getID(), MessageOnMultiUse::CreateMessage);
 
         Message::registerMessge(MessageInterrupt::getID(), MessageInterrupt::CreateMessage);
         Message::registerMessge(MessageHardwareKeyPressed::getID(), MessageHardwareKeyPressed::CreateMessage);

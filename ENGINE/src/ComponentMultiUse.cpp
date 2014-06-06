@@ -76,12 +76,12 @@ void ComponentMultiUse::update(float elapsedTime)
 void ComponentMultiUse::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
-    if(message->getID() == MessageRequestMultiUse::getID())
+    if(message->getID() == MessageOnMultiUse::getID())
     {
         if(SystemConfiguration::getSingleton()->isClient())
         {
             LOG("set visible", "component");
-            MessageRequestMultiUse *msg = (MessageRequestMultiUse *)message;
+            MessageOnMultiUse *msg = (MessageOnMultiUse *)message;
             mUser = msg->mUser;
             mUseMenu.at(0)->setVisible(true);
             SystemGUI::getSingleton()->setEnable(true);
@@ -125,7 +125,7 @@ void ComponentMultiUse::eventListClick(MyGUI::ListBox* sender, size_t index)
     assert(sender == mUseList);
     if(index < sender->getItemCount())
     {
-        MessageMultiUse m(mUser, sender->getItemNameAt(index));
+        MessageRequestMultiUse m(mUser, sender->getItemNameAt(index));
         m.sendTo(mObject);
     }
     mUseMenu.at(0)->setVisible(false);
