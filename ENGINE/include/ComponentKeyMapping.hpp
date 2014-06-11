@@ -3,7 +3,7 @@
 
 #include "Component.hpp"
 
-#include "OIS\OIS.h"
+#include "OIS/OIS.h"
 
 namespace ENGINE
 {
