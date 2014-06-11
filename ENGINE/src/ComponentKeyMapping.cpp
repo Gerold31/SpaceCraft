@@ -11,9 +11,19 @@
 #include "SystemLog.hpp"
 #include "SystemInput.hpp"
 
+#include <boost/predef.h>
+
 using namespace ENGINE;
 
 #define LONG_PRESS_TIME (0.5)
+
+#if defined BOOST_OS_WINDOWS && (BOOST_OS_WINDOWS != BOOST_VERSION_NUMBER_NOT_AVAILABLE)
+#define OS_STR ("win")
+#elif defined BOOST_OS_LINUX && BOOST_OS_LINUX != BOOST_VERSION_NUMBER_NOT_AVAILABLE
+#define OS_STR ("linux")
+#else
+#define OS_STR ("")
+#endif
 
 TypeInfo *ComponentKeyMapping::mType = new TypeInfo("ComponentKeyMapping", &ComponentKeyMapping::createInstance);
 
@@ -23,7 +33,7 @@ ComponentKeyMapping::ComponentKeyMapping(Object *object, ParamMap &params) :
     LOG_IN("component");
     std::fstream file;
 
-    file.open(boost::any_cast<std::string>(mParams["FileName"]).c_str());
+    file.open((boost::any_cast<std::string>(mParams["FileName"]) + "_" + OS_STR + ".cfg").c_str());
 
     if(file.eof() || !file.is_open())
     {
