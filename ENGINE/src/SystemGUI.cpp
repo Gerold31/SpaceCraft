@@ -16,6 +16,7 @@ SystemGUI::SystemGUI() :
     mPlatform = nullptr;
     mGUI = nullptr;
     mMouseEnable = mKeyboardEnable = false;
+    mInit = false;
     LOG_OUT("system");
 }
 
@@ -112,6 +113,7 @@ MyGUI::IntPoint SystemGUI::getMousePos()
 void SystemGUI::setActiveViewport(unsigned short index)
 {
     LOG_IN("system");
+    mInit = true;
     if(!mPlatform)
     {
         MyGUI::OgrePlatform* mPlatform = new MyGUI::OgrePlatform();

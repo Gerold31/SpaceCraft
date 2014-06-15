@@ -37,29 +37,28 @@ void *ComponentViewport::createInstance(Object *object, ParamMap &params)
 bool ComponentViewport::init()
 {
     LOG_IN("component");
-    Ogre::Camera *cam = nullptr;
-    for(size_t i=0; i<mObject->getNumberComponents(); i++)
+    Component *c = mObject->getComponent(ComponentCamera::getType());
+    if(c)
     {
-        Component *c = mObject->getComponent(i);
-        if(c->getType() == ComponentCamera::getType())
+        Ogre::Camera *cam = ((ComponentCamera*)c)->getCamera();
+        if(cam)
         {
-            cam = ((ComponentCamera*)c)->getCamera();
-            break;
-        }
-    }
-    if(cam)
-    {
-        unsigned short i = SystemGraphics::getSingleton()->getWindow()->getNumViewports();
-        mViewport = SystemGraphics::getSingleton()->getWindow()->addViewport(cam, 100, 0, 0, 1, 1);
+            unsigned short i = SystemGraphics::getSingleton()->getWindow()->getNumViewports();
+            mViewport = SystemGraphics::getSingleton()->getWindow()->addViewport(cam, 100, 0, 0, 1, 1);
 
-        mViewport->setAutoUpdated(true);
-        mViewport->setBackgroundColour(Ogre::ColourValue(0.5,0,0));
-        mViewport->setOverlaysEnabled(true);
+            mViewport->setAutoUpdated(true);
+            mViewport->setBackgroundColour(Ogre::ColourValue(0.5,0,0));
+            mViewport->setOverlaysEnabled(true);
 
-        cam->setAspectRatio(1.0f * mViewport->getActualWidth() / mViewport->getActualHeight());
+            cam->setAspectRatio(1.0f * mViewport->getActualWidth() / mViewport->getActualHeight());
         
-        SystemGUI::getSingleton()->setActiveViewport(i);
-
+            SystemGUI::getSingleton()->setActiveViewport(i);
+        }else
+        {
+            LOG("No Camera found.", "component");  
+            LOG_OUT("component");
+            return false;
+        }
     }else
     {
         LOG_OUT("component");

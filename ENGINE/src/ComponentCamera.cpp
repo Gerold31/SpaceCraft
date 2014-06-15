@@ -3,8 +3,6 @@
 #include "Object.hpp"
 #include "SystemGraphics.hpp"
 #include "TypeInfo.hpp"
-#include "MessageMove.hpp"
-#include "ComponentMover.hpp"
 #include "SystemLog.hpp"
 
 #include "OGRE/OgreSceneManager.h"
@@ -37,24 +35,36 @@ void *ComponentCamera::createInstance(Object *object, ParamMap &params)
 bool ComponentCamera::init()
 {
     LOG_IN("component");
+
+    Ogre::SceneNode *parent = nullptr;
+    if(mParams.count("ParentNode"))
+    {
+        try{
+            parent = SystemGraphics::getSingleton()->getSceneMgr()->getSceneNode(mObject->getName() + '#' + boost::any_cast<std::string>(mParams["ParentNode"]));
+        }catch(...)
+        {
+            parent = nullptr;
+        }
+    }else
+    {
+        parent = mObject->getSceneNode();
+    }
+
+    if(!parent)
+    {
+        LOG("Parent Node not found.", "component");
+        LOG_OUT("component");
+        return false;
+    }
+    
     mCamera = SystemGraphics::getSingleton()->getSceneMgr()->createCamera(mObject->getName() + "Camera");
     mCamera->lookAt(0,0,-1);
     mCamera->setPosition(0, 0, 0);
     mCamera->setNearClipDistance(0.3);
     mCamera->setFarClipDistance(300.0);
 
-    for(int i=0; i<mObject->getNumberComponents(); i++)
-    {
-        Component *c = mObject->getComponent(i);
-        if(c->getType() == ComponentMover::getType())
-        {
-            ((ComponentMover *)c)->getRollNode()->attachObject(mCamera);
-            mReady = true;
-            LOG_OUT("component");
-            return true;
-        }
-    }
-    mObject->getSceneNode()->attachObject(mCamera);
+    parent->attachObject(mCamera);
+
     mReady = true;
     LOG_OUT("component");
     return true;

@@ -86,6 +86,8 @@ bool ComponentInventory::init()
         if(!obj)
         {
             mReady = false;
+            sprintf(name, "%s not found.", name);
+            LOG(name, "component");
 	        LOG_OUT("component");
             return false;
         }

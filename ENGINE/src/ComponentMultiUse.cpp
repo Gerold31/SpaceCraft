@@ -39,6 +39,12 @@ bool ComponentMultiUse::init()
     LOG_IN("component");
     if(SystemConfiguration::getSingleton()->isClient())
     {
+        if(!SystemGUI::getSingleton()->isInit())
+        {
+            LOG("SystemGUI not inited.", "component");
+            LOG_OUT("component");
+            return false;
+        }
         mUseMenu = SystemGUI::getSingleton()->loadLayout("Use.layout");
         for(size_t i=0; i<mUseMenu.at(0)->getChildCount(); i++)
         {

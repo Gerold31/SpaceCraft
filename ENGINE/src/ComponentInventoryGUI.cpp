@@ -23,6 +23,7 @@ ComponentInventoryGUI::ComponentInventoryGUI(Object *object, ParamMap &params) :
 	LOG_IN("component");
     mItemBox = nullptr;
     mDragging = false;
+    mInventory = nullptr;
 	LOG_OUT("component");
 }
 
@@ -42,15 +43,15 @@ void *ComponentInventoryGUI::createInstance(Object *object, ParamMap &params)
 bool ComponentInventoryGUI::init()
 {
 	LOG_IN("component");
-    for(size_t i=0; i<mObject->getNumberComponents(); i++)
+    if(!SystemGUI::getSingleton()->isInit())
     {
-        Component *c = mObject->getComponent(i);
-        if(c->getType() == ComponentInventory::getType())
-        {
-            mInventory = (ComponentInventory *)c;
-            break;
-        }
+        LOG("SystemGUI not inited.", "component");
+        LOG_OUT("component");
+        return false;
     }
+    Component *c = mObject->getComponent(ComponentInventory::getType());
+    if(c)
+        mInventory = (ComponentInventory *)c;
     if(!mInventory)
     {
         LOG("No ComponentInventory found!", "error");
@@ -61,6 +62,7 @@ bool ComponentInventoryGUI::init()
 
     if(!mInventory->isReady())
     {
+        LOG("Inventory not inited.", "component");
 	    LOG_OUT("component");
         return false;
     }

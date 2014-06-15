@@ -5,6 +5,7 @@
 #include <iostream>
 
 #define IGNORE_BUFFER
+//#define LOG_TO_COUT
 
 using namespace ENGINE;
 
@@ -114,7 +115,9 @@ void SystemLog::log(std::string message, std::string type)
         update(0);
 #endif
 
-    //std::cout << prefix + message << std::endl;
+#ifdef LOG_TO_COUT
+    std::cout << prefix + message << std::endl;
+#endif
 }
 
 void SystemLog::enter(std::string message, std::string type)

@@ -168,14 +168,14 @@ std::string SystemObjectFactory::parseObject(std::fstream &file, std::string nam
         {
             if(line[depth+1] == '-')
             {
-                childList.push_back(line.substr(depth+1));
-                line = parseObject(file, line.substr(depth+1), depth+1);
+                childList.push_back(line.substr(depth+2));
+                line = parseObject(file, line.substr(depth+2), depth+1);
             }else
             {
                 ComponentListElement element;
                 ParamMap params;
 
-                line = line.substr(1);
+                line = line.substr(depth + 1);
 
                 if(mComponentMap.find(line) == mComponentMap.end())
                     throw "no \"" + line + "\" found";

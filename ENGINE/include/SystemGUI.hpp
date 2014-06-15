@@ -28,6 +28,8 @@ public:
 
     void setActiveViewport(unsigned short index);
 
+    bool isInit() {return mInit;}
+
 private:
     SystemGUI();
     SystemGUI(const SystemGUI &) : System("SystemGUI") {}
@@ -38,6 +40,7 @@ private:
     MyGUI::Gui          *mGUI;
 
     bool mMouseEnable, mKeyboardEnable;
+    bool mInit;
 };
 
 };
