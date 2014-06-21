@@ -15,12 +15,15 @@ using namespace ENGINE;
 #define ITEM_SIZE_X (70)
 #define ITEM_SIZE_Y (70)
 
+MyGUI::Widget *ComponentItemContainerGUI::mDragItem = nullptr;
+MyGUI::IntPoint ComponentItemContainerGUI::mDragOff;
+bool ComponentItemContainerGUI::mDragging = false;
+
 ComponentItemContainerGUI::ComponentItemContainerGUI(Object *object, ParamMap &params, TypeInfo *type) :
     Component(object, params, type)
 {
 	LOG_IN("component");
     mItemBox = nullptr;
-    mDragging = false;
     mContainer = nullptr;
 	LOG_OUT("component");
 }
@@ -91,13 +94,13 @@ bool ComponentItemContainerGUI::init()
         return true;
     }
     
-    mItemBox->eventStartDrag += MyGUI::newDelegate(this, &ComponentItemContainerGUI::notifyStartDrop);
-    mItemBox->eventRequestDrop += MyGUI::newDelegate(this, &ComponentItemContainerGUI::notifyRequestDrop);
-    mItemBox->eventDropResult += MyGUI::newDelegate(this, &ComponentItemContainerGUI::notifyEndDrop);
-    mItemBox->eventChangeDDState += MyGUI::newDelegate(this, &ComponentItemContainerGUI::notifyDropState);
-    mItemBox->eventNotifyItem += MyGUI::newDelegate(this, &ComponentItemContainerGUI::notifyNotifyItem);
+    mItemBox->eventStartDrag += MyGUI::newDelegate(ComponentItemContainerGUI::notifyStartDrop);
+    mItemBox->eventRequestDrop += MyGUI::newDelegate(ComponentItemContainerGUI::notifyRequestDrop);
+    mItemBox->eventDropResult += MyGUI::newDelegate(ComponentItemContainerGUI::notifyEndDrop);
+    mItemBox->eventChangeDDState += MyGUI::newDelegate(ComponentItemContainerGUI::notifyDropState);
+    mItemBox->eventNotifyItem += MyGUI::newDelegate(ComponentItemContainerGUI::notifyNotifyItem);
     mItemBox->requestCreateWidgetItem = MyGUI::newDelegate(this, &ComponentItemContainerGUI::requestCreateWidgetItem);
-    mItemBox->requestDrawItem = MyGUI::newDelegate(this, &ComponentItemContainerGUI::requestDrawItem);
+    mItemBox->requestDrawItem = MyGUI::newDelegate(ComponentItemContainerGUI::requestDrawItem);
 
     for(size_t i=0; i<mContainer->getNumberItems(); i++)
     {
@@ -105,7 +108,7 @@ bool ComponentItemContainerGUI::init()
     }
     
     mLayoutRoot.at(0)->setSize(SystemGraphics::getSingleton()->getWindow()->getWidth(), SystemGraphics::getSingleton()->getWindow()->getHeight());
-    mLayoutRoot.at(0)->setVisible(false);
+    mLayoutRoot.at(0)->setVisible(true);
 
     mReady = true;
 	LOG_OUT("component");
@@ -124,7 +127,7 @@ void ComponentItemContainerGUI::_receiveMessage(Message *message)
     if(message->getID() == MessageMouseMoved::getID())
     {
         if(mDragging)
-            mDragItem->setPosition(SystemGUI::getSingleton()->getMousePos() - mItemBox->getPosition() - mDragOff);
+            mDragItem->setPosition(SystemGUI::getSingleton()->getMousePos() - mDragOff);
     }
     LOG_OUT_MSG;
 }
@@ -132,14 +135,17 @@ void ComponentItemContainerGUI::_receiveMessage(Message *message)
 void ComponentItemContainerGUI::requestCreateWidgetItem(MyGUI::ItemBox* sender, MyGUI::Widget* item)
 {
 	LOG_IN("component");
-    assert(sender == mItemBox);
+    //assert(sender == mItemBox);
     SystemGUI::getSingleton()->loadLayout("Item.layout").at(0)->attachToWidget(item);
-    item->attachToWidget(mItemBox);
 
-    if(mItemBox->getChildCount() == mContainer->getNumberItems() + 1)
+    if(sender->getChildCount() == mContainer->getNumberItems())
     {
+        LOG("add Drag Item", "component");
         mDragItem = item;
         item->setNeedMouseFocus(false);
+    }else
+    {
+        item->attachToWidget(sender);
     }
 
 	LOG_OUT("component");
@@ -216,7 +222,7 @@ void ComponentItemContainerGUI::notifyRequestDrop(MyGUI::DDContainer *sender, co
 	if ((info.sender == info.receiver) && (info.sender_index == info.receiver_index))
 	{
 		result = false;
-    LOG_OUT_FRAME;
+        LOG_OUT_FRAME;
 		return;
 	}
 
@@ -263,7 +269,7 @@ void ComponentItemContainerGUI::notifyNotifyItem(MyGUI::ItemBox *sender, const M
 	{
 	    if(info.notify == MyGUI::IBNotifyItemData::MousePressed)
 	    {
-            mDragOff = SystemGUI::getSingleton()->getMousePos() - mItemBox->getPosition() - mItemBox->getChildAt(info.index)->getPosition();
+            mDragOff = SystemGUI::getSingleton()->getMousePos() - sender->getChildAt(info.index)->getAbsolutePosition();
 	    }
 	}
     LOG_OUT_FRAME;

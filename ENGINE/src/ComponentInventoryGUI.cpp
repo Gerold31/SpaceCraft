@@ -35,6 +35,8 @@ bool ComponentInventoryGUI::init()
 {
     LOG_IN("component");
     mReady = ComponentItemContainerGUI::init();
+    if(mReady)
+        setVisible(false);
     LOG_OUT("component");
     return mReady;
 }

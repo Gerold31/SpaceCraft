@@ -27,6 +27,8 @@
 #include "ComponentInventoryGUI.hpp"
 #include "ComponentItem.hpp"
 #include "ComponentMultiUse.hpp"
+#include "ComponentHotbar.hpp"
+#include "ComponentHotbarGUI.hpp"
 
 #include "ComponentCPU.hpp"
 #include "ComponentMemory.hpp"
@@ -89,7 +91,9 @@ int main(int argc, char **argv)
         SystemObjectFactory::getSingleton()->registerComponent(ComponentInventoryGUI::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentItem::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentMultiUse::getType());
-
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentHotbar::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentHotbarGUI::getType());
+        
         SystemObjectFactory::getSingleton()->registerComponent(ComponentCPU::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentMemory::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentHardwareDisplay::getType());
