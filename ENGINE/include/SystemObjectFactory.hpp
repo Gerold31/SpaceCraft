@@ -37,6 +37,8 @@ public:
     Object *getObject(std::string name);
     Component *createComponent(Object *parent, std::string name, ParamMap &params);
 
+    TypeInfo *getComponentType(std::string name);
+
 private:
     SystemObjectFactory();
     SystemObjectFactory(const SystemObjectFactory &) : System("SystemObjectFactory") {}

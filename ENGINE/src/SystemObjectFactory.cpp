@@ -209,3 +209,10 @@ std::string SystemObjectFactory::parseObject(std::fstream &file, std::string nam
     LOG_OUT("sytem");
     return line;
 }
+
+TypeInfo *SystemObjectFactory::getComponentType(std::string name)
+{
+    if(mComponentMap.count(name))
+        return mComponentMap[name];
+    return nullptr;
+}
