@@ -26,9 +26,9 @@ protected:
     void _receiveMessage(Message *message);
 
 private:
-
     ComponentItem **mItems;
     size_t mNumberItems;
+    bool mFirstTry;
 
 };
 

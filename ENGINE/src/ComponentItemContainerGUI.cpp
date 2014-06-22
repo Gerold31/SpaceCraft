@@ -15,10 +15,6 @@ using namespace ENGINE;
 #define ITEM_SIZE_X (70)
 #define ITEM_SIZE_Y (70)
 
-MyGUI::Widget *ComponentItemContainerGUI::mDragItem = nullptr;
-MyGUI::IntPoint ComponentItemContainerGUI::mDragOff;
-bool ComponentItemContainerGUI::mDragging = false;
-
 ComponentItemContainerGUI::ComponentItemContainerGUI(Object *object, ParamMap &params, TypeInfo *type) :
     Component(object, params, type)
 {
@@ -99,7 +95,8 @@ bool ComponentItemContainerGUI::init()
     mItemBox->eventDropResult += MyGUI::newDelegate(ComponentItemContainerGUI::notifyEndDrop);
     mItemBox->eventChangeDDState += MyGUI::newDelegate(ComponentItemContainerGUI::notifyDropState);
     mItemBox->eventNotifyItem += MyGUI::newDelegate(ComponentItemContainerGUI::notifyNotifyItem);
-    mItemBox->requestCreateWidgetItem = MyGUI::newDelegate(this, &ComponentItemContainerGUI::requestCreateWidgetItem);
+    mItemBox->requestCreateWidgetItem = MyGUI::newDelegate(ComponentItemContainerGUI::requestCreateWidgetItem);
+    mItemBox->requestCoordItem = MyGUI::newDelegate(ComponentItemContainerGUI::requestCoordItem);
     mItemBox->requestDrawItem = MyGUI::newDelegate(ComponentItemContainerGUI::requestDrawItem);
 
     for(size_t i=0; i<mContainer->getNumberItems(); i++)
@@ -124,31 +121,19 @@ void ComponentItemContainerGUI::update(float elapsedTime)
 void ComponentItemContainerGUI::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
-    if(message->getID() == MessageMouseMoved::getID())
-    {
-        if(mDragging)
-            mDragItem->setPosition(SystemGUI::getSingleton()->getMousePos() - mDragOff);
-    }
     LOG_OUT_MSG;
 }
 
 void ComponentItemContainerGUI::requestCreateWidgetItem(MyGUI::ItemBox* sender, MyGUI::Widget* item)
 {
 	LOG_IN("component");
-    //assert(sender == mItemBox);
     SystemGUI::getSingleton()->loadLayout("Item.layout").at(0)->attachToWidget(item);
-
-    if(sender->getChildCount() == mContainer->getNumberItems())
-    {
-        LOG("add Drag Item", "component");
-        mDragItem = item;
-        item->setNeedMouseFocus(false);
-    }else
-    {
-        item->attachToWidget(sender);
-    }
-
 	LOG_OUT("component");
+}
+
+void ComponentItemContainerGUI::requestCoordItem(MyGUI::ItemBox *sender, MyGUI::IntCoord &coord, bool drop)
+{
+    coord.set(0, 0, ITEM_SIZE_X, ITEM_SIZE_Y);
 }
 
 void ComponentItemContainerGUI::requestDrawItem(MyGUI::ItemBox* sender, MyGUI::Widget* item, const MyGUI::IBDrawItemInfo& info)
@@ -156,9 +141,6 @@ void ComponentItemContainerGUI::requestDrawItem(MyGUI::ItemBox* sender, MyGUI::W
     LOG_IN_FRAME;
     ComponentItem *c = *sender->getItemDataAt<ComponentItem *>(info.index);
 
-    item->setPosition((info.index%8)*ITEM_SIZE_X, (info.index/8)*ITEM_SIZE_Y);
-    item->setSize(ITEM_SIZE_X, ITEM_SIZE_Y);
-    
     for(size_t i=0; i<item->getChildAt(0)->getChildCount(); i++)
     {
         MyGUI::Widget *w = item->getChildAt(0)->getChildAt(i);
@@ -203,8 +185,6 @@ void ComponentItemContainerGUI::notifyStartDrop(MyGUI::DDContainer *sender, cons
 	{
 		ComponentItem* data = *static_cast<MyGUI::ItemBox*>(info.sender)->getItemDataAt<ComponentItem*>(info.sender_index);
 		result = !data->isEmpty();
-        
-        mDragging = result;
 	}
     LOG_OUT_FRAME;
 }
@@ -245,8 +225,6 @@ void ComponentItemContainerGUI::notifyEndDrop(MyGUI::DDContainer *sender, const 
 
 		static_cast<MyGUI::ItemBox*>(info.receiver)->setItemData(info.receiver_index, receiver_data);
 		static_cast<MyGUI::ItemBox*>(info.sender)->setItemData(info.sender_index, sender_data);
-        
-        mDragging = result;
 	}
     LOG_OUT_FRAME;
 }
@@ -265,17 +243,11 @@ void ComponentItemContainerGUI::notifyDropState(MyGUI::DDContainer *sender, MyGU
 void ComponentItemContainerGUI::notifyNotifyItem(MyGUI::ItemBox *sender, const MyGUI::IBNotifyItemData &info)
 {
     LOG_IN_FRAME;
-	if(info.index != MyGUI::ITEM_NONE)
-	{
-	    if(info.notify == MyGUI::IBNotifyItemData::MousePressed)
-	    {
-            mDragOff = SystemGUI::getSingleton()->getMousePos() - sender->getChildAt(info.index)->getAbsolutePosition();
-	    }
-	}
     LOG_OUT_FRAME;
 }
 
 void ComponentItemContainerGUI::setVisible(bool visible)
 {
     mLayoutRoot.at(0)->setVisible(visible);
+    mLayoutRoot.at(0)->setEnabled(visible);
 }

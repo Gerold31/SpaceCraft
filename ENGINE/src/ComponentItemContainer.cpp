@@ -18,6 +18,7 @@ ComponentItemContainer::ComponentItemContainer(Object *object, ParamMap &params,
 	LOG_IN("component");
     mNumberItems = atoi(boost::any_cast<std::string>(mParams["Slots"]).c_str());
     mItems = new ComponentItem*[mNumberItems];
+    mFirstTry = true;
     LOG_OUT("component");
 }
 
@@ -30,8 +31,7 @@ ComponentItemContainer::~ComponentItemContainer()
 bool ComponentItemContainer::init()
 {
 	LOG_IN("component");
-    static bool firstTry = true;
-    if(firstTry && SystemConfiguration::getSingleton()->isServer())
+    if(mFirstTry && SystemConfiguration::getSingleton()->isServer())
     {    
         LOG("First try Server, adding Items...", "component");
 
@@ -54,8 +54,8 @@ bool ComponentItemContainer::init()
             else
                 type = "ItemTest";
 
-            char name[64];
-            sprintf(name, "%sItemSlot%02X", mObject->getName().c_str(), i);
+            char name[128];
+            sprintf(name, "%s#%s#ItemSlot#%02X", mObject->getName().c_str(), boost::any_cast<std::string>(mParams["Name"]).c_str(), i);
             LOG(name, "component");
             MessageCreateObject msg(mObject->getSceneNode()->getPosition(), mObject->getSceneNode()->getOrientation(), mObject->getSceneNode()->getParentSceneNode(), name, type + "Server");
             msg.sendTo(SystemObjectFactory::getSingleton());
@@ -64,13 +64,13 @@ bool ComponentItemContainer::init()
             SystemServer::getSingleton()->sendTo(&msg, SystemObjectFactory::getSingleton(), con);
         }
         SystemLog::getSingleton()->exit("for", "component");
-        firstTry = false;
+        mFirstTry = false;
     }
 
     for(size_t i=0; i<mNumberItems; i++)
     {
-        char name[64];
-        sprintf(name, "%sItemSlot%02X", mObject->getName().c_str(), i);     
+        char name[128];
+        sprintf(name, "%s#%s#ItemSlot#%02X", mObject->getName().c_str(), boost::any_cast<std::string>(mParams["Name"]).c_str(), i);     
 
         Object *obj = SystemObjectFactory::getSingleton()->getObject(name);
 
