@@ -21,9 +21,11 @@ public:
 
 private:
     void _receiveMessage(Message *message);
+    void selectIndex(int index);
     static TypeInfo *mType;
 
     bool mEnable;
+    int mIndex;
 
 };
 

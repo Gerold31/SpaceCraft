@@ -2,8 +2,9 @@
 
 #include "TypeInfo.hpp"
 #include "SystemLog.hpp"
-#include "MessageInventory.hpp"
+#include "MessageHotbar.hpp"
 #include "SystemGUI.hpp"
+#include "ComponentItemContainer.hpp"
 
 using namespace ENGINE;
 
@@ -15,6 +16,7 @@ ComponentHotbarGUI::ComponentHotbarGUI(Object *object, ParamMap &params) :
     LOG_IN("component");
     mParams["ContainerType"] = std::string("ComponentHotbar");
     mEnable = false;
+    mIndex = 0;
     LOG_OUT("component");
 }
 
@@ -36,7 +38,10 @@ bool ComponentHotbarGUI::init()
     LOG_IN("component");
     mReady = ComponentItemContainerGUI::init();
     if(mReady)
+    {
         setVisible(true);
+        selectIndex(0);
+    }
     LOG_OUT("component");
     return mReady;
 }
@@ -50,6 +55,54 @@ void ComponentHotbarGUI::update(float elapsedTime)
 void ComponentHotbarGUI::_receiveMessage(Message *message)
 {
     LOG_IN_MSG;
-    ComponentItemContainerGUI::_receiveMessage(message);
+    if(message->getID() == MessageNextSlot::getID())
+    {
+        selectIndex(mIndex+1);
+    }else if(message->getID() == MessagePrevSlot::getID())
+    {
+        selectIndex(mIndex-1);
+    }else if(message->getID() == MessageSlot0::getID())
+    {
+        selectIndex(0);
+    }else if(message->getID() == MessageSlot1::getID())
+    {
+        selectIndex(1);
+    }else if(message->getID() == MessageSlot2::getID())
+    {
+        selectIndex(2);
+    }else if(message->getID() == MessageSlot3::getID())
+    {
+        selectIndex(3);
+    }else if(message->getID() == MessageSlot4::getID())
+    {
+        selectIndex(4);
+    }else if(message->getID() == MessageSlot5::getID())
+    {
+        selectIndex(5);
+    }else if(message->getID() == MessageSlot6::getID())
+    {
+        selectIndex(6);
+    }else if(message->getID() == MessageSlot7::getID())
+    {
+        selectIndex(7);
+    }else if(message->getID() == MessageSlot8::getID())
+    {
+        selectIndex(8);
+    }else if(message->getID() == MessageSlot9::getID())
+    {
+        selectIndex(9);
+    }else
+        ComponentItemContainerGUI::_receiveMessage(message);
     LOG_OUT_MSG;
+}
+
+void ComponentHotbarGUI::selectIndex(int index)
+{
+    LOG_IN("component");
+    mItemBox->getChildAt(mIndex)->setUserString("Active", "false");
+    mItemBox->redrawItemAt(mIndex);
+    mIndex = index % mContainer->getNumberItems();
+    mItemBox->getChildAt(mIndex)->setUserString("Active", "true");
+    mItemBox->redrawItemAt(mIndex);
+    LOG_OUT("component");
 }

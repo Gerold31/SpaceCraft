@@ -25,6 +25,11 @@ public:
 protected:
     void _receiveMessage(Message *message);
 
+    ComponentItemContainer *mContainer;
+
+    MyGUI::VectorWidgetPtr mLayoutRoot;
+    MyGUI::ItemBox *mItemBox;
+
 private:
     static void notifyStartDrop(MyGUI::DDContainer *sender, const MyGUI::DDItemInfo &info, bool &result);
     static void notifyRequestDrop(MyGUI::DDContainer *sender, const MyGUI::DDItemInfo &info, bool &result);
@@ -35,11 +40,6 @@ private:
     static void requestCreateWidgetItem(MyGUI::ItemBox *sender, MyGUI::Widget *item);
     static void requestCoordItem(MyGUI::ItemBox *sender, MyGUI::IntCoord& coord, bool drop);
     static void requestDrawItem(MyGUI::ItemBox *sender, MyGUI::Widget *item, const MyGUI::IBDrawItemInfo &info);
-
-    ComponentItemContainer *mContainer;
-
-    MyGUI::VectorWidgetPtr mLayoutRoot;
-	MyGUI::ItemBox *mItemBox;
 
 };
 

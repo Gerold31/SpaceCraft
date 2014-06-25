@@ -156,6 +156,10 @@ void ComponentItemContainerGUI::requestDrawItem(MyGUI::ItemBox* sender, MyGUI::W
             {
                 sprintf(size, "0 %d %d %d", ITEM_SIZE_Y, ITEM_SIZE_X, ITEM_SIZE_Y);
                 w->setProperty("ImageCoord", size);
+            }else if(item->getUserString("Active") == "true")
+            {
+                sprintf(size, "0 %d %d %d", 3*ITEM_SIZE_Y, ITEM_SIZE_X, ITEM_SIZE_Y);
+                w->setProperty("ImageCoord", size);
             }else
             {
                 sprintf(size, "0 0 %d %d", ITEM_SIZE_X, ITEM_SIZE_Y);

@@ -48,6 +48,7 @@
 #include "MessageUse.hpp"
 #include "MessageObject.hpp"
 #include "MessageInventory.hpp"
+#include "MessageHotbar.hpp"
 
 #include "MessageCPU.hpp"
 #include "MessageHardwareKeyboard.hpp"
@@ -127,6 +128,18 @@ int main(int argc, char **argv)
         Message::registerMessge(MessageSetState::getID(), MessageSetState::CreateMessage);
         Message::registerMessge(MessageOnUse::getID(), MessageOnUse::CreateMessage);
         Message::registerMessge(MessageOnMultiUse::getID(), MessageOnMultiUse::CreateMessage);
+        Message::registerMessge(MessageNextSlot::getID(), MessageNextSlot::CreateMessage);
+        Message::registerMessge(MessagePrevSlot::getID(), MessagePrevSlot::CreateMessage);
+        Message::registerMessge(MessageSlot0::getID(), MessageSlot0::CreateMessage);
+        Message::registerMessge(MessageSlot1::getID(), MessageSlot1::CreateMessage);
+        Message::registerMessge(MessageSlot2::getID(), MessageSlot2::CreateMessage);
+        Message::registerMessge(MessageSlot3::getID(), MessageSlot3::CreateMessage);
+        Message::registerMessge(MessageSlot4::getID(), MessageSlot4::CreateMessage);
+        Message::registerMessge(MessageSlot5::getID(), MessageSlot5::CreateMessage);
+        Message::registerMessge(MessageSlot6::getID(), MessageSlot6::CreateMessage);
+        Message::registerMessge(MessageSlot7::getID(), MessageSlot7::CreateMessage);
+        Message::registerMessge(MessageSlot8::getID(), MessageSlot8::CreateMessage);
+        Message::registerMessge(MessageSlot9::getID(), MessageSlot9::CreateMessage);
 
         Message::registerMessge(MessageInterrupt::getID(), MessageInterrupt::CreateMessage);
         Message::registerMessge(MessageHardwareKeyPressed::getID(), MessageHardwareKeyPressed::CreateMessage);
