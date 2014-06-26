@@ -5,6 +5,8 @@
 #include "MessageHotbar.hpp"
 #include "SystemGUI.hpp"
 #include "ComponentItemContainer.hpp"
+#include "ComponentItem.hpp"
+#include "Object.hpp"
 
 using namespace ENGINE;
 
@@ -104,5 +106,9 @@ void ComponentHotbarGUI::selectIndex(int index)
     mIndex = index % mContainer->getNumberItems();
     mItemBox->getChildAt(mIndex)->setUserString("Active", "true");
     mItemBox->redrawItemAt(mIndex);
+
+    MessageSelectHotbarItem m(mContainer->getItem(index)->getObject()->getName());
+    m.sendTo(mObject);
+
     LOG_OUT("component");
 }

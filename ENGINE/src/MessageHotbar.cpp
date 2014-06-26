@@ -4,6 +4,7 @@ using namespace ENGINE;
 
 int MessageNextSlot::mID = -1;
 int MessagePrevSlot::mID = -1;
+int MessageSelectHotbarItem::mID = -1;
 int MessageSlot0::mID = -1;
 int MessageSlot1::mID = -1;
 int MessageSlot2::mID = -1;

@@ -130,6 +130,7 @@ int main(int argc, char **argv)
         Message::registerMessge(MessageOnMultiUse::getID(), MessageOnMultiUse::CreateMessage);
         Message::registerMessge(MessageNextSlot::getID(), MessageNextSlot::CreateMessage);
         Message::registerMessge(MessagePrevSlot::getID(), MessagePrevSlot::CreateMessage);
+        Message::registerMessge(MessageSelectHotbarItem::getID(), MessageSelectHotbarItem::CreateMessage);
         Message::registerMessge(MessageSlot0::getID(), MessageSlot0::CreateMessage);
         Message::registerMessge(MessageSlot1::getID(), MessageSlot1::CreateMessage);
         Message::registerMessge(MessageSlot2::getID(), MessageSlot2::CreateMessage);

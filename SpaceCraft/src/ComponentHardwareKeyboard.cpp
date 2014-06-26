@@ -110,18 +110,21 @@ void ComponentHardwareKeyboard::_receiveMessage(Message *message)
         {
             MessageOnUse *m = (MessageOnUse *)message;
 
-            if(mKeyboard->isEnabled())
+            if(SystemObjectFactory::getSingleton()->getObject(m->mUser)->getType() == "Player")
             {
-                mKeyboard->enable(false);
-                Object *obj = SystemObjectFactory::getSingleton()->getObject(m->mUser);
-                MessageKeyboardEnable msg(true);
-                msg.sendTo(obj);
-            }else
-            {
-                mKeyboard->enable(true);
-                Object *obj = SystemObjectFactory::getSingleton()->getObject(m->mUser);
-                MessageKeyboardEnable msg(false);
-                msg.sendTo(obj);    
+                if(mKeyboard->isEnabled())
+                {
+                    mKeyboard->enable(false);
+                    Object *obj = SystemObjectFactory::getSingleton()->getObject(m->mUser);
+                    MessageKeyboardEnable msg(true);
+                    msg.sendTo(obj);
+                }else
+                {
+                    mKeyboard->enable(true);
+                    Object *obj = SystemObjectFactory::getSingleton()->getObject(m->mUser);
+                    MessageKeyboardEnable msg(false);
+                    msg.sendTo(obj);    
+                }
             }
         }
     }

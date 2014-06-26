@@ -27,6 +27,8 @@ private:
 
     ComponentCamera *mParent;
 
+    Object *mUsingObject;
+
 };
 
 };

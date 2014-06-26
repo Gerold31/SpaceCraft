@@ -26,6 +26,18 @@ private:
     static int mID;
 };
 
+class MessageSelectHotbarItem : public Message
+{
+public:
+    MessageSelectHotbarItem(std::string name) : Message(getID(), true, true, true, true, false) {LOG_IN_MSG; mName = name; LOG_OUT_MSG;}
+    static void *CreateMessage(std::istream &stream) {LOG_IN_MSG; std::string name; stream >> name; LOG_OUT_MSG; return new MessageSelectHotbarItem(name);}
+    static int getID() {if(mID == -1) mID = calcID("MessageSelectHotbarItem"); return mID;}
+    std::string mName;
+private:
+    void _serialize(std::ostream &stream) {LOG_IN_MSG; stream << mName << std::endl; LOG_OUT_MSG;}
+    static int mID;
+};
+
 #define MESSAGESLOTNAME(i) MessageSlot##i
 #define PRIMITIVE_STR(x) #x
 #define STR(x) PRIMITIVE_STR(x)
