@@ -107,6 +107,14 @@ void ComponentKeyMapping::update(float elapsedTime)
         if(i->second >= 0.0)
         {
             i->second += elapsedTime;
+            if(i->second > LONG_PRESS_TIME && mKeyMap.count(std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(i->first, LONG_PRESS)))
+            {
+                std::stringstream s;
+                Message *msg = Message::createMessage(mKeyMap.at(std::pair<OIS::KeyCode, KEY_EVENT_TYPE>(i->first, LONG_PRESS)), s);
+                msg->sendTo(mObject);
+                delete msg;
+                mKeyTime.at(i->first) = -1.0;
+            }
         }
     }
     LOG_OUT_FRAME;
