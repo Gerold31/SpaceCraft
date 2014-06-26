@@ -20,7 +20,7 @@ class TypeInfo;
 class Object : public MessageReceiver
 {
 public:
-    Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parentNode, Ogre::String name, Object *parent = nullptr);
+    Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parentNode, Ogre::String name, std::string type, Object *parent = nullptr);
     ~Object();
     
     /**
@@ -39,6 +39,7 @@ public:
 
     Ogre::SceneNode *getSceneNode() {return mNode;}
     Ogre::String getName() {return mName;}
+    std::string getType() {return mType;}
 
     Object *getParent() {return mParent;}
     void addChild(Object *obj) {mChilds.push_back(obj);}
@@ -52,6 +53,7 @@ private:
     Ogre::SceneNode *mNode;
     Ogre::String mName;
     Object *mParent;
+    std::string mType;
     std::vector<Object *> mChilds;
     std::vector<Component *> mComponents;
     boost::recursive_mutex mComponentsMutex;

@@ -7,7 +7,7 @@
 
 using namespace ENGINE;
 
-Object::Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parentNode, Ogre::String name, Object *parent) :
+Object::Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parentNode, Ogre::String name, std::string type, Object *parent) :
     MessageReceiver(MessageReceiver::RECEIVER_OBJECT),
     mName(name)
 {
@@ -16,6 +16,7 @@ Object::Object(Ogre::Vector3 pos, Ogre::Quaternion ori, Ogre::SceneNode *parentN
     mNode->setPosition(pos);
     mNode->setOrientation(ori);
     mNode->getUserObjectBindings().setUserAny("Object", Ogre::Any(this));
+    mType = type;
     mInit = mReady = false;
     mEnable = true;
     mParent = parent;

@@ -97,7 +97,7 @@ Object *SystemObjectFactory::createObject(Ogre::Vector3 pos, Ogre::Quaternion or
         LOG_OUT("system");
         return nullptr;
     }
-    Object *object = new Object(pos, ori, parentNode, name);
+    Object *object = new Object(pos, ori, parentNode, name, type);
     for(ComponentList::iterator i = components->second.first.begin(); i!= components->second.first.end(); ++i)
     {
         LOG("\tadd Component " + (*i).first->getName(), "log");
