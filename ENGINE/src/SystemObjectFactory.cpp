@@ -182,6 +182,15 @@ std::string SystemObjectFactory::parseObject(std::fstream &file, std::string nam
 
                 LOG("\tadd Component " + line, "log");
 
+                if(line.find(' ') != std::string::npos)
+                {
+                    params["Name"] = line.substr(line.find_first_of(" ")+1);
+                    line = line.substr(0, line.find_first_of(" "));
+                }else
+                {
+                    params["Name"] = line;
+                }
+
                 element.first = mComponentMap[line];
 
                 while(!file.eof())
