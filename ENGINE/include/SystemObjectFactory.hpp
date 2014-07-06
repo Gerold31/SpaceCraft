@@ -35,7 +35,7 @@ public:
     void registerComponent(TypeInfo *type);
 
     Object *getObject(std::string name);
-    Component *createComponent(Object *parent, std::string name, ParamMap &params);
+    Component *createComponent(Object *parent, std::string type, ParamMap &params, std::string name = "");
 
     TypeInfo *getComponentType(std::string name);
 

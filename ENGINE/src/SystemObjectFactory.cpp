@@ -137,12 +137,15 @@ Object *SystemObjectFactory::getObject(std::string name)
     return nullptr;
 }
 
-Component *SystemObjectFactory::createComponent(Object *parent, std::string name, ParamMap &params)
+Component *SystemObjectFactory::createComponent(Object *parent, std::string type, ParamMap &params, std::string name)
 {
     LOG_IN("system");
-    LOG("add Component " + name, "log");
-    assert(mComponentMap.count(name) > 0);
-    Component *component = (Component *)mComponentMap[name]->createInstance(parent, params);
+    LOG("add Component " + type, "log");
+    assert(mComponentMap.count(type) > 0);
+    if(name == "")
+        name = type;
+    params["Name"] = name;
+    Component *component = (Component *)mComponentMap[type]->createInstance(parent, params);
     parent->addComponent(component);
     mComponents.push_back(component);
 
@@ -177,9 +180,6 @@ std::string SystemObjectFactory::parseObject(std::fstream &file, std::string nam
 
                 line = line.substr(depth + 1);
 
-                if(mComponentMap.find(line) == mComponentMap.end())
-                    throw "no \"" + line + "\" found";
-
                 LOG("\tadd Component " + line, "log");
 
                 if(line.find(' ') != std::string::npos)
@@ -190,6 +190,9 @@ std::string SystemObjectFactory::parseObject(std::fstream &file, std::string nam
                 {
                     params["Name"] = line;
                 }
+                
+                if(mComponentMap.find(line) == mComponentMap.end())
+                    throw "no \"" + line + "\" found";
 
                 element.first = mComponentMap[line];
 
