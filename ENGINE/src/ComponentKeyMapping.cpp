@@ -33,11 +33,13 @@ ComponentKeyMapping::ComponentKeyMapping(Object *object, ParamMap &params) :
     LOG_IN("component");
     std::fstream file;
 
-    file.open((boost::any_cast<std::string>(mParams["FileName"]) + "_" + OS_STR + ".cfg").c_str());
+    std::string filename = (boost::any_cast<std::string>(mParams["FileName"]) + "_" + OS_STR + ".cfg");
+    file.open(filename.c_str());
 
     if(file.eof() || !file.is_open())
     {
         file.close();
+        LOG("could not open file " + filename, "error");
         LOG_OUT("component");
         return;
     }

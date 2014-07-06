@@ -13,6 +13,7 @@ std::map<int, CreateMessage> Message::mMessages;
 
 void Message::sendTo(MessageReceiver *receiver)
 {
+    LOG_IN_MSG;
     if((mLocalToServer && SystemConfiguration::getSingleton()->isServer()) || (mLocalToClient && SystemConfiguration::getSingleton()->isClient()))
     {
         receiver->receiveMessage(this);
@@ -27,6 +28,7 @@ void Message::sendTo(MessageReceiver *receiver)
         assert(SystemConfiguration::getSingleton()->isServer());
         SystemServer::getSingleton()->sendToAll(this, receiver);
     }
+    LOG_OUT_MSG;
 }
 
 int Message::calcID(std::string name)

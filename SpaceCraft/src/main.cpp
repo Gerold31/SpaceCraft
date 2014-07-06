@@ -39,6 +39,7 @@
 #include "ComponentSpaceShipPartCeilMount.hpp"
 #include "ComponentSpaceShipPartWall.hpp"
 #include "ComponentSpaceShipPartWallMount.hpp"
+#include "ComponentPlayerState.hpp"
 
 #include "Message.hpp"
 #include "MessageEngine.hpp"
@@ -104,6 +105,7 @@ int main(int argc, char **argv)
         SystemObjectFactory::getSingleton()->registerComponent(ComponentSpaceShipPartCeilMount::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentSpaceShipPartWall::getType());
         SystemObjectFactory::getSingleton()->registerComponent(ComponentSpaceShipPartWallMount::getType());
+        SystemObjectFactory::getSingleton()->registerComponent(ComponentPlayerState::getType());
         
 
         Message::registerMessge(MessageQuit::getID(), MessageQuit::CreateMessage);
