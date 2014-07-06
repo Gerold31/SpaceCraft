@@ -29,11 +29,15 @@ public:
 
     virtual StateMap getState() { return StateMap(); }
 
+    boost::any getParam(std::string param) {if(mParams.count(param)) return mParams[param]; return nullptr;}
+    std::string getName() { return mName; }
+
 protected:
     virtual void _receiveMessage(Message *message) = 0;
     Object *mObject;
     ParamMap mParams;
     TypeInfo *mType;
+    std::string mName;
     bool mReady;
     bool mEnable;
 };

@@ -121,6 +121,8 @@ int main(int argc, char **argv)
         Message::registerMessge(MessageUse::getID(), MessageUse::CreateMessage);
         Message::registerMessge(MessageEnable::getID(), MessageEnable::CreateMessage);
         Message::registerMessge(MessageDisable::getID(), MessageDisable::CreateMessage);
+        Message::registerMessge(MessageEnableComponent::getID(), MessageEnableComponent::CreateMessage);
+        Message::registerMessge(MessageDisableComponent::getID(), MessageDisableComponent::CreateMessage);
         Message::registerMessge(MessageToggleInventory::getID(), MessageToggleInventory::CreateMessage);
         Message::registerMessge(MessageMultiUse::getID(), MessageMultiUse::CreateMessage);
         Message::registerMessge(MessageRegisterMultiUse::getID(), MessageRegisterMultiUse::CreateMessage);
