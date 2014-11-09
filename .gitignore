@@ -1,0 +1,7 @@
+*.obj
+Models/*/*.mtl
+*.blend?
+
+favorites.cfg
+export.cfg
+.fscache
