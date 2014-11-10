@@ -34,9 +34,11 @@ func _ready():
 	parts_place["r"] = preload("res://Scenes/wall_rect_1x2_place.scn")
 	parts_place["t1"] = preload("res://Scenes/wall_triangle_1x1x2_place.scn")
 	parts_place["t2"] = preload("res://Scenes/wall_triangle_2x2x2_place.scn")
+	
 	for i in parts:
 		part_instances[i] = parts[i].instance()
 		part_place_instances[i] = parts_place[i].instance()
+		part_place_instances[i].set_ray_pickable(false)
 	
 	add_to_group("toolbar_listener")
 	
@@ -56,7 +58,7 @@ func _input(event):
 	if(event.type == InputEvent.MOUSE_MOTION || update):
 		update_place_part()
 	
-	if(event.is_action("place_part") && event.is_pressed() && !event.is_echo() && lastHit != null):
+	if(event.is_action("place_part") && event.is_pressed() && !event.is_echo() && lastHit != null && part_place_instances[part_type].get_contact_count() == 0):
 		var new_part = parts[part_type].instance()
 		var part = lastHit.get_node("../../../../")
 		var ship_parts = part.get_parent()
